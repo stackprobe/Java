@@ -1,0 +1,56 @@
+package charlotte_test.satellite;
+
+import java.util.Random;
+
+import charlotte.satellite.MutexObject;
+import charlotte.satellite.WinAPITools;
+import charlotte.tools.StringTools;
+
+public class MutexObjectTest {
+	public static void main(String[] args) {
+		try {
+			Random r = new Random();
+			final int THC = 10;
+			Thread[] ths = new Thread[THC];
+			final String mutexName = StringTools.getUUID();
+
+			for(int c = 0; c < THC; c++) {
+				final int fc = c;
+				final int bw = r.nextInt(100);
+				final int lw = r.nextInt(2000);
+
+				ths[c] = new Thread() {
+					@Override
+					public void run() {
+						try {
+							MutexObject mo = new MutexObject(mutexName);
+							Thread.sleep(bw);
+							System.out.println("W1_" + fc);
+
+							if(mo.waitOne(WinAPITools.INFINITE) == false) {
+								throw new Exception();
+							}
+							System.out.println("L1_" + fc);
+							Thread.sleep(lw);
+							System.out.println("L2_" + fc);
+							mo.release();
+							System.out.println("R1_" + fc);
+						}
+						catch(Throwable e) {
+							e.printStackTrace();
+						}
+					}
+				};
+
+				ths[c].start();
+			}
+			for(int c = 0; c < THC; c++) {
+				ths[c].join();
+			}
+		}
+		catch(Throwable e) {
+			e.printStackTrace();
+		}
+		System.exit(0);
+	}
+}

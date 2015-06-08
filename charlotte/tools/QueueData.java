@@ -1,0 +1,38 @@
+package charlotte.tools;
+
+public class QueueData<T> {
+	private LinkNode<T> _top;
+	private LinkNode<T> _last;
+	private int _count;
+
+	public QueueData() {
+		_top = new LinkNode<T>();
+		_last = _top;
+	}
+
+	public void add(T element) {
+		_last.element = element;
+		_last.next = new LinkNode<T>();
+		_last = _last.next;
+		_count++;
+	}
+
+	public T poll() {
+		if(_count <= 0) {
+			return null;
+		}
+		T ret = _top.element;
+		_top = _top.next;
+		_count--;
+		return ret;
+	}
+
+	public int size() {
+		return _count;
+	}
+
+	private class LinkNode<U> {
+		public U element;
+		public LinkNode<U> next;
+	}
+}
