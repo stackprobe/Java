@@ -19,6 +19,10 @@ public class EraDate {
 			19890108,
 	};
 
+	/**
+	 *
+	 * @return ERA_ALPHAS.length() == ERA_NAMES.length == ERA_FIRST_DATES.length
+	 */
 	private static int getEraEnd() {
 		return ERA_FIRST_DATES.length;
 	}

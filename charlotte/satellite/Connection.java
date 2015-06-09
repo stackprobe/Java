@@ -49,7 +49,7 @@ public class Connection {
 
 		try {
 			if(FileTools.exists(_firstTimeFile) == false) {
-				FileTools.forceDelete(_commonDir);
+				FileTools.remove(_commonDir);
 				FileTools.createFile(_firstTimeFile);
 				WinAPITools.deleteDelayUntilReboot(_firstTimeFile);
 			}
@@ -79,10 +79,10 @@ public class Connection {
 				return true;
 			}
 			FileTools.delete(pidFile);
-			FileTools.deleteDir(_sessionDir);
-			FileTools.deleteDir(_identDir);
-			FileTools.deleteDir(_groupDir);
-			FileTools.deleteDir(_commonDir);
+			FileTools.tryDeleteDir(_sessionDir);
+			FileTools.tryDeleteDir(_identDir);
+			FileTools.tryDeleteDir(_groupDir);
+			FileTools.tryDeleteDir(_commonDir);
 		}
 		finally {
 			if(_mutex.isLocking()) {
@@ -284,7 +284,7 @@ public class Connection {
 				return false;
 			}
 		}
-		FileTools.forceDelete(otherSessionDir);
+		FileTools.remove(otherSessionDir);
 		return true;
 	}
 
@@ -293,9 +293,9 @@ public class Connection {
 		_mutex.waitOne(WinAPITools.INFINITE);
 
 		try {
-			FileTools.deleteDir(_identDir);
-			FileTools.deleteDir(_groupDir);
-			FileTools.deleteDir(_commonDir);
+			FileTools.tryDeleteDir(_identDir);
+			FileTools.tryDeleteDir(_groupDir);
+			FileTools.tryDeleteDir(_commonDir);
 		}
 		finally {
 			_mutex.release();

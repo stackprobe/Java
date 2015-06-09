@@ -103,4 +103,8 @@ public class ReflecTools {
 	public static Object getObject(Field field, Object instance) throws Exception {
 		return field.get(instance);
 	}
+
+	public static void setObject(Field field, Object instance, Object value) throws Exception {
+		field.set(instance, value);
+	}
 }

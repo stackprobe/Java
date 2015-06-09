@@ -1,5 +1,5 @@
 package charlotte.tools;
 
 public interface AcceptListener<T> {
-	public boolean accept(T source);
+	public boolean accept(T source) throws Exception;
 }

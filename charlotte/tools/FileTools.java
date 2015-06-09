@@ -118,21 +118,31 @@ public class FileTools {
 		return list(dir).length == 0;
 	}
 
-	public static void deleteDir(String dir) {
+	public static void tryDeleteDir(String dir) {
 		if(isEmptyDir(dir)) {
 			delete(dir);
 		}
 	}
 
-	public static void forceDelete(String path) {
+	public static void remove(String path) {
 		File f = new File(path);
 
 		if(f.isDirectory()) {
 			for(String s : f.list()) {
-				forceDelete(FileTools.combine(path, s));
+				remove(FileTools.combine(path, s));
 			}
 		}
 		f.delete();
+	}
+
+	public static boolean isDirectory(String path) {
+		return new File(path).isDirectory();
+	}
+
+	public static void tryDelete(String path) {
+		if(isDirectory(path) == false || isEmptyDir(path)) {
+			delete(path);
+		}
 	}
 
 	public static byte[] readToEnd(InputStream is) throws Exception {
