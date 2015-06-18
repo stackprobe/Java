@@ -73,4 +73,12 @@ public class ArrayTools {
 			r--;
 		}
 	}
+
+	public static <T> void shuffle(List<T> list) {
+		for(int i = 0; i < list.size() - 1; i++) {
+			int j = SystemTools.random(i, list.size() - 1);
+
+			swap(list, i, j);
+		}
+	}
 }

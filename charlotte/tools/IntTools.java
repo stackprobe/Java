@@ -1,5 +1,8 @@
 package charlotte.tools;
 
+import java.util.Comparator;
+import java.util.List;
+
 
 public class IntTools {
 	public static byte[] toBytes(int value) {
@@ -53,5 +56,42 @@ public class IntTools {
 		ret *= ret;
 		ret *= pow(value, exponent % 2);
 		return ret;
+	}
+
+	public static Integer[] toIntegers(int[] src) {
+		Integer[] dest = new Integer[src.length];
+
+		for(int index = 0; index < src.length; index++) {
+			dest[index] = Integer.valueOf(src[index]);
+		}
+		return dest;
+	}
+
+	public static int[] toInts(List<Integer> src) {
+		return toInts(src.toArray(new Integer[src.size()]));
+	}
+
+	public static int[] toInts(Integer[] src) {
+		int[] dest = new int[src.length];
+		toInts(src, dest);
+		return dest;
+	}
+
+	public static void toInts(Integer[] src, int[] dest) {
+		for(int index = 0; index < src.length; index++) {
+			dest[index] = src[index].intValue();
+		}
+	}
+
+	public static void sort(int[] array, Comparator<Integer> comp) {
+		Integer[] integers = toIntegers(array);
+		ArrayTools.sort(integers, comp);
+		toInts(integers, array);
+	}
+
+	public static int[] getSorted(int[] array, Comparator<Integer> comp) {
+		Integer[] integers = toIntegers(array);
+		ArrayTools.sort(integers, comp);
+		return toInts(integers);
 	}
 }
