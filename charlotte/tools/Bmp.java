@@ -13,6 +13,10 @@ public class Bmp {
 	private int _w;
 	private int _h;
 
+	public Bmp(int w, int h, Dot dot) {
+		this(w, h, dot.a, dot.r, dot.g, dot.b);
+	}
+
 	public Bmp(int w, int h, int a, int r, int g, int b) {
 		this(w, h);
 
@@ -247,6 +251,16 @@ public class Bmp {
 				}
 			}
 		}
+	}
+
+	public Bmp extend(int l, int t, int r, int b) {
+		return extend(l, t, r, b, new Dot(DUMMY_R, DUMMY_G, DUMMY_B, DUMMY_A));
+	}
+
+	public Bmp extend(int l, int t, int r, int b, Dot outerDot) {
+		Bmp dest = new Bmp(l + _w + r, t + _h + b, outerDot);
+		dest.paste(this, l, t);
+		return dest;
 	}
 
 	public Bmp expand(int dest_w, int dest_h) {
