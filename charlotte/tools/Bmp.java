@@ -454,6 +454,24 @@ public class Bmp {
 		}
 
 		@Override
+		public boolean equals(Object obj) {
+			if(obj == null)
+				return false;
+
+			if(obj instanceof Dot == false)
+				return false;
+
+			Dot dot = (Dot)obj;
+
+			if(a != dot.a) return false;
+			if(r != dot.r) return false;
+			if(g != dot.g) return false;
+			if(b != dot.b) return false;
+
+			return true;
+		}
+
+		@Override
 		public String toString() {
 			return a + ", " + r + ", " + g + ", " + b;
 		}
@@ -492,5 +510,36 @@ public class Bmp {
 		int ib = (int)LongTools.divRndOff(b, a);
 
 		return new Dot(ia, ir, ig, ib);
+	}
+
+	public Bmp trim(Dot outerDot) {
+		return trim(outerDot, 0);
+	}
+
+	public Bmp trim(Dot outerDot, int margin) {
+		int l = _w - 1;
+		int t = _h - 1;
+		int r = 0;
+		int b = 0;
+
+		for(int x = 0; x < _w; x++) {
+			for(int y = 0; y < _h; y++) {
+				if(getDot(x, y).equals(outerDot) == false) {
+					l = Math.min(l, x);
+					t = Math.min(t, y);
+					r = Math.max(r, x);
+					b = Math.max(b, y);
+				}
+			}
+		}
+		int w = r - l + 1;
+		int h = b - t + 1;
+
+		l -= margin;
+		t -= margin;
+		w += margin * 2;
+		h += margin * 2;
+
+		return copy(l, t, w, h, outerDot);
 	}
 }
