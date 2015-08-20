@@ -1,0 +1,88 @@
+Satellite for Java
+==================
+
+プロセス間通信モジュールです。
+このモジュールを実装した他のプロセスと通信できます。
+
+
+通信の形態
+----------
+
+	クライアント・サーバー方式
+
+		「クライアントとサーバー」「クライアント同士」の接続は可能
+		「サーバー同士」の接続は不可
+
+	ソケットっぽい
+
+		接続 -> 通信 -> 切断
+		クライアント・サーバー共に、同一プロセス内で複数のコネクションを同時に作成可能
+		サーバーは、同一プロセス内で複数のリスナ（サーバーオブジェクト）を同時に作成可能
+
+	通信データはバイトストリームではなく以下のオブジェクト
+
+		SERIALIZABLE_OBJECT:
+			byte[]
+			charlotte.satellite.ObjectList # 値は SERIALIZABLE_OBJECT のいずれか
+			charlotte.satellite.ObjectMap  # 値は SERIALIZABLE_OBJECT のいずれか, キーは null 不可
+			String
+			null
+
+
+動作環境
+--------
+
+	Windows 7
+	確認していませんが Windows 8/8.1/10 でも動くかもしれません。
+
+	Java
+
+
+必要なパッケージ
+----------------
+
+	charlotte.satellite
+	charlotte.tools
+
+
+組み込み方法
+------------
+
+	1. 「必要なパッケージ」をソース（プロジェクト）に組み込む
+
+	2. charlotte.satellite.WinAPITools.getWinAPIToolsFile メソッドのコメントに従って以下を行う。
+
+		a. WinAPITools.exe の配置
+		b. 必要であれば、このメソッドの戻り値を変更する。
+
+
+使用するクラス
+--------------
+
+	charlotte.satellite.ObjectList
+
+		java.util.List<Object> をラップしたクラス
+
+	charlotte.satellite.ObjectMap
+
+		java.util.Map<String, Object> をラップしたクラス
+
+	charlotte.satellite.Satellizer
+
+		このパッケージの外部インターフェイス
+
+
+	★これ以外の charlotte.satellite パッケージ内のクラスは使用しないで下さい。
+
+
+クライアント用インターフェイス
+------------------------------
+
+	TODO
+
+
+サーバー用インターフェイス
+--------------------------
+
+	TODO
+
