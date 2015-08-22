@@ -3,6 +3,7 @@ Satellite for Java
 
 プロセス間通信モジュールです。
 このモジュールを実装した他のプロセスと通信できます。
+通信相手は C# 版でもok
 
 
 通信の形態
@@ -98,6 +99,9 @@ Satellite for Java
 		millis ... 接続をトライし続ける時間（ミリ秒）
 		戻り値 ... 接続に成功すれば true, そうでなければ false
 
+		millis は最長時間です。0タイムで処理が返る場合があります。
+		タイムアウトを設ける場合は、別途時間を計って下さい。
+
 	public synchronized void send(Object sendObj) throws Exception;
 
 		データを送信します。
@@ -161,7 +165,7 @@ Satellite for Java
 			このメソッドは複数同時に呼び出されることは無い。
 			このメソッドは serviceTh 実行中に呼び出されることがある。
 
-			戻り値 ... サーバーを停止する場合 true, そうでなければ false
+			戻り値 ... サーバーの実行を継続する場合 true, 停止する場合 false
 
 		public void serviceTh(Satellizer stllzr) throws Exception;
 
