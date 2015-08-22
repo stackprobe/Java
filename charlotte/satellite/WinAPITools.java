@@ -14,7 +14,7 @@ public class WinAPITools {
 	 * @return WinAPITools.exe へのフルパス
 	 */
 	private static String getWinAPIToolsFile() {
-		return "C:/Factory/Satellizer/extern/WinAPITools.exe";
+		return "C:/Factory/Satellite/extern/WinAPITools.exe";
 	}
 
 	public static boolean existWinAPIToolsFile() {
