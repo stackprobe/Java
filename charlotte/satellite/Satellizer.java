@@ -36,7 +36,10 @@ public class Satellizer {
 			throw new NullPointerException("ident");
 		}
 		if(millis < 0) {
-			throw new Exception("millis: " + millis);
+			throw new Exception("millis lt 0");
+		}
+		if(WinAPITools.INFINITE < millis) {
+			throw new Exception("millis gt max");
 		}
 		if(server == null) {
 			throw new Exception("server is null");
@@ -92,7 +95,10 @@ public class Satellizer {
 
 	public synchronized boolean connect(long millis) throws Exception {
 		if(millis < 0) {
-			throw new Exception("millis: " + millis);
+			throw new Exception("millis lt 0");
+		}
+		if(WinAPITools.INFINITE < millis) {
+			throw new Exception("millis gt max");
 		}
 		if(_conn == null) {
 			throw new Exception("already closed");
@@ -114,7 +120,7 @@ public class Satellizer {
 
 	public synchronized void send(Object sendObj) throws Exception {
 		if(sendObj == null) {
-			throw new Exception("sendObj is null");
+			throw new NullPointerException("sendObj");
 		}
 		if(_conn == null) {
 			throw new Exception("already closed");
@@ -128,7 +134,10 @@ public class Satellizer {
 
 	public synchronized Object recv(long millis) throws Exception {
 		if(millis < 0) {
-			throw new Exception("millis: " + millis);
+			throw new Exception("millis lt 0");
+		}
+		if(WinAPITools.INFINITE < millis) {
+			throw new Exception("millis gt max");
 		}
 		if(_conn == null) {
 			throw new Exception("already closed");

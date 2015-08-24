@@ -8,7 +8,7 @@ public class WinAPITools {
 
 	/**
 	 * WinAPITools.exe は http://stackprobe.dip.jp/_kit/Factory から取得して下さい。
-	 * 必要なファイルは <Factory.zip>/Satellizer/extern/WinAPITools.exe だけです。
+	 * 必要なファイルは <Factory.zip>/Satellite/extern/WinAPITools.exe だけです。
 	 * Factory.zip から WinAPITools.exe を取り出して任意の場所に置き、
 	 * そこへのフルパスを返すようにこのメソッドを変更して下さい。
 	 * @return WinAPITools.exe へのフルパス

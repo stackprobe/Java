@@ -24,9 +24,12 @@ Satellite for Java
 
 		SERIALIZABLE_OBJECT:
 			byte[]
-			charlotte.satellite.ObjectList # 値は SERIALIZABLE_OBJECT のいずれか
-			charlotte.satellite.ObjectMap  # 値は SERIALIZABLE_OBJECT のいずれか, キーは null 不可
+			charlotte.satellite.ObjectList # 値は SERIALIZABLE_CHILD_OBJECT のいずれか
+			charlotte.satellite.ObjectMap  # 値は SERIALIZABLE_CHILD_OBJECT のいずれか, キーは null 不可
 			String
+
+		SERIALIZABLE_CHILD_OBJECT:
+			SERIALIZABLE_OBJECT
 			null
 
 
@@ -179,4 +182,10 @@ Satellite for Java
 ------
 
 	「同じグループ名で、識別名が異なる」もの同士を接続します。
+
+
+蛇足
+----
+
+	Satellizer = Satellite + Serializer
 
