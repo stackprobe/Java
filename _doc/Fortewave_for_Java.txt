@@ -35,8 +35,8 @@ Fortewave for Java
 	Java
 
 
-必要な名前空間
---------------
+必要なパッケージ
+----------------
 
 	charlotte.flowertact
 	charlotte.satellite
@@ -46,7 +46,7 @@ Fortewave for Java
 組み込み方法
 ------------
 
-	1. 「必要な名前空間」をソース（プロジェクト）に組み込む
+	1. 「必要なパッケージ」をソース（プロジェクト）に組み込む
 
 	2. charlotte.satellite.WinAPITools.getWinAPIToolsFile メソッドのコメントに従って以下を行う。
 
@@ -67,14 +67,18 @@ Fortewave for Java
 
 	charlotte.flowertact.Fortewave
 
-		このパッケージの外部インターフェイス
+		このモジュールの外部インターフェイス
+
+	charlotte.satellite.Satellizer
+
+		####
 
 
 	★これ以外の charlotte.flowertact, charlotte.satellite パッケージ内のクラスは使用しないで下さい。
 
 
-クライアント用・インターフェイス
---------------------------------
+インターフェイス
+----------------
 
 	TODO
 
