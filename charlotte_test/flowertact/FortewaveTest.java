@@ -5,16 +5,20 @@ import charlotte.flowertact.Fortewave;
 public class FortewaveTest {
 	private static Fortewave _client;
 	private static Fortewave _server;
+	private static Fortewave _loop;
 
 	public static void main(String[] args) {
 		try {
 			_client = new Fortewave("TEST_CLIENT", "TEST_SERVER");
 			_server = new Fortewave("TEST_SERVER", "TEST_CLIENT");
 			_server.clear();
+			_loop = new Fortewave("LOOP");
+			_loop.clear();
 
 			//test01_Client();
 			//test01_Server();
-			test01();
+			//test01();
+			test02();
 
 			System.out.println("OK!");
 		}
@@ -78,6 +82,23 @@ public class FortewaveTest {
 					_server.send(ret + "_RET");
 					break;
 				}
+			}
+		}
+	}
+
+	private static void test02() throws Exception {
+		_loop.send("TEST_STRING_-3");
+		_loop.send("TEST_STRING_-2");
+		_loop.send("TEST_STRING_-1");
+
+		for(int c = 0; c < 2100; c++) {
+			_loop.send("TEST_STRING_" + c);
+
+			String assume = "TEST_STRING_" + (c - 3);
+			String ret = (String)_loop.recv(2000);
+
+			if(assume.equals(ret) == false) {
+				throw new Exception("ng");
 			}
 		}
 	}

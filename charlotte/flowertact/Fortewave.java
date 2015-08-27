@@ -8,6 +8,10 @@ public class Fortewave {
 	private PostOfficeBox _rPob;
 	private PostOfficeBox _wPob;
 
+	public Fortewave(String ident) throws Exception {
+		this(ident, ident);
+	}
+
 	public Fortewave(String rIdent, String wIdent) throws Exception {
 		if(rIdent == null) {
 			throw new NullPointerException("rIdent");

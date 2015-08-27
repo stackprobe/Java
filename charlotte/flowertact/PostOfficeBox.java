@@ -1,12 +1,11 @@
 package charlotte.flowertact;
 
-import java.util.Comparator;
+import java.io.File;
 
 import charlotte.satellite.MutexObject;
 import charlotte.satellite.NamedEventObject;
 import charlotte.satellite.SatellizerTools;
 import charlotte.satellite.WinAPITools;
-import charlotte.tools.ArrayTools;
 import charlotte.tools.FileTools;
 import charlotte.tools.SecurityTools;
 import charlotte.tools.StringTools;
@@ -40,13 +39,14 @@ public class PostOfficeBox {
 		_mutex.waitOne(WinAPITools.INFINITE);
 
 		try {
-			int lastNo = getMessageRange()[1];
+			getMessageRange();
+			tryRenumber();
 
-			if(lastNo == -1) {
+			if(_lastNo == -1) {
 				FileTools.mkdir(_messageDir);
 			}
 			FileTools.writeAllBytes(
-					FileTools.combine(_messageDir, StringTools.zPad(lastNo + 1, 4)),
+					FileTools.combine(_messageDir, StringTools.zPad(_lastNo + 1, 4)),
 					sendData
 					);
 		}
@@ -70,17 +70,15 @@ public class PostOfficeBox {
 		_mutex.waitOne(WinAPITools.INFINITE);
 
 		try {
-			int[] messageRange = getMessageRange();
-			int firstNo = messageRange[0];
-			int lastNo = messageRange[1];
+			getMessageRange();
 
-			if(firstNo != -1) {
-				String file = FileTools.combine(_messageDir, StringTools.zPad(firstNo, 4));
+			if(_firstNo != -1) {
+				String file = FileTools.combine(_messageDir, StringTools.zPad(_firstNo, 4));
 				byte[] recvData = FileTools.readAllBytes(file);
 
 				FileTools.delete(file);
 
-				if(firstNo == lastNo) {
+				if(_firstNo == _lastNo) {
 					FileTools.delete(_messageDir);
 				}
 				return recvData;
@@ -92,21 +90,43 @@ public class PostOfficeBox {
 		return null;
 	}
 
-	private int[] getMessageRange() {
+	private int _firstNo;
+	private int _lastNo;
+
+	private void getMessageRange() {
 		String[] files = FileTools.list(_messageDir);
 
 		if(files == null) {
-			return new int[] { -1, -1 };
+			_firstNo = -1;
+			_lastNo = -1;
 		}
-		ArrayTools.sort(files, new Comparator<String>() {
-			@Override
-			public int compare(String a, String b) {
-				return Integer.parseInt(a) - Integer.parseInt(b);
+		else {
+			_firstNo = Integer.MAX_VALUE;
+			_lastNo = 0;
+
+			for(String file : files) {
+				int no = Integer.parseInt(file);
+
+				_firstNo = Math.min(_firstNo, no);
+				_lastNo = Math.max(_lastNo, no);
 			}
-		});
-		return new int[] {
-				Integer.parseInt(files[0]),
-				Integer.parseInt(files[files.length - 1]),
-		};
+		}
+	}
+
+	private void tryRenumber() {
+		if(1000 < _firstNo) {
+			renumber();
+		}
+	}
+
+	private void renumber() {
+		for(int no = _firstNo; no <= _lastNo; no++) {
+			String rFile = FileTools.combine(_messageDir, StringTools.zPad(no, 4));
+			String wFile = FileTools.combine(_messageDir, StringTools.zPad(no - _firstNo, 4));
+
+			new File(rFile).renameTo(new File(wFile));
+		}
+		_lastNo -= _firstNo;
+		_firstNo = 0;
 	}
 }
