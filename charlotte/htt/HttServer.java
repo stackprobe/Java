@@ -19,6 +19,7 @@ public class HttServer {
 	private static final byte[] EMPTY = new byte[0];
 	private static final byte[] COMMAND_CLEAR = new byte[] { 0x43 };
 	private static final byte[] COMMAND_RESPONSE = new byte[] { 0x52 };
+	private static final byte[] COMMAND_ERROR = new byte[] { 0x45 };
 
 	private static MutexObject _mutex = new MutexObject(MUTEX_ID);
 	private static Fortewave _pipeline;
@@ -39,8 +40,9 @@ public class HttServer {
 					Object recvData = _pipeline.recv(2000);
 
 					if(recvData != null) {
+						HttResponse res = service.service(new HttRequest((ObjectList)recvData));
+
 						try {
-							HttResponse res = service.service(new HttRequest((ObjectList)recvData));
 							ObjectList ol = new ObjectList();
 
 							ol.add(COMMAND_RESPONSE);
@@ -88,6 +90,11 @@ public class HttServer {
 						}
 						catch(Throwable e) {
 							e.printStackTrace();
+
+							_pipeline.send(new ObjectList(
+									COMMAND_ERROR,
+									((ObjectList)recvData).get(0)
+									));
 						}
 					}
 				}

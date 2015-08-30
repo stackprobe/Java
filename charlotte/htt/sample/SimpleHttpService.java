@@ -18,24 +18,26 @@ public class SimpleHttpService implements HttService {
 
 	@Override
 	public HttResponse service(HttRequest req) throws Exception {
-		return new HttResHtml(String.format(
-				"<html>" +
-				"<body>" +
-				"<h1>リクエストの内容はイカのとおりです。</h1>" +
-				"<hr/>" +
-				"<table>" +
-				"<tr>" +
-				"<td>Method</td><td>%s</td>" +
-				"<td>URL</td><td>%s</td>" +
-				"<td>HTTP version</td><td>%s</td>" +
-				"</tr>" +
-				"</table>" +
-				"</body>" +
-				"</html>"
-				,req.getMethod()
-				,req.getUrlString()
-				,req.getHTTPVersion()
-				));
+		StringBuffer buff = new StringBuffer();
+
+		buff.append("<html>");
+		buff.append("<body>");
+		buff.append("<h1>リクエストの内容はイカのとおりです。</h1>");
+		buff.append("<hr/>");
+		buff.append("<table>");
+		buff.append("<tr><td>Method</td><td>");
+		buff.append(req.getMethod());
+		buff.append("</td></tr>");
+		buff.append("<tr><td>URL</td><td>");
+		buff.append(req.getUrlString());
+		buff.append("</td></tr>");
+		buff.append("<tr><td>HTTP version</td><td>");
+		buff.append(req.getHTTPVersion());
+		buff.append("</td></tr>");
+		buff.append("</table>");
+		buff.append("</html>");
+
+		return new HttResHtml(buff.toString());
 	}
 
 	public static void main(String[] args) {
