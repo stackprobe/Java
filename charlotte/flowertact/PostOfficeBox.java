@@ -129,4 +129,8 @@ public class PostOfficeBox {
 		_lastNo -= _firstNo;
 		_firstNo = 0;
 	}
+
+	public void close() {
+		_messagePostEvent.close();
+	}
 }

@@ -43,6 +43,12 @@ public class BlockBuffer {
 		return all;
 	}
 
+	public void write(BlockWriter dest) {
+		for(SubBlock sb : _buff) {
+			dest.add(sb.block, sb.startPos, sb.size);
+		}
+	}
+
 	private class SubBlock {
 		public byte[] block;
 		public int startPos;

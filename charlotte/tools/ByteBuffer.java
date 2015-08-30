@@ -1,6 +1,6 @@
 package charlotte.tools;
 
-public class ByteBuffer {
+public class ByteBuffer implements ByteWriter {
 	private BlockBuffer _buff = new BlockBuffer();
 
 	private int _nextBlockSize = 1024;
@@ -11,6 +11,7 @@ public class ByteBuffer {
 	public ByteBuffer() {
 	}
 
+	@Override
 	public void add(byte chr) {
 		if(_block == null) {
 			_block = new byte[_nextBlockSize];
@@ -27,6 +28,7 @@ public class ByteBuffer {
 		}
 	}
 
+	@Override
 	public void add(byte[] block) {
 		flush();
 		_buff.add(block);

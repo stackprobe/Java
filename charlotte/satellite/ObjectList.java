@@ -13,8 +13,18 @@ public class ObjectList {
 		add(list);
 	}
 
+	public ObjectList(Object... arr) {
+		add(arr);
+	}
+
 	public void add(List<?> list) {
 		for(Object obj : list) {
+			add(obj);
+		}
+	}
+
+	public void add(Object[] arr) {
+		for(Object obj : arr) {
 			add(obj);
 		}
 	}
