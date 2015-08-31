@@ -11,6 +11,7 @@ import charlotte.tools.FileTools;
 import charlotte.tools.StringTools;
 
 public class HttRequest {
+	private String _clientIPAddress;
 	private String _method;
 	private String _urlString;
 	private String _httpVersion;
@@ -20,6 +21,7 @@ public class HttRequest {
 	public HttRequest(ObjectList rawData) throws Exception {
 		int c = 1;
 
+		_clientIPAddress = new String((byte[])rawData.get(c++), StringTools.CHARSET_ASCII);
 		_method = new String((byte[])rawData.get(c++), StringTools.CHARSET_ASCII);
 		_urlString = new String((byte[])rawData.get(c++), StringTools.CHARSET_ASCII);
 		_httpVersion = new String((byte[])rawData.get(c++), StringTools.CHARSET_ASCII);
@@ -38,6 +40,10 @@ public class HttRequest {
 		}
 
 		_bodyPartFile = new String((byte[])rawData.get(c++), StringTools.CHARSET_SJIS);
+	}
+
+	public String getClientIPAddress() {
+		return _clientIPAddress;
 	}
 
 	public String getMethod() {

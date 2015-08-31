@@ -12,9 +12,10 @@ import charlotte.tools.ByteBuffer;
 import charlotte.tools.StringTools;
 
 public class HttServer {
-	private static final String MUTEX_ID = "{c20de0d1-1915-4b6a-9a99-06dc7adfc455}";
-	private static final String HTT_SERVICE_ID = "{3e26ecc8-daaf-4584-af43-2a84bfe51fdc}";
-	private static final String HTT_ID = "{fb02208e-b78b-4875-ba34-2efa9c2c7e85}";
+	private static final String COMMON_ID = "{7da01163-efa3-4941-a5a6-be0800720d8e}";
+	private static final String MUTEX_ID = COMMON_ID + "_m";
+	private static final String HTT_ID = COMMON_ID + "_h";
+	private static final String HTT_SERVICE_ID = COMMON_ID + "_hs";
 
 	private static final byte[] EMPTY = new byte[0];
 	private static final byte[] COMMAND_CLEAR = new byte[] { 0x43 };

@@ -60,6 +60,31 @@ public class FileTools {
 		}
 	}
 
+	public static void writeAllBytes(String file, BlockBuffer fileData) throws Exception {
+		writeAllBytes(new File(file), fileData);
+	}
+
+	public static void writeAllBytes(File f, BlockBuffer fileData) throws Exception {
+		final FileOutputStream os = new FileOutputStream(f);
+
+		try {
+			fileData.write(new BlockWriter() {
+				@Override
+				public void add(byte[] block, int startPos, int size) {
+					try {
+						os.write(block, startPos, size);
+					}
+					catch(Throwable e) {
+						throw new RuntimeException(e);
+					}
+				}
+			});
+		}
+		finally {
+			close(os);
+		}
+	}
+
 	public static void close(Closeable c) {
 		try {
 			c.close();

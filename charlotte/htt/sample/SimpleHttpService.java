@@ -25,6 +25,9 @@ public class SimpleHttpService implements HttService {
 		buff.append("<h1>リクエストの内容はイカのとおりです。</h1>");
 		buff.append("<hr/>");
 		buff.append("<table>");
+		buff.append("<tr><td>Client IP address</td><td>");
+		buff.append(req.getClientIPAddress());
+		buff.append("</td></tr>");
 		buff.append("<tr><td>Method</td><td>");
 		buff.append(req.getMethod());
 		buff.append("</td></tr>");
