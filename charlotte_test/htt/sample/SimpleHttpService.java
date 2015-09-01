@@ -1,4 +1,4 @@
-package charlotte.htt.sample;
+package charlotte_test.htt.sample;
 
 import javax.swing.JOptionPane;
 

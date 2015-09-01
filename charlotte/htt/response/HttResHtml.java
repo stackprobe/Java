@@ -8,8 +8,8 @@ import charlotte.tools.ByteWriter;
 import charlotte.tools.StringTools;
 
 public class HttResHtml implements HttResponse {
-	String _htmlText;
-	String _charset;
+	private String _htmlText;
+	private String _charset;
 
 	public HttResHtml() {
 		this("<html><body><h1>Happy tea time!</h1></body></html>");

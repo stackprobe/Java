@@ -10,20 +10,20 @@ public class ObjectList {
 	}
 
 	public ObjectList(List<?> list) {
-		add(list);
+		addAll(list);
 	}
 
 	public ObjectList(Object... arr) {
-		add(arr);
+		addAll(arr);
 	}
 
-	public void add(List<?> list) {
+	public void addAll(List<?> list) {
 		for(Object obj : list) {
 			add(obj);
 		}
 	}
 
-	public void add(Object[] arr) {
+	public void addAll(Object[] arr) {
 		for(Object obj : arr) {
 			add(obj);
 		}
