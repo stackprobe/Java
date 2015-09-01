@@ -73,7 +73,7 @@ Satellite for Java
 
 	charlotte.satellite.Satellizer
 
-		このパッケージの外部インターフェイス
+		このモジュールの外部インターフェイス
 
 
 	★これ以外の charlotte.satellite パッケージ内のクラスは使用しないで下さい。

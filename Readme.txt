@@ -18,9 +18,13 @@ charlotte
 
 	主にここに作り込んでいく予定
 
+charlotte.flowertact
+
+	プロセス間通信モジュール（メッセージ・キュー方式）
+
 charlotte.satellite
 
-	プロセス間通信モジュール
+	プロセス間通信モジュール（コネクション方式）
 
 charlotte.tools
 

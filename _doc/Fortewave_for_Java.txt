@@ -71,7 +71,7 @@ Fortewave for Java
 
 	charlotte.satellite.Satellizer
 
-		####
+		# Satellite_for_Java.txt を参照して下さい。
 
 
 	★これ以外の charlotte.flowertact, charlotte.satellite パッケージ内のクラスは使用しないで下さい。
