@@ -3,20 +3,28 @@ package charlotte.tools;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlockBuffer {
+public class BlockBuffer implements ByteWriter {
 	private List<SubBlock> _buff = new ArrayList<SubBlock>();
 
 	public BlockBuffer() {
 	}
 
+	@Override
+	public void add(byte chr) {
+		add(new byte[] { chr });
+	}
+
+	@Override
 	public void add(byte[] block) {
 		add(block, 0);
 	}
 
+	@Override
 	public void add(byte[] block, int startPos) {
 		add(block, startPos, block.length - startPos);
 	}
 
+	@Override
 	public void add(byte[] block, int startPos, int size) {
 		SubBlock sb = new SubBlock();
 
@@ -43,13 +51,11 @@ public class BlockBuffer {
 		return all;
 	}
 
-	public void write(BlockWriter dest) {
-		for(SubBlock sb : _buff) {
-			dest.add(sb.block, sb.startPos, sb.size);
-		}
+	public List<SubBlock> directGetBuff() {
+		return _buff;
 	}
 
-	private class SubBlock {
+	public static class SubBlock {
 		public byte[] block;
 		public int startPos;
 		public int size;

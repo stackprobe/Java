@@ -123,10 +123,14 @@ public class StringTools {
 	}
 
 	public static int indexOf(String str, String[] ptns) {
+		return indexOf(str, ptns, 0);
+	}
+
+	public static int indexOf(String str, String[] ptns, int fromIndex) {
 		int ret = Integer.MAX_VALUE;
 
 		for(String ptn : ptns) {
-			int i = str.indexOf(ptn);
+			int i = str.indexOf(ptn, fromIndex);
 
 			if(i != -1) {
 				ret = Math.min(ret, i);
@@ -134,6 +138,19 @@ public class StringTools {
 		}
 		if(ret == Integer.MAX_VALUE) {
 			ret = -1;
+		}
+		return ret;
+	}
+
+	public static int lastIndexOf(String str, String[] ptns) {
+		int ret = -1;
+
+		for(String ptn : ptns) {
+			int i = str.lastIndexOf(ptn);
+
+			if(i != -1) {
+				ret = Math.max(ret, i);
+			}
 		}
 		return ret;
 	}

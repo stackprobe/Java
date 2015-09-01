@@ -5,22 +5,21 @@ import java.util.Map;
 
 import charlotte.htt.HttResponse;
 import charlotte.tools.ByteWriter;
-import charlotte.tools.StringTools;
+import charlotte.tools.ExtToContentType;
+import charlotte.tools.FileTools;
 
-public class HttResHtml implements HttResponse {
-	private String _htmlText;
+public class HttResFileImage implements HttResponse {
+	private byte[] _fileData;
+	private String _virPath;
 	private String _charset;
 
-	public HttResHtml() {
-		this("<html><body><h1>Happy tea time!</h1></body></html>");
+	public HttResFileImage(byte[] fileData, String virPath) {
+		this(fileData, virPath, null);
 	}
 
-	public HttResHtml(String htmlText) {
-		this(htmlText, StringTools.CHARSET_UTF8);
-	}
-
-	public HttResHtml(String htmlText, String charset) {
-		_htmlText = htmlText;
+	public HttResFileImage(byte[] fileData, String virPath, String charset) {
+		_fileData = fileData;
+		_virPath = virPath;
 		_charset = charset;
 	}
 
@@ -41,7 +40,16 @@ public class HttResHtml implements HttResponse {
 
 	@Override
 	public void writeHeaderFields(Map<String, String> dest) throws Exception {
-		dest.put("Content-Type", "text/html; charset=" + _charset);
+		dest.put("Content-Type", getContentType());
+	}
+
+	private String getContentType() throws Exception {
+		String ret = ExtToContentType.getContentType(FileTools.getExt(_virPath));
+
+		if(_charset != null) {
+			ret += "; charset=" + _charset;
+		}
+		return ret;
 	}
 
 	@Override
@@ -51,6 +59,6 @@ public class HttResHtml implements HttResponse {
 
 	@Override
 	public void writeBodyPart(ByteWriter dest) throws Exception {
-		dest.add(_htmlText.getBytes(_charset));
+		dest.add(_fileData);
 	}
 }

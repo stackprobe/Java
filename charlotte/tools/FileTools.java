@@ -65,20 +65,12 @@ public class FileTools {
 	}
 
 	public static void writeAllBytes(File f, BlockBuffer fileData) throws Exception {
-		final FileOutputStream os = new FileOutputStream(f);
+		FileOutputStream os = new FileOutputStream(f);
 
 		try {
-			fileData.write(new BlockWriter() {
-				@Override
-				public void add(byte[] block, int startPos, int size) {
-					try {
-						os.write(block, startPos, size);
-					}
-					catch(Throwable e) {
-						throw new RuntimeException(e);
-					}
-				}
-			});
+			for(BlockBuffer.SubBlock sb : fileData.directGetBuff()) {
+				os.write(sb.block, sb.startPos, sb.size);
+			}
 		}
 		finally {
 			close(os);
@@ -193,5 +185,25 @@ public class FileTools {
 	 */
 	public static byte[] readToEnd(URL url) throws Exception {
 		return readToEnd(url.openStream());
+	}
+
+	public static String getLocal(String path) {
+		int index = StringTools.lastIndexOf(path, new String[] { "/", "\\" });
+
+		if(index == -1) {
+			return path;
+		}
+		return path.substring(index + 1);
+	}
+
+	public static String getExt(String path) {
+		path = getLocal(path);
+
+		int index = path.lastIndexOf('.');
+
+		if(index == -1) {
+			return "";
+		}
+		return path.substring(index + 1);
 	}
 }

@@ -34,9 +34,26 @@ public class ByteBuffer implements ByteWriter {
 		_buff.add(block);
 	}
 
+	@Override
+	public void add(byte[] block, int startPos) {
+		flush();
+		_buff.add(block, startPos);
+	}
+
+	@Override
+	public void add(byte[] block, int startPos, int size) {
+		flush();
+		_buff.add(block, startPos, size);
+	}
+
 	public byte[] getBytes() {
 		flush();
 		return _buff.getBytes();
+	}
+
+	public BlockBuffer directGetBuff() {
+		flush();
+		return _buff;
 	}
 
 	public void flush() {

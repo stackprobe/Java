@@ -5,22 +5,19 @@ import java.util.Map;
 
 import charlotte.htt.HttResponse;
 import charlotte.tools.ByteWriter;
-import charlotte.tools.StringTools;
+import charlotte.tools.ExtToContentType;
+import charlotte.tools.FileTools;
 
-public class HttResHtml implements HttResponse {
-	private String _htmlText;
+public class HttResFile implements HttResponse {
+	private File _file;
 	private String _charset;
 
-	public HttResHtml() {
-		this("<html><body><h1>Happy tea time!</h1></body></html>");
+	public HttResFile(File file) {
+		this(file, null);
 	}
 
-	public HttResHtml(String htmlText) {
-		this(htmlText, StringTools.CHARSET_UTF8);
-	}
-
-	public HttResHtml(String htmlText, String charset) {
-		_htmlText = htmlText;
+	public HttResFile(File file, String charset) {
+		_file = file;
 		_charset = charset;
 	}
 
@@ -41,16 +38,25 @@ public class HttResHtml implements HttResponse {
 
 	@Override
 	public void writeHeaderFields(Map<String, String> dest) throws Exception {
-		dest.put("Content-Type", "text/html; charset=" + _charset);
+		dest.put("Content-Type", getContentType());
+	}
+
+	private String getContentType() throws Exception {
+		String ret = ExtToContentType.getContentType(FileTools.getExt(_file.getCanonicalPath()));
+
+		if(_charset != null) {
+			ret += "; charset=" + _charset;
+		}
+		return ret;
 	}
 
 	@Override
 	public File getBodyPartFile() throws Exception {
-		return null;
+		return _file;
 	}
 
 	@Override
 	public void writeBodyPart(ByteWriter dest) throws Exception {
-		dest.add(_htmlText.getBytes(_charset));
+		// noop
 	}
 }
