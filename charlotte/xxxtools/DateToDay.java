@@ -55,27 +55,11 @@ public class DateToDay {
 		int d;
 		day %= 146097;
 
-		if(109266 <= day) {
-			day += 3;
-		}
-		else if( 72742 <= day) {
-			day += 2;
-		}
-		else if( 36218 <= day) {
-			day += 1;
-		}
+		day += Math.min((day + 306) / 36524, 3);
 		y += (day / 1461) * 4;
 		day %= 1461;
 
-		if(789 <= day) {
-			day += 3;
-		}
-		else if(424 <= day) {
-			day += 2;
-		}
-		else if( 59 <= day) {
-			day += 1;
-		}
+		day += Math.min((day + 306) / 365, 3);
 		y += day / 366;
 		day %= 366;
 
