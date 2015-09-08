@@ -8,7 +8,7 @@ import charlotte.htt.HttServer;
 import charlotte.htt.HttService;
 import charlotte.htt.response.HttResHtml;
 
-public class SimpleHttpService implements HttService {
+public class SimpleHttService implements HttService {
 	public boolean dead;
 
 	@Override
@@ -45,7 +45,7 @@ public class SimpleHttpService implements HttService {
 
 	public static void main(String[] args) {
 		try {
-			final SimpleHttpService service = new SimpleHttpService();
+			final SimpleHttService service = new SimpleHttService();
 
 			new Thread() {
 				@Override

@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.Map;
 
 import charlotte.htt.HttResponse;
-import charlotte.tools.ByteWriter;
 
 public class HttRes404 implements HttResponse {
 	@Override
@@ -33,7 +32,7 @@ public class HttRes404 implements HttResponse {
 	}
 
 	@Override
-	public void writeBodyPart(ByteWriter dest) throws Exception {
-		// noop
+	public byte[] getBodyPart() throws Exception {
+		return null;
 	}
 }

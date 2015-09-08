@@ -8,7 +8,6 @@ import charlotte.flowertact.Fortewave;
 import charlotte.satellite.MutexObject;
 import charlotte.satellite.ObjectList;
 import charlotte.satellite.WinAPITools;
-import charlotte.tools.ByteBuffer;
 import charlotte.tools.StringTools;
 
 public class HttServer {
@@ -35,6 +34,7 @@ public class HttServer {
 		if(_mutex.waitOne(0)) {
 			try {
 				_pipeline = new Fortewave(HTT_SERVICE_ID, HTT_ID);
+				_pipeline.clear();
 				_pipeline.send(new ObjectList(COMMAND_CLEAR));
 
 				while(service.interlude()) {
@@ -78,11 +78,12 @@ public class HttServer {
 									ol.add(EMPTY);
 
 									{
-										ByteBuffer bodyPartBuff = new ByteBuffer();
+										byte[] bodyPart = res.getBodyPart();
 
-										res.writeBodyPart(bodyPartBuff);
-
-										ol.add(bodyPartBuff.getBytes());
+										if(bodyPart == null) {
+											bodyPart = EMPTY;
+										}
+										ol.add(bodyPart);
 									}
 								}
 							}
@@ -102,6 +103,7 @@ public class HttServer {
 			}
 			finally {
 				if(_pipeline != null) {
+					_pipeline.clear();
 					_pipeline.send(new ObjectList(COMMAND_CLEAR));
 					_pipeline.close();
 					_pipeline = null;

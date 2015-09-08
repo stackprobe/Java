@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.Map;
 
 import charlotte.htt.HttResponse;
-import charlotte.tools.ByteWriter;
 import charlotte.tools.ExtToContentType;
 import charlotte.tools.FileTools;
 
@@ -56,7 +55,7 @@ public class HttResFile implements HttResponse {
 	}
 
 	@Override
-	public void writeBodyPart(ByteWriter dest) throws Exception {
-		// noop
+	public byte[] getBodyPart() throws Exception {
+		return null;
 	}
 }

@@ -4,12 +4,11 @@ import java.io.File;
 import java.util.Map;
 
 import charlotte.htt.HttResponse;
-import charlotte.tools.ByteWriter;
 
-public class HttRes301 implements HttResponse {
+public class HttRes302 implements HttResponse {
 	private String _location;
 
-	public HttRes301(String location) {
+	public HttRes302(String location) {
 		_location = location;
 	}
 
@@ -25,7 +24,7 @@ public class HttRes301 implements HttResponse {
 
 	@Override
 	public String getReasonPhrase() throws Exception {
-		return "Moved Permanently";
+		return "Found";
 	}
 
 	@Override
@@ -39,7 +38,7 @@ public class HttRes301 implements HttResponse {
 	}
 
 	@Override
-	public void writeBodyPart(ByteWriter dest) throws Exception {
-		// noop
+	public byte[] getBodyPart() throws Exception {
+		return null;
 	}
 }

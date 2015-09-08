@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.Map;
 
 import charlotte.htt.HttResponse;
-import charlotte.tools.ByteWriter;
 import charlotte.tools.StringTools;
 
 public class HttResHtml implements HttResponse {
@@ -50,7 +49,7 @@ public class HttResHtml implements HttResponse {
 	}
 
 	@Override
-	public void writeBodyPart(ByteWriter dest) throws Exception {
-		dest.add(_htmlText.getBytes(_charset));
+	public byte[] getBodyPart() throws Exception {
+		return _htmlText.getBytes(_charset);
 	}
 }
