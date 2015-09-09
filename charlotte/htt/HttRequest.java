@@ -16,6 +16,7 @@ public class HttRequest {
 	private String _urlString;
 	private String _httpVersion;
 	private Map<String, String> _headerFields;
+	private String _headerPartFile;
 	private String _bodyPartFile;
 
 	public HttRequest(ObjectList rawData) throws Exception {
@@ -39,6 +40,7 @@ public class HttRequest {
 			}
 		}
 
+		_headerPartFile = new String((byte[])rawData.get(c++), StringTools.CHARSET_SJIS);
 		_bodyPartFile = new String((byte[])rawData.get(c++), StringTools.CHARSET_SJIS);
 	}
 
@@ -64,6 +66,14 @@ public class HttRequest {
 
 	public Map<String, String> getHeaderFields() {
 		return _headerFields;
+	}
+
+	public File getHeaderPartFile() {
+		return new File(_headerPartFile);
+	}
+
+	public byte[] getHeaderPart() throws Exception {
+		return FileTools.readAllBytes(_headerPartFile);
 	}
 
 	public File getBodyPartFile() {

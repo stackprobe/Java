@@ -13,8 +13,33 @@ public class WinAPITools {
 	 * そこへのフルパスを返すようにこのメソッドを変更して下さい。
 	 * @return WinAPITools.exe へのフルパス
 	 */
+	private static String real_getWinAPIToolsFile() {
+		{
+			String file = System.getProperty("charlotte.satellite.WIN_API_TOOLS_FILE");
+
+			if(file != null) {
+				return file;
+			}
+		}
+
+		{
+			String httDir = System.getProperty("charlotte.satellite.HTT_DIR");
+
+			if(httDir != null) {
+				return FileTools.combine(httDir, "WinAPITools.exe");
+			}
+		}
+
+		return "C:/Factory/Satellite/extern/WinAPITools.exe";
+	}
+
+	private static String _winAPIToolsFile;
+
 	private static String getWinAPIToolsFile() {
-		return System.getProperty("charlotte.satellite.WIN_API_TOOLS_FILE", "C:/Factory/Satellite/extern/WinAPITools.exe");
+		if(_winAPIToolsFile == null) {
+			_winAPIToolsFile = real_getWinAPIToolsFile();
+		}
+		return _winAPIToolsFile;
 	}
 
 	public static boolean existWinAPIToolsFile() {

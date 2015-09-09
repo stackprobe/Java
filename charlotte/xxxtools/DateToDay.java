@@ -48,7 +48,7 @@ public class DateToDay {
 
 	public static int toDate(int day) {
 		if(day < 0) {
-			return 19000101; // dummy date
+			return 10000101; // dummy date
 		}
 		int y = (day / 146097) * 400 + 1;
 		int m = 1;
@@ -79,7 +79,7 @@ public class DateToDay {
 				m < 1 || 12 < m ||
 				d < 1 || 31 < d
 				) {
-			return 19000101; // dummy date
+			return 10000101; // dummy date
 		}
 
 		return y * 10000 + m * 100 + d;

@@ -3,7 +3,6 @@ package charlotte.tools;
 import java.util.Comparator;
 import java.util.List;
 
-
 public class IntTools {
 	public static byte[] toBytes(int value) {
 		byte[] ret = new byte[4];

@@ -337,8 +337,33 @@ public class PermissionData {
 	public static final int TYPE_USER = 0x32;
 	public static final int TYPE_PRIVATE = 0x33;
 
-	public void setType(int type) {
-		int typePos = _tailBlock.length - 30;
+	private static byte[] hex2bin(String hex) {
+		byte[] ret = new byte[hex.length() / 2];
+
+		for(int index = 0; index < ret.length; index++) {
+			ret[index] = (byte)Integer.parseInt(hex.substring(index * 2, (index + 1) * 2), 16);
+		}
+		return ret;
+	}
+
+	private static final byte[] PRE_TYPE_PTN = hex2bin("EC61D961EB6101");
+
+	private int getTypePos() {
+		for(int index = 0; ; index++) {
+			int c;
+			for(c = 0; c < PRE_TYPE_PTN.length; c++) {
+				if(_tailBlock[index + c] != PRE_TYPE_PTN[c]) {
+					break;
+				}
+			}
+			if(c == PRE_TYPE_PTN.length) {
+				return index + PRE_TYPE_PTN.length;
+			}
+		}
+	}
+
+	public void setType(int type) throws Exception {
+		int typePos = getTypePos();
 		_tailBlock[typePos] = (byte)type;
 	}
 
