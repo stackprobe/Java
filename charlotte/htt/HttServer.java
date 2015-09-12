@@ -1,7 +1,9 @@
 package charlotte.htt;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import charlotte.flowertact.Fortewave;
@@ -17,7 +19,6 @@ public class HttServer {
 	private static final String HTT_SERVICE_ID = COMMON_ID + "_hs";
 
 	private static final byte[] EMPTY = new byte[0];
-	private static final byte[] COMMAND_CLEAR = new byte[] { 0x43 };
 	private static final byte[] COMMAND_RESPONSE = new byte[] { 0x52 };
 	private static final byte[] COMMAND_ERROR = new byte[] { 0x45 };
 
@@ -35,7 +36,6 @@ public class HttServer {
 			try {
 				_pipeline = new Fortewave(HTT_SERVICE_ID, HTT_ID);
 				_pipeline.clear();
-				_pipeline.send(new ObjectList(COMMAND_CLEAR));
 
 				while(service.interlude()) {
 					Object recvData = _pipeline.recv(2000);
@@ -57,13 +57,26 @@ public class HttServer {
 
 								res.writeHeaderFields(headerFields);
 
-								ol.add(("" + headerFields.keySet().size()).getBytes(StringTools.CHARSET_ASCII));
+								List<String> lines = new ArrayList<String>();
 
 								for(String key : headerFields.keySet()) {
 									String value = headerFields.get(key);
 
-									ol.add(key.getBytes(StringTools.CHARSET_ASCII));
-									ol.add(value.getBytes(StringTools.CHARSET_ASCII));
+									for(String colo_value : StringTools.tokenize(value, ":")) {
+										String colo_key = key;
+
+										for(String line_value : StringTools.tokenize(colo_value, "\n")) {
+											lines.add(colo_key);
+											lines.add(line_value);
+
+											colo_key = "";
+										}
+									}
+								}
+								ol.add(("" + (lines.size() / 2)).getBytes(StringTools.CHARSET_ASCII));
+
+								for(String line : lines) {
+									ol.add(line.getBytes(StringTools.CHARSET_ASCII));
 								}
 							}
 
@@ -104,7 +117,6 @@ public class HttServer {
 			finally {
 				if(_pipeline != null) {
 					_pipeline.clear();
-					_pipeline.send(new ObjectList(COMMAND_CLEAR));
 					_pipeline.close();
 					_pipeline = null;
 				}
