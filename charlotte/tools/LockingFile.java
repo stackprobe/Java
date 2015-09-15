@@ -38,7 +38,7 @@ public class LockingFile {
 	 * ロックする。
 	 * @return ? ロックに成功した || 既にロックしている
 	 */
-	public boolean tryOpen() {
+	private boolean tryOpen() {
 		try {
 			if(_fos != null) {
 				return true; // already locking

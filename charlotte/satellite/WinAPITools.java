@@ -6,27 +6,38 @@ import charlotte.tools.StringTools;
 public class WinAPITools {
 	public static final long INFINITE = 0xffffffffL;
 
-	/**
-	 * WinAPITools.exe は http://stackprobe.dip.jp/_kit/Factory から取得して下さい。
-	 * 必要なファイルは <Factory.zip>/Satellite/extern/WinAPITools.exe だけです。
-	 * Factory.zip から WinAPITools.exe を取り出して任意の場所に置き、
-	 * そこへのフルパスを返すようにこのメソッドを変更して下さい。
-	 * @return WinAPITools.exe へのフルパス
-	 */
-	private static String getWinAPIToolsFile() {
-		return winAPIToolsFile;
-	}
+	private static String _winAPIToolsFile;
 
-	public static String winAPIToolsFile = "C:/Factory/Satellite/extern/WinAPITools.exe";
+	private static synchronized String getWinAPIToolsFile() throws Exception {
+		if(_winAPIToolsFile == null) {
+			String file1 = FileTools.makeTempPath(StringTools.getUUID() + "_WinAPITools.exe");
+			String file2 = FileTools.makeTempPath(StringTools.getUUID() + "_WinAPITools.exe_");
+			String file3 = FileTools.combine(
+					FileTools.makeTempPath("{b46c0dfc-6df3-45e3-9b78-38e3b4f2cd9b}"),
+					"WinAPITools.exe"
+					);
+			byte[] fileData = FileTools.readToEnd(WinAPITools.class.getResource("res/WinAPITools.exe"));
 
-	public static boolean existWinAPIToolsFile() {
-		return FileTools.exists(getWinAPIToolsFile());
+			FileTools.writeAllBytes(file1, fileData);
+			FileTools.writeAllBytes(file2, fileData);
+
+			{
+				String command = "\"" + file1 + "\" /EXTRACT \"" + file2 + "\" \"" + file3 + "\" ;";
+				//System.out.println(command); // test
+				Runtime.getRuntime().exec(command).waitFor();
+			}
+
+			FileTools.delete(file1);
+			//FileTools.delete(file2);
+			_winAPIToolsFile = file3;
+		}
+		return _winAPIToolsFile;
 	}
 
 	private static void go(String args) {
 		try {
 			String command = "\"" + getWinAPIToolsFile() + "\" " + args;
-			//System.out.println("command: " + command); // test
+			//System.out.println(command); // test
 			Runtime.getRuntime().exec(command).waitFor();
 		}
 		catch(Throwable e) {

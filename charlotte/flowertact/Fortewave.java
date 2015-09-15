@@ -61,6 +61,14 @@ public class Fortewave {
 		return recvObj;
 	}
 
+	public synchronized void pulse() throws Exception {
+		if(_rPob == null) {
+			throw new Exception("already closed");
+		}
+		_rPob.pulse();
+		_wPob.pulse();
+	}
+
 	public synchronized void close() {
 		if(_rPob != null) {
 			_rPob.close();

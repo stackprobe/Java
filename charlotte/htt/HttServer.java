@@ -9,7 +9,6 @@ import java.util.Map;
 import charlotte.flowertact.Fortewave;
 import charlotte.satellite.MutexObject;
 import charlotte.satellite.ObjectList;
-import charlotte.satellite.WinAPITools;
 import charlotte.tools.StringTools;
 
 public class HttServer {
@@ -29,9 +28,6 @@ public class HttServer {
 		if(service == null) {
 			throw new NullPointerException("service is null");
 		}
-		if(WinAPITools.existWinAPIToolsFile() == false) {
-			throw new Exception("WinAPITools.exe is not exist");
-		}
 		if(_mutex.waitOne(0)) {
 			try {
 				_pipeline = new Fortewave(HTT_SERVICE_ID, HTT_ID);
@@ -41,7 +37,7 @@ public class HttServer {
 					Object recvData = _pipeline.recv(2000);
 
 					if(recvData != null) {
-						HttResponse res = service.service(new HttRequest((ObjectList)recvData));
+						HttResponse res = service.service(new HttRequest((ObjectList)recvData, _pipeline));
 
 						try {
 							ObjectList ol = new ObjectList();

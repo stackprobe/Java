@@ -22,9 +22,6 @@ public class Satellizer {
 		if(_inited) {
 			return;
 		}
-		if(WinAPITools.existWinAPIToolsFile() == false) {
-			throw new Exception("WinAPITools.exe is not exist");
-		}
 		_inited = true;
 	}
 

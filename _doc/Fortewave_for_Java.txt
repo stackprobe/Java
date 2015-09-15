@@ -40,6 +40,7 @@ Fortewave for Java
 
 	charlotte.flowertact
 	charlotte.satellite
+	charlotte.satellite.res
 	charlotte.tools
 
 
@@ -47,11 +48,6 @@ Fortewave for Java
 ------------
 
 	1. 「必要なパッケージ」をソース（プロジェクト）に組み込む
-
-	2. charlotte.satellite.WinAPITools.getWinAPIToolsFile メソッドのコメントに従って以下を行う。
-
-		a. WinAPITools.exe の配置
-		b. 必要であれば、このメソッドの戻り値を変更する。
 
 
 使用するクラス

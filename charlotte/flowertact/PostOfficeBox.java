@@ -130,6 +130,10 @@ public class PostOfficeBox {
 		_firstNo = 0;
 	}
 
+	public void pulse() {
+		_messagePostEvent.set();
+	}
+
 	public void close() {
 		_messagePostEvent.close();
 	}

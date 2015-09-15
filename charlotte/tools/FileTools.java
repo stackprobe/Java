@@ -90,6 +90,10 @@ public class FileTools {
 		return FileTools.combine(_tmpDir, StringTools.getUUID());
 	}
 
+	public static String makeTempPath(String ident) {
+		return FileTools.combine(_tmpDir, ident);
+	}
+
 	public static final String _tmpDir = System.getProperty("java.io.tmpdir", "C:/temp/");
 
 	public static String combine(String path1, String path2) {

@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import charlotte.flowertact.Fortewave;
 import charlotte.satellite.ObjectList;
 import charlotte.tools.FileTools;
 import charlotte.tools.StringTools;
@@ -18,8 +19,9 @@ public class HttRequest {
 	private Map<String, String> _headerFields;
 	private String _headerPartFile;
 	private String _bodyPartFile;
+	private Fortewave _pipeline;
 
-	public HttRequest(ObjectList rawData) throws Exception {
+	public HttRequest(ObjectList rawData, Fortewave pipeline) throws Exception {
 		int c = 1;
 
 		_clientIPAddress = new String((byte[])rawData.get(c++), StringTools.CHARSET_ASCII);
@@ -42,6 +44,8 @@ public class HttRequest {
 
 		_headerPartFile = new String((byte[])rawData.get(c++), StringTools.CHARSET_SJIS);
 		_bodyPartFile = new String((byte[])rawData.get(c++), StringTools.CHARSET_SJIS);
+
+		_pipeline = pipeline;
 	}
 
 	public String getClientIPAddress() {
@@ -82,5 +86,14 @@ public class HttRequest {
 
 	public byte[] getBodyPart() throws Exception {
 		return FileTools.readAllBytes(_bodyPartFile);
+	}
+
+	public void pulse() {
+		try {
+			_pipeline.pulse();
+		}
+		catch(Throwable e) {
+			e.printStackTrace();
+		}
 	}
 }
