@@ -16,7 +16,7 @@ public class WinAPITools {
 					FileTools.makeTempPath("{b46c0dfc-6df3-45e3-9b78-38e3b4f2cd9b}"),
 					"WinAPITools.exe"
 					);
-			byte[] fileData = FileTools.readToEnd(WinAPITools.class.getResource("res/WinAPITools.exe"));
+			byte[] fileData = FileTools.readToEnd(WinAPITools.class.getResource("res/WinAPITools.exe_"));
 
 			FileTools.writeAllBytes(file1, fileData);
 			FileTools.writeAllBytes(file2, fileData);
