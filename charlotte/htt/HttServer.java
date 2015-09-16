@@ -31,7 +31,6 @@ public class HttServer {
 		if(_mutex.waitOne(0)) {
 			try {
 				_pipeline = new Fortewave(HTT_SERVICE_ID, HTT_ID);
-				_pipeline.clear();
 
 				while(service.interlude()) {
 					Object recvData = _pipeline.recv(2000);
@@ -112,7 +111,6 @@ public class HttServer {
 			}
 			finally {
 				if(_pipeline != null) {
-					_pipeline.clear();
 					_pipeline.close();
 					_pipeline = null;
 				}
