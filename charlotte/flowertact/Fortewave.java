@@ -5,8 +5,10 @@ import charlotte.satellite.Serializer;
 import charlotte.satellite.WinAPITools;
 
 public class Fortewave {
-	private PostOfficeBox _rPob; // closed 確認用
-	private PostOfficeBox _wPob;
+	protected String _rIdent;
+	protected String _wIdent;
+	protected PostOfficeBox _rPob; // closed 確認用
+	protected PostOfficeBox _wPob;
 
 	public Fortewave(String ident) throws Exception {
 		this(ident, ident);
@@ -19,8 +21,15 @@ public class Fortewave {
 		if(wIdent == null) {
 			throw new NullPointerException("wIdent");
 		}
-		_rPob = new PostOfficeBox(rIdent);
-		_wPob = new PostOfficeBox(wIdent);
+		_rIdent = rIdent;
+		_wIdent = wIdent;
+
+		init();
+	}
+
+	protected void init() throws Exception {
+		_rPob = new PostOfficeBox(_rIdent);
+		_wPob = new PostOfficeBox(_wIdent);
 	}
 
 	public synchronized void clear() throws Exception {

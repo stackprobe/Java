@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import charlotte.flowertact.BlueFortewave;
 import charlotte.flowertact.Fortewave;
 import charlotte.satellite.MutexObject;
 import charlotte.satellite.ObjectList;
@@ -30,7 +31,7 @@ public class HttServer {
 		}
 		if(_mutex.waitOne(0)) {
 			try {
-				_pipeline = new Fortewave(HTT_SERVICE_ID, HTT_ID);
+				_pipeline = new BlueFortewave(HTT_SERVICE_ID, HTT_ID);
 
 				while(service.interlude()) {
 					Object recvData = _pipeline.recv(2000);

@@ -20,6 +20,10 @@ public class SecurityTools {
 		return getSHA512String(str.getBytes(charset));
 	}
 
+	public static String getSHA512_128String(byte[] block) throws Exception {
+		return getSHA512String(block).substring(0, 32);
+	}
+
 	public static String getSHA512String(byte[] block) throws Exception {
 		MessageDigest md = MessageDigest.getInstance("SHA-512");
 		md.update(block);

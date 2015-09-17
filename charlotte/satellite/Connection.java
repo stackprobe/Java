@@ -79,6 +79,11 @@ public class Connection {
 				return true;
 			}
 			FileTools.delete(pidFile);
+
+			if(_listenFlag) {
+				String listenFile = FileTools.combine(_sessionDir, "_listen");
+				FileTools.delete(listenFile);
+			}
 			FileTools.tryDeleteDir(_sessionDir);
 			FileTools.tryDeleteDir(_identDir);
 			FileTools.tryDeleteDir(_groupDir);

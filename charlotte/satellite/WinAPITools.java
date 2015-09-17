@@ -1,6 +1,8 @@
 package charlotte.satellite;
 
 import charlotte.tools.FileTools;
+import charlotte.tools.QueueData;
+import charlotte.tools.SecurityTools;
 import charlotte.tools.StringTools;
 
 public class WinAPITools {
@@ -12,23 +14,27 @@ public class WinAPITools {
 		if(_winAPIToolsFile == null) {
 			String file1 = FileTools.makeTempPath(StringTools.getUUID() + "_WinAPITools.exe");
 			String file2 = FileTools.makeTempPath(StringTools.getUUID() + "_WinAPITools.exe_");
+			byte[] fileData = FileTools.readToEnd(WinAPITools.class.getResource("res/WinAPITools.exe_"));
+			String fileHash = SecurityTools.getSHA512_128String(fileData);
 			String file3 = FileTools.combine(
-					FileTools.makeTempPath("{b46c0dfc-6df3-45e3-9b78-38e3b4f2cd9b}"),
+					FileTools.combine(
+							FileTools.makeTempPath("{b46c0dfc-6df3-45e3-9b78-38e3b4f2cd9b}"),
+							fileHash
+							),
 					"WinAPITools.exe"
 					);
-			byte[] fileData = FileTools.readToEnd(WinAPITools.class.getResource("res/WinAPITools.exe_"));
 
 			FileTools.writeAllBytes(file1, fileData);
 			FileTools.writeAllBytes(file2, fileData);
 
 			{
-				String command = "\"" + file1 + "\" /EXTRACT \"" + file2 + "\" \"" + file3 + "\" ;";
+				String command = "\"" + file1 + "\" /EXTRACT \"" + file2 + "\" \"" + file3 + "\"";
 				//System.out.println(command); // test
 				Runtime.getRuntime().exec(command).waitFor();
 			}
 
 			FileTools.delete(file1);
-			//FileTools.delete(file2);
+			FileTools.delete(file2); // 無いこともある。
 			_winAPIToolsFile = file3;
 		}
 		return _winAPIToolsFile;
@@ -98,5 +104,35 @@ public class WinAPITools {
 		finally {
 			FileTools.delete(trueFile); // 無いこともある。
 		}
+	}
+
+	public static void sendToFortewave(String identHash, QueueData<byte[]> sq) throws Exception {
+		String dir = FileTools.makeTempPath();
+		FileTools.mkdir(dir);
+
+		for(int index = 0; 1 <= sq.size(); index++) {
+			FileTools.writeAllBytes(
+					FileTools.combine(dir, StringTools.zPad(index, 4)),
+					sq.poll()
+					);
+		}
+		go("/SEND-TO-FORTEWAVE " + identHash + " \"" + dir + "\"");
+	}
+
+	public static void recvFromFortewave(String identHash, QueueData<byte[]> rq, long millis, int recvLimit) throws Exception {
+		String dir = FileTools.makeTempPath();
+		FileTools.mkdir(dir);
+		go("/RECV-FROM-FORTEWAVE " + identHash + " \"" + dir + "\" " + millis + " " + recvLimit);
+
+		for(int index = 0; ; index++) {
+			String file = FileTools.combine(dir, StringTools.zPad(index, 4));
+
+			if(FileTools.exists(file) == false) {
+				break;
+			}
+			rq.add(FileTools.readAllBytes(file));
+			FileTools.delete(file);
+		}
+		FileTools.delete(dir);
 	}
 }
