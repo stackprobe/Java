@@ -17,8 +17,8 @@ public class FortewaveTest {
 
 			//test01_Client();
 			//test01_Server();
-			//test01();
-			test02();
+			test01();
+			//test02();
 
 			System.out.println("OK!");
 		}

@@ -11,7 +11,7 @@ import charlotte.tools.StringTools;
 import charlotte.tools.SystemTools;
 
 public class Connection {
-	private final static String COMMON_ID = "{f5f0b66c-3aa9-48ef-a924-9918f1c69b7a}"; // shared_uuid:2
+	private final static String COMMON_ID = "{f5f0b66c-3aa9-48ef-a924-9918f1c69b7a}"; // shared_uuid:3
 	private String _group;
 	private String _ident;
 	private String _session;

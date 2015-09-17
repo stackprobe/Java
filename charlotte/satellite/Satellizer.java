@@ -1,7 +1,7 @@
 package charlotte.satellite;
 
 public class Satellizer {
-	private static final String COMMON_ID = "{cb88beb3-4661-4399-98a8-a5dff3654347}"; // shared_uuid:2
+	private static final String COMMON_ID = "{cb88beb3-4661-4399-98a8-a5dff3654347}"; // shared_uuid:3
 	private Connection _conn;
 	private boolean _connected;
 
