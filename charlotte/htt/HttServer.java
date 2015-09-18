@@ -10,6 +10,7 @@ import charlotte.flowertact.BlueFortewave;
 import charlotte.flowertact.Fortewave;
 import charlotte.satellite.MutexObject;
 import charlotte.satellite.ObjectList;
+import charlotte.tools.FileTools;
 import charlotte.tools.StringTools;
 
 public class HttServer {
@@ -37,9 +38,11 @@ public class HttServer {
 					Object recvData = _pipeline.recv(2000);
 
 					if(recvData != null) {
-						HttResponse res = service.service(new HttRequest((ObjectList)recvData, _pipeline));
+						HttRequest req = new HttRequest((ObjectList)recvData, _pipeline);
 
 						try {
+							HttResponse res = service.service(req);
+
 							ObjectList ol = new ObjectList();
 
 							ol.add(COMMAND_RESPONSE);
@@ -106,6 +109,10 @@ public class HttServer {
 									COMMAND_ERROR,
 									((ObjectList)recvData).get(0)
 									));
+						}
+						finally {
+							FileTools.del(req.getHeaderPartFile());
+							FileTools.del(req.getBodyPartFile());
 						}
 					}
 				}

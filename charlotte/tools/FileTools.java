@@ -114,6 +114,19 @@ public class FileTools {
 		new File(path).delete();
 	}
 
+	public static void del(String path) {
+		del(new File(path));
+	}
+
+	public static void del(File f) {
+		try {
+			f.delete();
+		}
+		catch(Throwable e) {
+			e.printStackTrace();
+		}
+	}
+
 	public static boolean exists(String path) {
 		return new File(path).exists();
 	}
