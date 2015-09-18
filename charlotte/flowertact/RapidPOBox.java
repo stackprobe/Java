@@ -19,6 +19,7 @@ public class RapidPOBox extends PostOfficeBox {
 
 	/**
 	 * 非同期で送信するため、本メソッドが終了した時点で未送信・送信中である可能性がある。
+	 * クラス解放時 _sq に残っているデータは破棄される。
 	 */
 	@Override
 	public void send(byte[] sendData) throws Exception {
@@ -56,6 +57,9 @@ public class RapidPOBox extends PostOfficeBox {
 		}
 	}
 
+	/**
+	 * クラス解放時 _rq に残っているデータは破棄される。
+	 */
 	@Override
 	public byte[] recv(long millis) throws Exception {
 		if(_rq.size() == 0) {
