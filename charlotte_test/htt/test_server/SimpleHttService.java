@@ -20,8 +20,6 @@ public class SimpleHttService implements HttService {
 	public HttResponse service(HttRequest req) throws Exception {
 		StringBuffer buff = new StringBuffer();
 
-		System.out.println("1");
-
 		buff.append("<html>");
 		buff.append("<body>");
 		buff.append("<h1>リクエストの内容はイカのとおりです。</h1>");
