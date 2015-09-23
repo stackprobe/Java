@@ -110,7 +110,7 @@ public class WinAPITools {
 		String dir = FileTools.makeTempPath();
 		FileTools.mkdir(dir);
 
-		System.out.println("stf: " + sq.size()); // test
+		//System.out.println("STF_" + sq.size()); // test
 
 		for(int index = 0; 1 <= sq.size(); index++) {
 			FileTools.writeAllBytes(
@@ -137,6 +137,6 @@ public class WinAPITools {
 		}
 		FileTools.delete(dir);
 
-		System.out.println("rff: " + rq.size()); // test
+		//System.out.println("RFF_" + rq.size()); // test
 	}
 }
