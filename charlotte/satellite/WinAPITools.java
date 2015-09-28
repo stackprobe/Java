@@ -4,11 +4,13 @@ import charlotte.tools.FileTools;
 import charlotte.tools.QueueData;
 import charlotte.tools.SecurityTools;
 import charlotte.tools.StringTools;
+import charlotte.tools.SystemTools;
 
 public class WinAPITools {
 	public static final long INFINITE = 0xffffffffL;
 
 	private static String _winAPIToolsFile;
+	private static String _monitorName;
 
 	private static synchronized String getWinAPIToolsFile() throws Exception {
 		if(_winAPIToolsFile == null) {
@@ -36,6 +38,28 @@ public class WinAPITools {
 			FileTools.delete(file1);
 			FileTools.delete(file2); // 無いこともある。
 			_winAPIToolsFile = file3;
+			_monitorName = StringTools.getUUID();
+
+			Runtime.getRuntime().exec("\"" + _winAPIToolsFile + "\" /MONITOR " + SystemTools.PID + " " + _monitorName);
+
+			{
+				String trueFile = FileTools.makeTempPath();
+				int millis = 1;
+
+				for(; ; ) {
+					Runtime.getRuntime().exec(
+							"\"" + _winAPIToolsFile + "\" /CHECK-MUTEX-LOCKED " + _monitorName + " \"" + trueFile + "\""
+							)
+							.waitFor();
+
+					if(FileTools.exists(trueFile)) {
+						break;
+					}
+					Thread.sleep(millis);
+					millis = Math.min(millis + 1, 2000);
+				}
+				FileTools.delete(trueFile);
+			}
 		}
 		return _winAPIToolsFile;
 	}
@@ -51,20 +75,20 @@ public class WinAPITools {
 		}
 	}
 
-	public static void mutexWaitOne(String targetName, long millis, String beganName, String wObj0File, String endName, int parentPID) {
-		go("/MUTEX-WAIT-ONE " + targetName + " " + millis + " " + beganName + " \"" + wObj0File + "\" " + endName + " " + parentPID);
+	public static void mutexWaitOne(String targetName, long millis, String beganName, String wObj0File, String endName) {
+		go("/MUTEX-WAIT-ONE " + targetName + " " + millis + " " + beganName + " \"" + wObj0File + "\" " + endName + " " + _monitorName);
 	}
 
-	public static void eventCreate(String targetName, String beganName, String endName, int parentPID) {
-		go("/EVENT-CREATE " + targetName + " " + beganName + " " + endName + " " + parentPID);
+	public static void eventCreate(String targetName, String beganName, String endName) {
+		go("/EVENT-CREATE " + targetName + " " + beganName + " " + endName + " " + _monitorName);
 	}
 
 	public static void eventSet(String targetName) {
 		go("/EVENT-SET " + targetName);
 	}
 
-	public static void eventWaitOne(String targetName, long millis, int parentPID) {
-		go("/EVENT-WAIT-ONE " + targetName + " " + millis + " " + parentPID);
+	public static void eventWaitOne(String targetName, long millis) {
+		go("/EVENT-WAIT-ONE " + targetName + " " + millis + " " + _monitorName);
 	}
 
 	public static String getEnv(String name, String defval) throws Exception {
@@ -86,8 +110,8 @@ public class WinAPITools {
 		return value;
 	}
 
-	public static void deadAndRemove(String beganName, String deadName, String mtxName, String targetPath, int parentPID) {
-		go("/DEAD-AND-REMOVE " + beganName + " " + deadName + " " + mtxName + " \"" + targetPath + "\" " + parentPID);
+	public static void deadAndRemove(String beganName, String deadName, String mtxName, String targetPath) {
+		go("/DEAD-AND-REMOVE " + beganName + " " + deadName + " " + mtxName + " \"" + targetPath + "\" " + _monitorName);
 	}
 
 	public static void deleteDelayUntilReboot(String targetPath) {

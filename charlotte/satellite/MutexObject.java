@@ -2,7 +2,6 @@ package charlotte.satellite;
 
 import charlotte.tools.FileTools;
 import charlotte.tools.StringTools;
-import charlotte.tools.SystemTools;
 import charlotte.tools.ThreadTools;
 
 public class MutexObject {
@@ -32,12 +31,12 @@ public class MutexObject {
 		_th = new Thread() {
 			@Override
 			public void run() {
-				WinAPITools.mutexWaitOne(_targetName, millis, _beganName, _wObj0File, _endName, SystemTools.PID);
+				WinAPITools.mutexWaitOne(_targetName, millis, _beganName, _wObj0File, _endName);
 			}
 		};
 		_th.start();
 
-		WinAPITools.eventWaitOne(_beganName, WinAPITools.INFINITE, SystemTools.PID);
+		WinAPITools.eventWaitOne(_beganName, WinAPITools.INFINITE);
 
 		if(FileTools.exists(_wObj0File)) {
 			FileTools.delete(_wObj0File);

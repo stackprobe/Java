@@ -1,7 +1,6 @@
 package charlotte.satellite;
 
 import charlotte.tools.StringTools;
-import charlotte.tools.SystemTools;
 import charlotte.tools.ThreadTools;
 
 public class NamedEventObject {
@@ -22,12 +21,12 @@ public class NamedEventObject {
 		_th = new Thread() {
 			@Override
 			public void run() {
-				WinAPITools.eventCreate(_targetName, _beganName, _endName, SystemTools.PID);
+				WinAPITools.eventCreate(_targetName, _beganName, _endName);
 			}
 		};
 		_th.start();
 
-		WinAPITools.eventWaitOne(_beganName, WinAPITools.INFINITE, SystemTools.PID);
+		WinAPITools.eventWaitOne(_beganName, WinAPITools.INFINITE);
 	}
 
 	public void set() {
@@ -35,7 +34,7 @@ public class NamedEventObject {
 	}
 
 	public void waitOne(long millis) {
-		WinAPITools.eventWaitOne(_targetName, millis, SystemTools.PID);
+		WinAPITools.eventWaitOne(_targetName, millis);
 	}
 
 	public void close() {

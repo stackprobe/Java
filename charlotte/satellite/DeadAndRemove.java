@@ -1,7 +1,6 @@
 package charlotte.satellite;
 
 import charlotte.tools.StringTools;
-import charlotte.tools.SystemTools;
 
 public class DeadAndRemove {
 	private String _beganName;
@@ -19,12 +18,12 @@ public class DeadAndRemove {
 		_th = new Thread(){
 			@Override
 			public void run() {
-				WinAPITools.deadAndRemove(_beganName, _deadName, _mtxName, _targetPath, SystemTools.PID);
+				WinAPITools.deadAndRemove(_beganName, _deadName, _mtxName, _targetPath);
 			}
 		};
 		_th.start();
 
-		WinAPITools.eventWaitOne(_beganName, WinAPITools.INFINITE, SystemTools.PID);
+		WinAPITools.eventWaitOne(_beganName, WinAPITools.INFINITE);
 	}
 
 	public void dead() throws Exception {

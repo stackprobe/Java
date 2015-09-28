@@ -4,11 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import charlotte.tools.FileTools;
-import charlotte.tools.IntTools;
 import charlotte.tools.QueueData;
 import charlotte.tools.SecurityTools;
 import charlotte.tools.StringTools;
-import charlotte.tools.SystemTools;
 
 public class Connection {
 	private final static String COMMON_ID = "{f5f0b66c-3aa9-48ef-a924-9918f1c69b7a}"; // shared_uuid:3
@@ -28,8 +26,8 @@ public class Connection {
 	private String _otherSessionDir;
 	private NamedEventObject _otherEvent;
 	private String _firstTimeFile;
-	private MutexObject _procAliveMutex;
-	private MutexObject _otherProcAliveMutex;
+	private MutexObject _sessionAliveMutex;
+	private MutexObject _otherSessionAliveMutex;
 
 	public Connection(String group, String ident) throws Exception {
 		_group = SecurityTools.getSHA512_128String(group);
@@ -42,8 +40,8 @@ public class Connection {
 		_mutex = new MutexObject(COMMON_ID);
 		_event = new NamedEventObject(_session);
 		_firstTimeFile = _commonDir + "_1";
-		_procAliveMutex = new MutexObject(_session + "_PA");
-		_procAliveMutex.waitOne(WinAPITools.INFINITE);
+		_sessionAliveMutex = new MutexObject(_session + "_SA");
+		_sessionAliveMutex.waitOne(WinAPITools.INFINITE);
 	}
 
 	public boolean _listenFlag;
@@ -63,8 +61,8 @@ public class Connection {
 			FileTools.mkdir(_sessionDir);
 			_dar = new DeadAndRemove(COMMON_ID, _sessionDir);
 
-			String pidFile = FileTools.combine(_sessionDir, "_PID");
-			FileTools.writeAllBytes(pidFile, IntTools.toBytes(SystemTools.PID));
+			//String pidFile = FileTools.combine(_sessionDir, "_PID");
+			//FileTools.writeAllBytes(pidFile, IntTools.toBytes(SystemTools.PID));
 
 			if(_listenFlag) {
 				String listenFile = FileTools.combine(_sessionDir, "_listen");
@@ -82,7 +80,7 @@ public class Connection {
 			if(tryConnect()) {
 				return true;
 			}
-			FileTools.delete(pidFile);
+			//FileTools.delete(pidFile);
 
 			if(_listenFlag) {
 				String listenFile = FileTools.combine(_sessionDir, "_listen");
@@ -117,7 +115,7 @@ public class Connection {
 				_otherSession = tokens.get(c++);
 				_otherSessionDir = tokens.get(c++);
 				_otherEvent = new NamedEventObject(_otherSession);
-				_otherProcAliveMutex = new MutexObject(_otherSession + "_PA");
+				_otherSessionAliveMutex = new MutexObject(_otherSession + "_SA");
 
 				return true;
 			}
@@ -179,7 +177,7 @@ public class Connection {
 			if(FileTools.exists(connectFile)) {
 				continue;
 			}
-			_otherProcAliveMutex = new MutexObject(otherSession + "_PA");
+			_otherSessionAliveMutex = new MutexObject(otherSession + "_SA");
 
 			if(checkDisconnected(otherSessionDir)) {
 				continue;
@@ -295,8 +293,8 @@ public class Connection {
 	}
 
 	private boolean cd_isDisconnected(String otherSessionDir) throws Exception {
-		if(_otherProcAliveMutex.waitOne(0)) {
-			_otherProcAliveMutex.release();
+		if(_otherSessionAliveMutex.waitOne(0)) {
+			_otherSessionAliveMutex.release();
 			return true;
 		}
 
@@ -337,6 +335,6 @@ public class Connection {
 
 	public void close() {
 		_event.close();
-		_procAliveMutex.release();
+		_sessionAliveMutex.release();
 	}
 }
