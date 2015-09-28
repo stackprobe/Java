@@ -44,7 +44,7 @@ public class RapidPOBox extends PostOfficeBox {
 									eSq =_sq;
 									_sq = new QueueData<byte[]>();
 								}
-								WinAPITools.sendToFortewave(_identHash, eSq);
+								WinAPITools.i().sendToFortewave(_identHash, eSq);
 							}
 						}
 						catch(Throwable e) {
@@ -63,7 +63,7 @@ public class RapidPOBox extends PostOfficeBox {
 	@Override
 	public byte[] recv(long millis) throws Exception {
 		if(_rq.size() == 0) {
-			WinAPITools.recvFromFortewave(_identHash, _rq, millis, 100);
+			WinAPITools.i().recvFromFortewave(_identHash, _rq, millis, 100);
 		}
 		return _rq.poll();
 	}

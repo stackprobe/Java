@@ -31,12 +31,12 @@ public class MutexObject {
 		_th = new Thread() {
 			@Override
 			public void run() {
-				WinAPITools.mutexWaitOne(_targetName, millis, _beganName, _wObj0File, _endName);
+				WinAPITools.i().mutexWaitOne(_targetName, millis, _beganName, _wObj0File, _endName);
 			}
 		};
 		_th.start();
 
-		WinAPITools.eventWaitOne(_beganName, WinAPITools.INFINITE);
+		WinAPITools.i().eventWaitOne(_beganName, WinAPITools.INFINITE);
 
 		if(FileTools.exists(_wObj0File)) {
 			FileTools.delete(_wObj0File);
@@ -51,7 +51,7 @@ public class MutexObject {
 	public void release() {
 		//System.out.println("R"); // test
 
-		WinAPITools.eventSet(_endName);
+		WinAPITools.i().eventSet(_endName);
 		ThreadTools.join(_th);
 		_th = null;
 	}

@@ -18,16 +18,16 @@ public class DeadAndRemove {
 		_th = new Thread(){
 			@Override
 			public void run() {
-				WinAPITools.deadAndRemove(_beganName, _deadName, _mtxName, _targetPath);
+				WinAPITools.i().deadAndRemove(_beganName, _deadName, _mtxName, _targetPath);
 			}
 		};
 		_th.start();
 
-		WinAPITools.eventWaitOne(_beganName, WinAPITools.INFINITE);
+		WinAPITools.i().eventWaitOne(_beganName, WinAPITools.INFINITE);
 	}
 
 	public void dead() throws Exception {
-		WinAPITools.eventSet(_deadName);
+		WinAPITools.i().eventSet(_deadName);
 		_th.join();
 	}
 }

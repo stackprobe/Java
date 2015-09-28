@@ -26,8 +26,8 @@ public class Connection {
 	private String _otherSessionDir;
 	private NamedEventObject _otherEvent;
 	private String _firstTimeFile;
-	private MutexObject _sessionAliveMutex;
-	private MutexObject _otherSessionAliveMutex;
+	private MutexObject _procAliveMutex;
+	private MutexObject _otherProcAliveMutex;
 
 	public Connection(String group, String ident) throws Exception {
 		_group = SecurityTools.getSHA512_128String(group);
@@ -40,8 +40,8 @@ public class Connection {
 		_mutex = new MutexObject(COMMON_ID);
 		_event = new NamedEventObject(_session);
 		_firstTimeFile = _commonDir + "_1";
-		_sessionAliveMutex = new MutexObject(_session + "_SA");
-		_sessionAliveMutex.waitOne(WinAPITools.INFINITE);
+		_procAliveMutex = new MutexObject(_session + "_PA");
+		_procAliveMutex.waitOne(WinAPITools.INFINITE);
 	}
 
 	public boolean _listenFlag;
@@ -53,7 +53,7 @@ public class Connection {
 			if(FileTools.exists(_firstTimeFile) == false) {
 				FileTools.remove(_commonDir);
 				FileTools.createFile(_firstTimeFile);
-				WinAPITools.deleteDelayUntilReboot(_firstTimeFile);
+				WinAPITools.i().deleteDelayUntilReboot(_firstTimeFile);
 			}
 			FileTools.mkdir(_commonDir);
 			FileTools.mkdir(_groupDir);
@@ -115,7 +115,7 @@ public class Connection {
 				_otherSession = tokens.get(c++);
 				_otherSessionDir = tokens.get(c++);
 				_otherEvent = new NamedEventObject(_otherSession);
-				_otherSessionAliveMutex = new MutexObject(_otherSession + "_SA");
+				_otherProcAliveMutex = new MutexObject(_otherSession + "_PA");
 
 				return true;
 			}
@@ -177,7 +177,7 @@ public class Connection {
 			if(FileTools.exists(connectFile)) {
 				continue;
 			}
-			_otherSessionAliveMutex = new MutexObject(otherSession + "_SA");
+			_otherProcAliveMutex = new MutexObject(otherSession + "_PA");
 
 			if(checkDisconnected(otherSessionDir)) {
 				continue;
@@ -293,8 +293,8 @@ public class Connection {
 	}
 
 	private boolean cd_isDisconnected(String otherSessionDir) throws Exception {
-		if(_otherSessionAliveMutex.waitOne(0)) {
-			_otherSessionAliveMutex.release();
+		if(_otherProcAliveMutex.waitOne(0)) {
+			_otherProcAliveMutex.release();
 			return true;
 		}
 
@@ -335,6 +335,6 @@ public class Connection {
 
 	public void close() {
 		_event.close();
-		_sessionAliveMutex.release();
+		_procAliveMutex.release();
 	}
 }

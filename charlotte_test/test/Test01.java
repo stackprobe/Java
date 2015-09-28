@@ -9,7 +9,7 @@ import charlotte.satellite.WinAPITools;
 public class Test01 {
 	public static void main(String[] args) {
 		try {
-			System.out.println("TMP: " + WinAPITools.getEnv("TMP", "error"));
+			System.out.println("TMP: " + WinAPITools.i().getEnv("TMP", "error"));
 
 			System.out.println(System.getProperty("java.version"));
 

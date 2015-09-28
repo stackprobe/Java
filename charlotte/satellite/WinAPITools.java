@@ -9,23 +9,26 @@ import charlotte.tools.SystemTools;
 public class WinAPITools {
 	public static final long INFINITE = 0xffffffffL;
 
-	private static String _winAPIToolsFile;
-	private static String _monitorName;
+	private static WinAPITools _i;
 
-	private static synchronized String getWinAPIToolsFile() throws Exception {
-		if(_winAPIToolsFile == null) {
+	public static synchronized WinAPITools i() {
+		if(_i == null) {
+			_i = new WinAPITools();
+		}
+		return _i;
+	}
+
+	private static final String WIN_API_TOOLS_FILE_ID = "{b46c0dfc-6df3-45e3-9b78-38e3b4f2cd9b}"; // shared_uuid:2
+	private String _winAPIToolsFile;
+	private String _monitorName;
+
+	private WinAPITools() {
+		try {
 			String file1 = FileTools.makeTempPath(StringTools.getUUID() + "_WinAPITools.exe");
 			String file2 = FileTools.makeTempPath(StringTools.getUUID() + "_WinAPITools.exe_");
 			byte[] fileData = FileTools.readToEnd(WinAPITools.class.getResource("res/WinAPITools.exe_"));
 			String fileHash = SecurityTools.getSHA512_128String(fileData);
-			String file3 = FileTools.combine(
-					FileTools.combine(
-							FileTools.makeTempPath("{b46c0dfc-6df3-45e3-9b78-38e3b4f2cd9b}"),
-							fileHash
-							),
-					"WinAPITools.exe"
-					);
-
+			String file3 = FileTools.makeTempPath(WIN_API_TOOLS_FILE_ID + "_" + fileHash + "_WinAPITools.exe");
 			FileTools.writeAllBytes(file1, fileData);
 			FileTools.writeAllBytes(file2, fileData);
 
@@ -40,17 +43,22 @@ public class WinAPITools {
 			_winAPIToolsFile = file3;
 			_monitorName = StringTools.getUUID();
 
-			Runtime.getRuntime().exec("\"" + _winAPIToolsFile + "\" /MONITOR " + SystemTools.PID + " " + _monitorName);
+			{
+				String command = "\"" + _winAPIToolsFile + "\" /MONITOR " + SystemTools.PID + " " + _monitorName;
+				//System.out.println(command); // test
+				Runtime.getRuntime().exec(command);
+			}
 
 			{
 				String trueFile = FileTools.makeTempPath();
 				int millis = 1;
 
 				for(; ; ) {
-					Runtime.getRuntime().exec(
-							"\"" + _winAPIToolsFile + "\" /CHECK-MUTEX-LOCKED " + _monitorName + " \"" + trueFile + "\""
-							)
-							.waitFor();
+					{
+						String command = "\"" + _winAPIToolsFile + "\" /CHECK-MUTEX-LOCKED " + _monitorName + " \"" + trueFile + "\"";
+						//System.out.println(command); // test
+						Runtime.getRuntime().exec(command).waitFor();
+					}
 
 					if(FileTools.exists(trueFile)) {
 						break;
@@ -61,12 +69,14 @@ public class WinAPITools {
 				FileTools.delete(trueFile);
 			}
 		}
-		return _winAPIToolsFile;
+		catch(Throwable e) {
+			e.printStackTrace();
+		}
 	}
 
-	private static void go(String args) {
+	private void go(String args) {
 		try {
-			String command = "\"" + getWinAPIToolsFile() + "\" " + args;
+			String command = "\"" + _winAPIToolsFile + "\" " + args;
 			//System.out.println(command); // test
 			Runtime.getRuntime().exec(command).waitFor();
 		}
@@ -75,23 +85,23 @@ public class WinAPITools {
 		}
 	}
 
-	public static void mutexWaitOne(String targetName, long millis, String beganName, String wObj0File, String endName) {
+	public void mutexWaitOne(String targetName, long millis, String beganName, String wObj0File, String endName) {
 		go("/MUTEX-WAIT-ONE " + targetName + " " + millis + " " + beganName + " \"" + wObj0File + "\" " + endName + " " + _monitorName);
 	}
 
-	public static void eventCreate(String targetName, String beganName, String endName) {
+	public void eventCreate(String targetName, String beganName, String endName) {
 		go("/EVENT-CREATE " + targetName + " " + beganName + " " + endName + " " + _monitorName);
 	}
 
-	public static void eventSet(String targetName) {
+	public void eventSet(String targetName) {
 		go("/EVENT-SET " + targetName);
 	}
 
-	public static void eventWaitOne(String targetName, long millis) {
+	public void eventWaitOne(String targetName, long millis) {
 		go("/EVENT-WAIT-ONE " + targetName + " " + millis + " " + _monitorName);
 	}
 
-	public static String getEnv(String name, String defval) throws Exception {
+	public String getEnv(String name, String defval) throws Exception {
 		byte[] fileData;
 		String file = FileTools.makeTempPath();
 
@@ -110,15 +120,15 @@ public class WinAPITools {
 		return value;
 	}
 
-	public static void deadAndRemove(String beganName, String deadName, String mtxName, String targetPath) {
+	public void deadAndRemove(String beganName, String deadName, String mtxName, String targetPath) {
 		go("/DEAD-AND-REMOVE " + beganName + " " + deadName + " " + mtxName + " \"" + targetPath + "\" " + _monitorName);
 	}
 
-	public static void deleteDelayUntilReboot(String targetPath) {
+	public void deleteDelayUntilReboot(String targetPath) {
 		go("/DELETE-DELAY-UNTIL-REBOOT \"" + targetPath + "\"");
 	}
 
-	public static boolean isProcessAlive(int pid) {
+	public boolean isProcessAlive(int pid) {
 		String trueFile = FileTools.makeTempPath();
 
 		try {
@@ -130,11 +140,9 @@ public class WinAPITools {
 		}
 	}
 
-	public static void sendToFortewave(String identHash, QueueData<byte[]> sq) throws Exception {
+	public void sendToFortewave(String identHash, QueueData<byte[]> sq) throws Exception {
 		String dir = FileTools.makeTempPath();
 		FileTools.mkdir(dir);
-
-		//System.out.println("STF_" + sq.size()); // test
 
 		for(int index = 0; 1 <= sq.size(); index++) {
 			FileTools.writeAllBytes(
@@ -145,7 +153,7 @@ public class WinAPITools {
 		go("/SEND-TO-FORTEWAVE " + identHash + " \"" + dir + "\"");
 	}
 
-	public static void recvFromFortewave(String identHash, QueueData<byte[]> rq, long millis, int recvLimit) throws Exception {
+	public void recvFromFortewave(String identHash, QueueData<byte[]> rq, long millis, int recvLimit) throws Exception {
 		String dir = FileTools.makeTempPath();
 		FileTools.mkdir(dir);
 		go("/RECV-FROM-FORTEWAVE " + identHash + " \"" + dir + "\" " + millis + " " + recvLimit);
@@ -160,7 +168,5 @@ public class WinAPITools {
 			FileTools.delete(file);
 		}
 		FileTools.delete(dir);
-
-		//System.out.println("RFF_" + rq.size()); // test
 	}
 }

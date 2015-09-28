@@ -21,24 +21,24 @@ public class NamedEventObject {
 		_th = new Thread() {
 			@Override
 			public void run() {
-				WinAPITools.eventCreate(_targetName, _beganName, _endName);
+				WinAPITools.i().eventCreate(_targetName, _beganName, _endName);
 			}
 		};
 		_th.start();
 
-		WinAPITools.eventWaitOne(_beganName, WinAPITools.INFINITE);
+		WinAPITools.i().eventWaitOne(_beganName, WinAPITools.INFINITE);
 	}
 
 	public void set() {
-		WinAPITools.eventSet(_targetName);
+		WinAPITools.i().eventSet(_targetName);
 	}
 
 	public void waitOne(long millis) {
-		WinAPITools.eventWaitOne(_targetName, millis);
+		WinAPITools.i().eventWaitOne(_targetName, millis);
 	}
 
 	public void close() {
-		WinAPITools.eventSet(_endName);
+		WinAPITools.i().eventSet(_endName);
 		ThreadTools.join(_th);
 	}
 }
