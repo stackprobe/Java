@@ -1,6 +1,7 @@
 package charlotte.tools;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -359,4 +360,18 @@ public class StringTools {
 		}
 		return str;
 	}
+
+	public static Comparator<String> comp = new Comparator<String>() {
+		@Override
+		public int compare(String a, String b) {
+			return a.compareTo(b);
+		}
+	};
+
+	public static Comparator<String> compIgnoreCase = new Comparator<String>() {
+		@Override
+		public int compare(String a, String b) {
+			return a.compareToIgnoreCase(b);
+		}
+	};
 }

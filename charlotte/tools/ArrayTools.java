@@ -81,4 +81,22 @@ public class ArrayTools {
 			swap(list, i, j);
 		}
 	}
+
+	public static <T> int indexOf(T[] list, T target, Comparator<T> comp) {
+		for(int index = 0; index < list.length; index++) {
+			if(comp.compare(list[index], target) == 0) {
+				return index;
+			}
+		}
+		return -1;
+	}
+
+	public static <T> int indexOf(List<T> list, T target, Comparator<T> comp) {
+		for(int index = 0; index < list.size(); index++) {
+			if(comp.compare(list.get(index), target) == 0) {
+				return index;
+			}
+		}
+		return -1;
+	}
 }

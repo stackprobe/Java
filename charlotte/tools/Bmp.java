@@ -106,7 +106,7 @@ public class Bmp {
 		setC(x, y, B, val);
 	}
 
-	public static Bmp from(BufferedImage bi) {
+	public static Bmp getBmp(BufferedImage bi) {
 		Bmp bmp = new Bmp(bi.getWidth(), bi.getHeight());
 
 		for(int x = 0; x < bmp.getWidth(); x++) {
@@ -127,15 +127,15 @@ public class Bmp {
 		return bmp;
 	}
 
-	public static Bmp from(byte[] imageData) throws Exception {
-		return from(ImageIO.read(new ByteArrayInputStream(imageData)));
+	public static Bmp getBmp(byte[] imageData) throws Exception {
+		return getBmp(ImageIO.read(new ByteArrayInputStream(imageData)));
 	}
 
 	public static Bmp fromFile(String file) throws Exception {
-		return from(FileTools.readAllBytes(file));
+		return getBmp(FileTools.readAllBytes(file));
 	}
 
-	public void to(BufferedImage bi) {
+	public void toBi(BufferedImage bi) {
 		for(int x = 0; x < _w; x++) {
 			for(int y = 0; y < _h; y++) {
 				int a = getA(x, y);
@@ -152,7 +152,7 @@ public class Bmp {
 
 	public BufferedImage getBi() {
 		BufferedImage bi = new BufferedImage(_w, _h, BufferedImage.TYPE_INT_ARGB);
-		to(bi);
+		toBi(bi);
 		return bi;
 	}
 

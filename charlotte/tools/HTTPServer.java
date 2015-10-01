@@ -46,7 +46,7 @@ public abstract class HTTPServer extends SockServer {
 			}
 
 			server.recved(this);
-			prep();
+			sendPrep();
 			send(sock.getOutputStream());
 		}
 
@@ -54,7 +54,7 @@ public abstract class HTTPServer extends SockServer {
 		public Map<String, String> resHeaderFields = new HashMap<String, String>();
 		public byte[] resBody; // null -> no body
 
-		private void prep() {
+		private void sendPrep() {
 			resHeaderFields.put("Server", "beer");
 			resHeaderFields.put("Connection", "close");
 

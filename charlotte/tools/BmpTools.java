@@ -19,7 +19,7 @@ public class BmpTools {
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		g.drawString(str, ds_l, ds_t);
 
-		Bmp bmp = Bmp.from(bi);
+		Bmp bmp = Bmp.getBmp(bi);
 		bmp = bmp.expand(bmp.getWidth() / zoom, bmp.getHeight() / zoom);
 		System.out.println("bmpSize_1: " + bmp.getWidth() + ", " + bmp.getHeight()); // test
 		bmp = bmp.trim(new Bmp.Dot(255, backColor.getRed(), backColor.getGreen(), backColor.getBlue()), margin);
