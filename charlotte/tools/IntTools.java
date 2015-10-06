@@ -93,4 +93,11 @@ public class IntTools {
 		ArrayTools.sort(integers, comp);
 		return toInts(integers);
 	}
+
+	public static int toInt(double value) {
+		if(value < 0.0) {
+			return (int)(value - 0.5);
+		}
+		return (int)(value + 0.5);
+	}
 }
