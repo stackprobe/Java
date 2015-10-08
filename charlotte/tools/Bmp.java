@@ -111,12 +111,12 @@ public class Bmp {
 
 		for(int x = 0; x < bmp.getWidth(); x++) {
 			for(int y = 0; y < bmp.getHeight(); y++) {
-				int abgr = bi.getRGB(x, y);
+				int argb = bi.getRGB(x, y);
 
-				int a = (abgr >>> 24) & 0xff;
-				int b = (abgr >>> 16) & 0xff;
-				int g = (abgr >>>  8) & 0xff;
-				int r = (abgr >>>  0) & 0xff;
+				int a = (argb >>> 24) & 0xff;
+				int r = (argb >>> 16) & 0xff;
+				int g = (argb >>>  8) & 0xff;
+				int b = (argb >>>  0) & 0xff;
 
 				bmp.setA(x, y, a);
 				bmp.setR(x, y, r);
@@ -143,9 +143,9 @@ public class Bmp {
 				int g = getG(x, y);
 				int b = getB(x, y);
 
-				int abgr = (a << 24) | (b << 16) | (g << 8) | r;
+				int argb = (a << 24) | (r << 16) | (g << 8) | b;
 
-				bi.setRGB(x, y, abgr);
+				bi.setRGB(x, y, argb);
 			}
 		}
 	}
