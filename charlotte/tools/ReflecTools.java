@@ -51,6 +51,13 @@ public class ReflecTools {
 		return instance;
 	}
 
+	public static Object invokeDeclaredCtor(Class<?> classObj, Object[] params, Class<?>[] paramTypes) throws Exception {
+		Constructor<?> ctor = classObj.getDeclaredConstructor(paramTypes);
+		ctor.setAccessible(true);
+		Object instance = ctor.newInstance(params);
+		return instance;
+	}
+
 	private static Class<?>[] getTypes(Object[] params) {
 		Class<?>[] types = new Class<?>[params.length];
 
