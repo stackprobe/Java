@@ -18,13 +18,13 @@ public class BmpToolsTest {
 
 	private static void main2() throws Exception {
 		for(double fontSize = 10.0; fontSize < 11.0; fontSize += 0.1) {
-			Bmp bmp = BmpTools.getStringBmp_DFS(
+			Bmp bmp = BmpTools.getStringBmp(
 					"日本語abc123@/.あいうえおカキクケコ＠＠＠",
 					Color.WHITE,
 					Color.BLACK,
 					"ＭＳ ゴシック",
 					Font.PLAIN,
-					fontSize,
+					(int)fontSize,
 					1000,
 					100,
 					50,

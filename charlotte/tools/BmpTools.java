@@ -26,33 +26,4 @@ public class BmpTools {
 		System.out.println("bmpSize_2: " + bmp.getWidth() + ", " + bmp.getHeight()); // test
 		return bmp;
 	}
-
-	public static Bmp getStringBmp_DFS(String str, Color backColor, Color textColor, String fontName, int fontStyle, double fontSize, int bi_w, int bi_h, int ds_l, int ds_t, int zoom, int margin) throws Exception {
-		BufferedImage bi = new BufferedImage(bi_w, bi_h, BufferedImage.TYPE_3BYTE_BGR);
-		Graphics2D g = bi.createGraphics();
-
-		g.setColor(backColor);
-		g.fillRect(0, 0, bi_w, bi_h);
-
-		g.setColor(textColor);
-		g.setFont((Font)ReflecTools.invokeDeclaredCtor(Font.class, new Object[] {
-			fontName,
-			new Integer(fontStyle),
-			new Float(fontSize),
-		},
-		new Class<?>[] {
-			String.class,
-			int.class,
-			float.class,
-		}));
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		g.drawString(str, ds_l, ds_t);
-
-		Bmp bmp = Bmp.getBmp(bi);
-		bmp = bmp.expand(bmp.getWidth() / zoom, bmp.getHeight() / zoom);
-		System.out.println("bmpSize_1: " + bmp.getWidth() + ", " + bmp.getHeight()); // test
-		bmp = bmp.trim(new Bmp.Dot(255, backColor.getRed(), backColor.getGreen(), backColor.getBlue()), margin);
-		System.out.println("bmpSize_2: " + bmp.getWidth() + ", " + bmp.getHeight()); // test
-		return bmp;
-	}
 }

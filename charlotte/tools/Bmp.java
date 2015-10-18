@@ -542,4 +542,96 @@ public class Bmp {
 
 		return copy(l, t, w, h, outerDot);
 	}
+
+	public void swap(int x1, int y1, int x2, int y2) {
+		int tmp = get(x1, y1);
+		set(x1, y1, get(x2, y2));
+		set(x2, y2, tmp);
+	}
+
+	/**
+	 * (0, 0)-(1, 1)を軸に反転
+	 * @return
+	 */
+	public Bmp twist() {
+		Bmp dest = new Bmp(_h, _w);
+
+		for(int x = 0; x < _w; x++) {
+			for(int y = 0; y < _h; y++) {
+				dest.set(y, x, get(x, y));
+			}
+		}
+		return dest;
+	}
+
+	/**
+	 * 左右反転
+	 */
+	public void mirror() {
+		for(int x = 0; x < _w / 2; x++) {
+			for(int y = 0; y < _h; y++) {
+				swap(x, y, _w - 1 - x, y);
+			}
+		}
+	}
+
+	/**
+	 * 上下反転
+	 */
+	public void reverse() {
+		for(int x = 0; x < _w; x++) {
+			for(int y = 0; y < _h / 2; y++) {
+				swap(x, y, x, _h - 1 - y);
+			}
+		}
+	}
+
+	/**
+	 * 時計回り_90°(1直角)回転
+	 * @return
+	 */
+	public Bmp rotate_ra1() {
+		Bmp dest = twist();
+		dest.mirror();
+		return dest;
+	}
+
+	/**
+	 * 時計回り_180(2直角)回転°
+	 */
+	public void rotate_ra2() {
+		mirror();
+		reverse();
+	}
+
+	/**
+	 * 時計回り_270°(3直角)回転
+	 */
+	public Bmp rotate_ra3() {
+		Bmp dest = twist();
+		dest.reverse();
+		return dest;
+	}
+
+	/**
+	 * 反時計回り_90°(1直角)回転
+	 * @return
+	 */
+	public Bmp rotate_ccw_ra1() {
+		return rotate_ra3();
+	}
+
+	/**
+	 * 反時計回り_180(2直角)回転°
+	 */
+	public void rotate_ccw_ra2() {
+		rotate_ra2();
+	}
+
+	/**
+	 * 反時計回り_270°(3直角)回転
+	 */
+	public Bmp rotate_ccw_ra3() {
+		return rotate_ra1();
+	}
 }
