@@ -8,6 +8,13 @@ import java.awt.image.BufferedImage;
 
 public class BmpTools {
 	public static Bmp getStringBmp(String str, Color backColor, Color textColor, String fontName, int fontStyle, int fontSize, int bi_w, int bi_h, int ds_l, int ds_t, int zoom, int margin) {
+		if(ds_l == -1) {
+			ds_l = bi_h / 5;
+		}
+		if(ds_t == -1) {
+			ds_t = (bi_h * 4) / 5;
+		}
+
 		BufferedImage bi = new BufferedImage(bi_w, bi_h, BufferedImage.TYPE_3BYTE_BGR);
 		Graphics2D g = bi.createGraphics();
 
