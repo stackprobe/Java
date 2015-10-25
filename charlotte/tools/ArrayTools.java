@@ -74,6 +74,18 @@ public class ArrayTools {
 		}
 	}
 
+	public static <T> void reverse(List<T> list) {
+		int l = 0;
+		int r = list.size() - 1;
+
+		while(l < r) {
+			swap(list, l, r);
+
+			l++;
+			r--;
+		}
+	}
+
 	public static <T> void shuffle(List<T> list) {
 		for(int i = 0; i < list.size() - 1; i++) {
 			int j = SystemTools.random(i, list.size() - 1);
