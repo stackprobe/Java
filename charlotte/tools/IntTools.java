@@ -100,4 +100,53 @@ public class IntTools {
 		}
 		return (int)(value + 0.5);
 	}
+
+	public static int toInt(String str, int defval) {
+		try {
+			return Integer.parseInt(str, defval);
+		}
+		catch(Throwable e) {
+			// ignore
+		}
+		return defval;
+	}
+
+	public static int toInt(String str, int minval, int maxval, int defval) {
+		try {
+			int value = Integer.parseInt(str);
+
+			if(isRange(value, minval, maxval) == false) {
+				return defval;
+			}
+			return value;
+		}
+		catch(Throwable e) {
+			// ignore
+		}
+		return defval;
+	}
+
+	public static boolean isRange(int value, int minval, int maxval) {
+		return minval <= value && value <= maxval;
+	}
+
+	public static int toRange(int value, int minval, int maxval) {
+		value = Math.max(value, minval);
+		value = Math.min(value, maxval);
+		return value;
+	}
+
+	public static int toUnsignedInt(String str, int defval) {
+		return toUnsignedInt(str, 10, defval);
+	}
+
+	public static int toUnsignedInt(String str, int radix, int defval) {
+		try {
+			return (int)(Long.parseLong(str, radix) & 0xffffffffL);
+		}
+		catch(Throwable e) {
+			// ignore
+		}
+		return defval;
+	}
 }
