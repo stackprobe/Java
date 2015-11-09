@@ -29,8 +29,8 @@ public abstract class HTTPServer extends SockServer {
 	public static class Connection {
 		public HTTPResponse req;
 		public String method;
-		public String url;
-		public String verPart;
+		public String path;
+		public String httpVersion;
 
 		public void perform(Socket sock, HTTPServer server) throws Exception {
 			sock.setSoTimeout(server._soTimeoutMillis);
@@ -41,8 +41,8 @@ public abstract class HTTPServer extends SockServer {
 				List<String> tokens = StringTools.tokenize(req.getFirstLine(), " ");
 
 				method = tokens.get(0);
-				url = tokens.get(1);
-				verPart = tokens.get(2);
+				path = tokens.get(1);
+				httpVersion = tokens.get(2);
 			}
 
 			server.recved(this);
@@ -55,7 +55,7 @@ public abstract class HTTPServer extends SockServer {
 		public byte[] resBody; // null -> no body
 
 		private void sendPrep() {
-			resHeaderFields.put("Server", "beer");
+			resHeaderFields.put("Server", HTTPServer.class.getName());
 			resHeaderFields.put("Connection", "close");
 
 			if(resBody != null) {
@@ -66,7 +66,7 @@ public abstract class HTTPServer extends SockServer {
 		private void send(OutputStream ws) throws Exception {
 			write(ws, "HTTP/1.1 ");
 			write(ws, resStatus);
-			write(ws, " Drink HUB ALE\r\n");
+			write(ws, " Performed\r\n");
 
 			for(String name : resHeaderFields.keySet()) {
 				String value = resHeaderFields.get(name);
@@ -89,4 +89,63 @@ public abstract class HTTPServer extends SockServer {
 	}
 
 	protected abstract void recved(Connection con) throws Exception;
+
+	public static Map<String, String> parseQuery(Connection con) throws Exception {
+		return parseQuery(con, StringTools.CHARSET_UTF8);
+	}
+
+	public static Map<String, String> parseQuery(Connection con, String charset) throws Exception {
+		byte[] body = con.req.getBody();
+		String query;
+
+		if(body.length == 0) {
+			String path = con.path;
+			int index = path.indexOf('?');
+			query = path.substring(index + 1);
+		}
+		else {
+			query = new String(body, StringTools.CHARSET_ASCII);
+		}
+		List<String> parts = StringTools.tokenize(query, "&");
+		Map<String, String> dest = new HashMap<String, String>();
+
+		for(String part : parts) {
+			List<String> tokens = StringTools.tokenize(part, "=");
+
+			if(tokens.size() == 2) {
+				String key = tokens.get(0);
+				String value = tokens.get(1);
+
+				key = decodeUrl(key, charset);
+				value = decodeUrl(value, charset);
+
+				key = key.toUpperCase(); // XXX
+
+				dest.put(key, value);
+			}
+		}
+		return dest;
+	}
+
+	public static String decodeUrl(String str, String charset) throws Exception {
+		ByteBuffer buff = new ByteBuffer();
+
+		for(int index = 0; index < str.length(); index++) {
+			char chr = str.charAt(index);
+
+			if(chr == '%') {
+				buff.add(StringTools.hex(str.substring(index + 1, index + 3))[0]);
+				index += 2;
+			}
+			else {
+				if(chr == '+') {
+					chr = ' ';
+				}
+				buff.add(new String(new char[] { chr }).getBytes()[0]);
+			}
+		}
+		byte[] block = buff.getBytes();
+		String ret = new String(block, charset);
+		return ret;
+	}
 }

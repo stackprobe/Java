@@ -17,8 +17,8 @@ public class HTTPServerTest {
 				@Override
 				protected void recved(Connection con) throws Exception {
 					System.out.println("method: " + con.method);
-					System.out.println("url: " + con.url);
-					System.out.println("verPart: " + con.verPart);
+					System.out.println("url: " + con.path);
+					System.out.println("verPart: " + con.httpVersion);
 
 					for(String name : con.req.getHeaderFields().keySet()) {
 						System.out.println("header: " + name + " = " + con.req.getHeaderFields().get(name));
@@ -32,7 +32,7 @@ public class HTTPServerTest {
 				}
 
 				@Override
-				protected boolean interrupt() throws Exception {
+				protected boolean interlude() throws Exception {
 					boolean ret = dlg.isVisible();
 					System.out.println("interrupt: " + ret);
 					return ret;

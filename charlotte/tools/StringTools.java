@@ -280,6 +280,14 @@ public class StringTools {
 		return str1.equals(str2);
 	}
 
+	public static boolean contains(String[] arr, String target) {
+		return ArrayTools.contains(arr, target, comp);
+	}
+
+	public static boolean contains(List<String> list, String target) {
+		return ArrayTools.contains(list, target, comp);
+	}
+
 	public static boolean contains(String str, char chr) {
 		return str.indexOf(chr) != -1;
 	}
@@ -374,4 +382,41 @@ public class StringTools {
 			return a.compareToIgnoreCase(b);
 		}
 	};
+
+	public static String ASCII;
+	public static String ASCII_SPC;
+
+	static {
+		try {
+			ASCII = new String(ArrayTools.byteSq(0x21, 0x7e), CHARSET_ASCII);
+			ASCII_SPC = new String(ArrayTools.byteSq(0x20, 0x7e), CHARSET_ASCII);
+		}
+		catch(Throwable e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static final String ZEN_HIRAGANA = "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん";
+	public static final String ZEN_KATAKANA = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
+
+	public static String getRandString(int minlen, int maxlen) {
+		return getRandString(minlen, maxlen, ASCII + ZEN_HIRAGANA + ZEN_KATAKANA);
+	}
+
+	public static String getRandJString(int minlen, int maxlen) {
+		return getRandString(minlen, maxlen, ZEN_HIRAGANA + ZEN_KATAKANA);
+	}
+
+	public static String getRandString(int minlen, int maxlen, String validChrs) {
+		StringBuffer buff = new StringBuffer();
+		int count = SystemTools.random(minlen, maxlen);
+
+		for(int index = 0; index < count; index++) {
+			buff.append(validChrs.charAt(SystemTools.random(validChrs.length())));
+		}
+		return buff.toString();
+	}
+
+	public static final String S_TRUE = "true";
+	public static final String S_FALSE = "false";
 }

@@ -22,6 +22,11 @@ public class FixPosLayout implements LayoutManager {
 		_h = h;
 	}
 
+	public void setSize(int w, int h) {
+		_w = w;
+		_h = h;
+	}
+
 	@Override
 	public void addLayoutComponent(String name, Component comp) {
 		// unimpl

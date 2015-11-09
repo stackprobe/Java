@@ -7,8 +7,11 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.SwingUtilities;
+
 public abstract class SockServer {
 	private int _portNo;
+	private boolean _invokeLaterFlag;
 
 	public SockServer() {
 		this(60000);
@@ -20,6 +23,10 @@ public abstract class SockServer {
 
 	public void setPortNo(int portNo) {
 		_portNo = portNo;
+	}
+
+	public void setInvokeLaterFlag(boolean flag) {
+		_invokeLaterFlag = flag;
 	}
 
 	private List<Thread> _connectionThCollection = new ArrayList<Thread>();
@@ -37,7 +44,7 @@ public abstract class SockServer {
 
 			for(; ; ) {
 				try {
-					if(interrupt() == false) {
+					if(interlude() == false) {
 						break;
 					}
 				}
@@ -50,6 +57,20 @@ public abstract class SockServer {
 					Thread connectionTh = new Thread() {
 						@Override
 						public void run() {
+							if(_invokeLaterFlag) {
+								SwingUtilities.invokeLater(new Runnable() {
+									@Override
+									public void run() {
+										run2();
+									}
+								});
+							}
+							else {
+								run2();
+							}
+						}
+
+						private void run2() {
 							try {
 								connectionTh(sock);
 							}
@@ -111,6 +132,6 @@ public abstract class SockServer {
 		}
 	}
 
-	protected abstract boolean interrupt() throws Exception; // ret: true -> 継続, false -> 終了
+	protected abstract boolean interlude() throws Exception; // ret: true -> 継続, false -> 終了
 	protected abstract void connectionTh(Socket sock) throws Exception;
 }

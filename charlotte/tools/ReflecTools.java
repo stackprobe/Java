@@ -115,4 +115,34 @@ public class ReflecTools {
 	public static void setObject(Field field, Object instance, Object value) throws Exception {
 		field.set(instance, value);
 	}
+
+	public static class FieldData {
+		private Field _field;
+		private Object _instance; // null as static
+
+		public FieldData(Field field) {
+			_field = field;
+		}
+
+		public FieldData(Field field, Object instance) {
+			_field = field;
+			_instance = instance;
+		}
+
+		public Field getField() {
+			return _field;
+		}
+
+		public Object getInstance() {
+			return _instance;
+		}
+	}
+
+	public static Object getObject(FieldData fieldData) throws Exception {
+		return getObject(fieldData.getField(), fieldData.getInstance());
+	}
+
+	public static void setObject(FieldData fieldData, Object value) throws Exception {
+		fieldData.getField().set(fieldData.getInstance(), value);
+	}
 }

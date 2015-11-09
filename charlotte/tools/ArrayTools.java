@@ -57,6 +57,12 @@ public class ArrayTools {
 		list.set(j, tmp);
 	}
 
+	public static void swap(byte[] block, int i, int j) {
+		byte tmp = block[i];
+		block[i] = block[j];
+		block[j] = tmp;
+	}
+
 	public static <T> void fastRemove(List<T> list, int index) {
 		swap(list, index, list.size() - 1);
 		list.remove(list.size() - 1);
@@ -80,6 +86,18 @@ public class ArrayTools {
 
 		while(l < r) {
 			swap(list, l, r);
+
+			l++;
+			r--;
+		}
+	}
+
+	public static void reverse(byte[] block) {
+		int l = 0;
+		int r = block.length - 1;
+
+		while(l < r) {
+			swap(block, l, r);
 
 			l++;
 			r--;
@@ -110,5 +128,31 @@ public class ArrayTools {
 			}
 		}
 		return -1;
+	}
+
+	public static byte[] byteSq(int bgnChr, int endChr) {
+		byte[] buff = new byte[(endChr - bgnChr) + 1];
+
+		for(int index = 0; bgnChr + index <= endChr; index++) {
+			buff[index] = (byte)(bgnChr + index);
+		}
+		return buff;
+	}
+
+	public static <T> List<T> shallowCopy(List<T> src) {
+		List<T> dest = new ArrayList<T>();
+
+		for(T element : src) {
+			dest.add(element);
+		}
+		return dest;
+	}
+
+	public static <T> boolean contains(T[] arr, T target, Comparator<T> comp) {
+		return indexOf(arr, target, comp) != -1;
+	}
+
+	public static <T> boolean contains(List<T> list, T target, Comparator<T> comp) {
+		return indexOf(list, target, comp) != -1;
 	}
 }

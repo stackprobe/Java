@@ -1,5 +1,6 @@
 package charlotte.tools;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
@@ -12,6 +13,10 @@ public class Bmp {
 	private int[] _list;
 	private int _w;
 	private int _h;
+
+	public Bmp(int w, int h, Color color) {
+		this(w, h, new Dot(color));
+	}
 
 	public Bmp(int w, int h, Dot dot) {
 		this(w, h, dot.a, dot.r, dot.g, dot.b);
@@ -54,19 +59,26 @@ public class Bmp {
 		_list[x + _w * y] = val;
 	}
 
+	public int DUMMY_ARGB = 127;
+
 	public int getC(int x, int y, int col) {
 		int index = x + _w * y;
 		int bit = col * 8;
 
-		return (_list[index] >>> bit) & 0xff;
+		if(index < _list.length) {
+			return (_list[index] >>> bit) & 0xff;
+		}
+		return DUMMY_ARGB;
 	}
 
 	public void setC(int x, int y, int col, int val) {
 		int index = x + _w * y;
 		int bit = col * 8;
 
-		_list[index] &= ~(0xff << bit);
-		_list[index] |= (val << bit);
+		if(index < _list.length) {
+			_list[index] &= ~(0xff << bit);
+			_list[index] |= (val << bit);
+		}
 	}
 
 	public static final int A = 0;
@@ -133,6 +145,10 @@ public class Bmp {
 
 	public static Bmp fromFile(String file) throws Exception {
 		return getBmp(FileTools.readAllBytes(file));
+	}
+
+	public static Bmp getBmp(PngData image) throws Exception {
+		return getBmp(image.getBytes());
 	}
 
 	public void toBi(BufferedImage bi) {
@@ -446,6 +462,13 @@ public class Bmp {
 		public int g;
 		public int b;
 
+		public Dot(Color color) {
+			this.a = color.getAlpha();
+			this.r = color.getRed();
+			this.g = color.getGreen();
+			this.b = color.getBlue();
+		}
+
 		public Dot(int a, int r, int g, int b) {
 			this.a = a;
 			this.r = r;
@@ -633,5 +656,13 @@ public class Bmp {
 	 */
 	public Bmp rotate_ccw_ra3() {
 		return rotate_ra1();
+	}
+
+	public static BufferedImage getImage(byte[] imageData) throws Exception {
+		return Bmp.getBmp(imageData).getBi();
+	}
+
+	public static BufferedImage getImage(PngData image) throws Exception {
+		return getImage(image.getBytes());
 	}
 }

@@ -4,11 +4,21 @@ import java.util.Comparator;
 import java.util.List;
 
 public class IntTools {
+	public static final int IMAX = 1000000000;
+
 	public static byte[] toBytes(int value) {
 		byte[] ret = new byte[4];
 		write(ret, 0, value);
 		return ret;
 	}
+
+	public static byte[] toBytesBE(int value) {
+		byte[] ret = new byte[4];
+		write(ret, 0, value);
+		ArrayTools.reverse(ret);
+		return ret;
+	}
+
 
 	/**
 	 * little endian
@@ -149,4 +159,20 @@ public class IntTools {
 		}
 		return defval;
 	}
+
+	public static Comparator<Integer> comp = new Comparator<Integer>() {
+		@Override
+		public int compare(Integer a, Integer b) {
+			int v1 = a.intValue();
+			int v2 = b.intValue();
+
+			if(v1 < v2) {
+				return -1;
+			}
+			if(v2 < v1) {
+				return 1;
+			}
+			return 0;
+		}
+	};
 }

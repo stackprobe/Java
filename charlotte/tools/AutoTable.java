@@ -8,6 +8,36 @@ public class AutoTable<T> {
 	private int _w;
 	private int _h;
 
+	public AutoTable() {
+	}
+
+	public AutoTable(int w, int h) {
+		_w = w;
+		_h = h;
+	}
+
+	public AutoTable(int w, int h, T pad) {
+		_w = w;
+		_h = h;
+		padding(pad);
+	}
+
+	public int getWidth(){
+		return _w;
+	}
+
+	public int getHeight() {
+		return _h;
+	}
+
+	public void setWidth(int w) {
+		_w = w;
+	}
+
+	public void setHeight(int h) {
+		_h = h;
+	}
+
 	private void touch(int x, int y) {
 		while(_rows.size() <= y) {
 			_rows.add(new ArrayList<T>());
@@ -29,6 +59,12 @@ public class AutoTable<T> {
 	public T get(int x, int y) {
 		touch(x, y);
 		return _rows.get(y).get(x);
+	}
+
+	public void clear() {
+		_rows.clear();
+		_w = 0;
+		_h = 0;
 	}
 
 	private void capture(AutoTable<T> target) {
@@ -83,5 +119,15 @@ public class AutoTable<T> {
 
 	public void rotate_ccw_ra3() {
 		rotate_ra1();
+	}
+
+	public void padding(T pad) {
+		for(int x = 0; x < _w; x++) {
+			for(int y = 0; y < _h; y++) {
+				if(get(x, y) == null) {
+					set(x, y, pad);
+				}
+			}
+		}
 	}
 }
