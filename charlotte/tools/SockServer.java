@@ -4,8 +4,6 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.SwingUtilities;
 
@@ -29,7 +27,8 @@ public abstract class SockServer {
 		_invokeLaterFlag = flag;
 	}
 
-	private List<Thread> _connectionThCollection = new ArrayList<Thread>();
+	private QueueData<Socket> _connections = new QueueData<Socket>();
+	private int _connectionThCount;
 	private final Object SYNCROOT = new Object();
 
 	public void listen() {
@@ -52,7 +51,9 @@ public abstract class SockServer {
 					e.printStackTrace();
 				}
 				try {
-					final Socket sock = ss.accept();
+					Socket sock = ss.accept();
+
+					_connections.add(sock);
 
 					Thread connectionTh = new Thread() {
 						@Override
@@ -71,6 +72,17 @@ public abstract class SockServer {
 						}
 
 						private void run2() {
+							Socket sock;
+
+							synchronized(SYNCROOT) {
+								sock = _connections.poll();
+
+								if(sock == null) {
+									return;
+								}
+								_connectionThCount++;
+							}
+
 							try {
 								connectionTh(sock);
 							}
@@ -86,15 +98,11 @@ public abstract class SockServer {
 							}
 
 							synchronized(SYNCROOT) {
-								_connectionThCollection.remove(this);
+								_connectionThCount--;
 							}
 						}
 					};
 					connectionTh.start();
-
-					synchronized(SYNCROOT) {
-						_connectionThCollection.add(connectionTh);
-					}
 				}
 				catch(SocketTimeoutException e) {
 					// ignore
@@ -116,11 +124,23 @@ public abstract class SockServer {
 	}
 
 	private void waitForAllConnectionThEnd() throws Exception {
+		synchronized(SYNCROOT) {
+			while(1 <= _connections.size()) {
+				Socket sock = _connections.poll();
+
+				try {
+					sock.close();
+				}
+				catch(Throwable e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		int millis = 100;
 
 		for(; ; ) {
 			synchronized(SYNCROOT) {
-				if(_connectionThCollection.size() == 0) {
+				if(_connectionThCount == 0) {
 					break;
 				}
 			}

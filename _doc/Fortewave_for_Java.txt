@@ -17,13 +17,13 @@ Fortewave for Java
 
 		SERIALIZABLE_OBJECT:
 			byte[]
-			charlotte.satellite.ObjectList # 値は SERIALIZABLE_CHILD_OBJECT のいずれか
-			charlotte.satellite.ObjectMap  # 値は SERIALIZABLE_CHILD_OBJECT のいずれか, キーは null 不可
-			String
+			| charlotte.satellite.ObjectList # 値は SERIALIZABLE_CHILD_OBJECT
+			| charlotte.satellite.ObjectMap  # 値は SERIALIZABLE_CHILD_OBJECT, キーは null 不可
+			| String
 
 		SERIALIZABLE_CHILD_OBJECT:
 			SERIALIZABLE_OBJECT
-			null
+			| null
 
 
 動作環境
@@ -76,5 +76,48 @@ Fortewave for Java
 インターフェイス
 ----------------
 
-	TODO
+	public Fortewave(String rIdent, String wIdent) throws Exception;
+
+		コンストラクタです。
+		★このコンストラクタはスレッドセーフです。
+
+		rIdent ... 読み込み先_識別名
+		wIdent ... 書き込み先_識別名
+
+		生成した Fortewave を破棄する前に close を呼び出して下さい。
+		close せずにプロセスを終了すると、実行した子プロセスが停止するまで時間が掛かることがあります。
+
+	public synchronized void clear() throws Exception;
+
+		上り・下りの未受信データを削除します。
+		★このメソッドはスレッドセーフです。
+
+	public synchronized void send(Object sendObj) throws Exception;
+
+		データを送信します。
+		★このメソッドはスレッドセーフです。
+
+		sendObj ... 送信データ
+
+		送信データは SERIALIZABLE_OBJECT でなればなりません。
+		この送信は必ず成功します。
+		相手側が切断していても、相手側の次の接続・受信まで保持されます。
+		そうさせないためには、相手側が受信する前に clear を呼び出して下さい。
+		このメソッドが終了した時点で、相手側が受信しているかどうかは分かりません。
+
+	public synchronized Object recv(long millis) throws Exception;
+
+		データを受信します。
+		★このメソッドはスレッドセーフです。
+
+		millis ... 受信をトライし続ける時間（ミリ秒）
+		戻り値 ... 受信に成功すれば「受信データ」、そうでなければ null
+
+		受信データは SERIALIZABLE_OBJECT の何れかです。
+		受信データが null であった場合、受信失敗と区別付きません。
+
+	public synchronized void close();
+
+		このオブジェクトを破棄します。
+		★このメソッドはスレッドセーフです。
 

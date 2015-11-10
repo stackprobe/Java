@@ -24,13 +24,13 @@ Satellite for Java
 
 		SERIALIZABLE_OBJECT:
 			byte[]
-			charlotte.satellite.ObjectList # 値は SERIALIZABLE_CHILD_OBJECT のいずれか
-			charlotte.satellite.ObjectMap  # 値は SERIALIZABLE_CHILD_OBJECT のいずれか, キーは null 不可
-			String
+			| charlotte.satellite.ObjectList # 値は SERIALIZABLE_CHILD_OBJECT
+			| charlotte.satellite.ObjectMap  # 値は SERIALIZABLE_CHILD_OBJECT, キーは null 不可
+			| String
 
 		SERIALIZABLE_CHILD_OBJECT:
 			SERIALIZABLE_OBJECT
-			null
+			| null
 
 
 動作環境
