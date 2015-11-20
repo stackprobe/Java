@@ -155,4 +155,23 @@ public class ArrayTools {
 	public static <T> boolean contains(List<T> list, T target, Comparator<T> comp) {
 		return indexOf(list, target, comp) != -1;
 	}
+
+	public static byte[] getBytes(byte[] src, int startPos, int size) {
+		byte[] dest = new byte[size];
+		System.arraycopy(src, startPos, dest, 0, size);
+		return dest;
+	}
+
+	public static byte[] changeSize(byte[] src, int size, byte pad) {
+		byte[] dest = new byte[size];
+
+		if(src.length < size) {
+			System.arraycopy(src, 0, dest, 0, src.length);
+			Arrays.fill(dest, src.length, size, pad);
+		}
+		else {
+			System.arraycopy(src, 0, dest, 0, size);
+		}
+		return dest;
+	}
 }

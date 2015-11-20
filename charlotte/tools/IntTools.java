@@ -175,4 +175,23 @@ public class IntTools {
 			return 0;
 		}
 	};
+
+	public static int toInt(byte[] block, int rPos) {
+		byte b1 = block[rPos + 0];
+		byte b2 = block[rPos + 1];
+		byte b3 = block[rPos + 2];
+		byte b4 = block[rPos + 3];
+
+		return ((b1 & 0xff) << 0) |
+				((b2 & 0xff) << 8) |
+				((b3 & 0xff) << 16) |
+				((b4 & 0xff) << 24);
+	}
+
+	public static int toInt16(byte[] block, int rPos) {
+		byte b1 = block[rPos + 0];
+		byte b2 = block[rPos + 1];
+
+		return (b1 & 0xff) | ((b2 & 0xff) << 8);
+	}
 }

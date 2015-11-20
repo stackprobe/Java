@@ -59,26 +59,31 @@ public class Bmp {
 		_list[x + _w * y] = val;
 	}
 
+	private boolean isFairPoint(int x, int y) {
+		return 0 <= x && x < _w && 0 <= y && y < _h;
+	}
+
 	public int DUMMY_ARGB = 127;
 
 	public int getC(int x, int y, int col) {
+		if(isFairPoint(x, y) == false) {
+			return DUMMY_ARGB;
+		}
 		int index = x + _w * y;
 		int bit = col * 8;
 
-		if(index < _list.length) {
-			return (_list[index] >>> bit) & 0xff;
-		}
-		return DUMMY_ARGB;
+		return (_list[index] >>> bit) & 0xff;
 	}
 
 	public void setC(int x, int y, int col, int val) {
+		if(isFairPoint(x, y) == false) {
+			return;
+		}
 		int index = x + _w * y;
 		int bit = col * 8;
 
-		if(index < _list.length) {
-			_list[index] &= ~(0xff << bit);
-			_list[index] |= (val << bit);
-		}
+		_list[index] &= ~(0xff << bit);
+		_list[index] |= (val << bit);
 	}
 
 	public static final int A = 0;
