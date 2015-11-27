@@ -174,4 +174,13 @@ public class ArrayTools {
 		}
 		return dest;
 	}
+
+	public static boolean isSame(byte[] block1, int startPos1, byte[] block2, int startPos2, int size) {
+		for(int index = 0; index < size; index++) {
+			if(block1[startPos1 + index] != block2[startPos2 + index]) {
+				return false;
+			}
+		}
+		return true;
+	}
 }

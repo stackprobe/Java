@@ -172,11 +172,17 @@ public class DBaseFile {
 					RowData row = rows.get(rowidx);
 					CellData cell = row.cells.get(colidx);
 
-					cell.tmp = new String(cell.fieldData, charsetOld).getBytes(charsetNew);
+					String mid = new String(cell.fieldData, charsetOld);
+					mid = mid.trim();
+					cell.tmp = mid.getBytes(charsetNew);
 
 					maxSize = Math.max(maxSize, cell.tmp.length);
 				}
-				fsr.fieldSize = Math.max(fsr.fieldSize, maxSize);
+				int diff = maxSize - fsr.fieldSize;
+				diff = Math.max(0, diff);
+
+				fsr.fieldSize += diff;
+				recordSize += diff;
 
 				for(int rowidx = 0; rowidx < rows.size(); rowidx++) {
 					RowData row = rows.get(rowidx);

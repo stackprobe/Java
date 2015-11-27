@@ -419,4 +419,34 @@ public class StringTools {
 
 	public static final String S_TRUE = "true";
 	public static final String S_FALSE = "false";
+
+	public static int indexOfIgnoreCase(String str, String ptn, int fromIndex) {
+		for(int index = fromIndex; index + ptn.length() <= str.length(); index++) {
+			String mid = str.substring(index, index + ptn.length());
+
+			if(mid.equalsIgnoreCase(ptn)) {
+				return index;
+			}
+		}
+		return -1;
+	}
+
+	public static int indexOfIgnoreCase(String str, String ptn) {
+		return indexOfIgnoreCase(str, ptn, 0);
+	}
+
+	public static boolean containsIgnoreCase(String str, String ptn) {
+		return indexOfIgnoreCase(str, ptn) == -1;
+	}
+
+	public static boolean startsWithIgnoreCase(String str, String ptn) {
+		if(ptn.length() <= str.length()) {
+			String mid = str.substring(0, ptn.length());
+
+			if(mid.equalsIgnoreCase(ptn)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import charlotte.satellite.ObjectMap;
+
 public abstract class HTTPServer extends SockServer {
 	public HTTPServer() {
 		this(80);
@@ -90,26 +92,57 @@ public abstract class HTTPServer extends SockServer {
 
 	protected abstract void recved(Connection con) throws Exception;
 
-	public static Map<String, String> parseQuery(Connection con) throws Exception {
-		return parseQuery(con, StringTools.CHARSET_UTF8);
+	public static ObjectMap parseRequest(Connection con) throws Exception {
+		return parseRequest(con, StringTools.CHARSET_UTF8);
 	}
 
-	public static Map<String, String> parseQuery(Connection con, String charset) throws Exception {
-		byte[] body = con.req.getBody();
-		String query;
+	/**
+	 *
+	 * @param con
+	 * @param charset
+	 * @return キーは小文字
+	 * @throws Exception
+	 */
+	public static ObjectMap parseRequest(Connection con, String charset) throws Exception {
+		String contentType = con.req.getHeaderFields().get("content-type");
 
-		if(body.length == 0) {
-			String path = con.path;
-			int index = path.indexOf('?');
-			query = path.substring(index + 1);
-		}
-		else {
-			query = new String(body, StringTools.CHARSET_ASCII);
-		}
-		List<String> parts = StringTools.tokenize(query, "&");
-		Map<String, String> dest = new HashMap<String, String>();
+		if(contentType != null) {
+			if(StringTools.startsWithIgnoreCase(contentType, "application/x-www-form-urlencoded")) {
+				return parseWWWFormUrlEncoded(con, charset);
+			}
+			if(StringTools.startsWithIgnoreCase(contentType, "application/json")) {
 
-		for(String part : parts) {
+			}
+			if(StringTools.startsWithIgnoreCase(contentType, "multipart/form-data")) {
+				return parseMultiPartFormData(con, charset);
+			}
+		}
+		return parseQuery(con, charset);
+	}
+
+	private static ObjectMap parseWWWFormUrlEncoded(Connection con, String charset) throws Exception {
+		String query = new String(con.req.getBody(), StringTools.CHARSET_ASCII);
+
+		return parseQuery(query, charset);
+	}
+
+	private static ObjectMap parseMultiPartFormData(Connection con, String charset) throws Exception {
+		MultiPartFormData mpfd = new MultiPartFormData(con.req.getBody(), charset);
+
+		return mpfd.getObjectMap();
+	}
+
+	private static ObjectMap parseQuery(Connection con, String charset) throws Exception {
+		String url = con.path;
+		String query = url.substring(url.indexOf('?') + 1);
+
+		return parseQuery(query, charset);
+	}
+
+	private static ObjectMap parseQuery(String query, String charset) throws Exception {
+		ObjectMap ret = new ObjectMap();
+
+		for(String part : StringTools.tokenize(query, "&")) {
 			List<String> tokens = StringTools.tokenize(part, "=");
 
 			if(tokens.size() == 2) {
@@ -119,12 +152,12 @@ public abstract class HTTPServer extends SockServer {
 				key = decodeUrl(key, charset);
 				value = decodeUrl(value, charset);
 
-				key = key.toUpperCase(); // XXX
+				key = key.toLowerCase();
 
-				dest.put(key, value);
+				ret.add(key, value);
 			}
 		}
-		return dest;
+		return ret;
 	}
 
 	public static String decodeUrl(String str, String charset) throws Exception {
