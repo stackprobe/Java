@@ -111,7 +111,17 @@ public abstract class HTTPServer extends SockServer {
 				return parseWWWFormUrlEncoded(con, charset);
 			}
 			if(StringTools.startsWithIgnoreCase(contentType, "application/json")) {
+				Object root = JsonTools.decode(new String(con.req.getBody(), charset));
 
+				if(root instanceof ObjectMap) {
+					return (ObjectMap)root;
+				}
+
+				{
+					ObjectMap om = new ObjectMap();
+					om.add("root", root);
+					return om;
+				}
 			}
 			if(StringTools.startsWithIgnoreCase(contentType, "multipart/form-data")) {
 				return parseMultiPartFormData(con, charset);

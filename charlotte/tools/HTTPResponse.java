@@ -2,9 +2,9 @@ package charlotte.tools;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class HTTPResponse {
 	private final int CR = 0x0d;
@@ -13,7 +13,7 @@ public class HTTPResponse {
 
 	private InputStream _rs;
 	private String _firstLine;
-	private Map<String, String> _headerFields = new HashMap<String, String>();
+	private Map<String, String> _headerFields = new TreeMap<String, String>(StringTools.compIgnoreCase);
 	private int _contentLength;
 	private boolean _chunked;
 	private byte[] _body;
@@ -48,7 +48,6 @@ public class HTTPResponse {
 			buff[wPos] = (byte)chr;
 			wPos++;
 		}
-		//System.out.println("wPos: " + wPos); // test
 		return new String(buff, 0, wPos, StringTools.CHARSET_ASCII);
 	}
 
@@ -85,7 +84,6 @@ public class HTTPResponse {
 			String value = line.substring(index + 1);
 
 			name = name.trim();
-			name = name.toLowerCase();
 			value = value.trim();
 
 			_headerFields.put(name, value);
@@ -93,8 +91,8 @@ public class HTTPResponse {
 	}
 
 	private void checkHeaderFields() {
-		String sConLen = _headerFields.get("content-length");
-		String sTrnEnc = _headerFields.get("transfer-encoding");
+		String sConLen = _headerFields.get("Content-Length");
+		String sTrnEnc = _headerFields.get("Transfer-Encoding");
 
 		if(sConLen != null) {
 			_contentLength = Integer.parseInt(sConLen);
