@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 public class HTTPResponse {
 	private final int CR = 0x0d;
@@ -13,7 +12,7 @@ public class HTTPResponse {
 
 	private InputStream _rs;
 	private String _firstLine;
-	private Map<String, String> _headerFields = new TreeMap<String, String>(StringTools.compIgnoreCase);
+	private Map<String, String> _headerFields = MapTools.createIgnoreCase();
 	private int _contentLength;
 	private boolean _chunked;
 	private byte[] _body;

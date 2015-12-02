@@ -92,36 +92,19 @@ public abstract class HTTPServer extends SockServer {
 
 	protected abstract void recved(Connection con) throws Exception;
 
-	public static ObjectMap parseRequest(Connection con) throws Exception {
+	public static Object parseRequest(Connection con) throws Exception {
 		return parseRequest(con, StringTools.CHARSET_UTF8);
 	}
 
-	/**
-	 *
-	 * @param con
-	 * @param charset
-	 * @return キーは小文字
-	 * @throws Exception
-	 */
-	public static ObjectMap parseRequest(Connection con, String charset) throws Exception {
-		String contentType = con.req.getHeaderFields().get("content-type");
+	public static Object parseRequest(Connection con, String charset) throws Exception {
+		String contentType = con.req.getHeaderFields().get("Content-Type");
 
 		if(contentType != null) {
 			if(StringTools.startsWithIgnoreCase(contentType, "application/x-www-form-urlencoded")) {
 				return parseWWWFormUrlEncoded(con, charset);
 			}
 			if(StringTools.startsWithIgnoreCase(contentType, "application/json")) {
-				Object root = JsonTools.decode(new String(con.req.getBody(), charset));
-
-				if(root instanceof ObjectMap) {
-					return (ObjectMap)root;
-				}
-
-				{
-					ObjectMap om = new ObjectMap();
-					om.add("root", root);
-					return om;
-				}
+				return JsonTools.decode(con.req.getBody());
 			}
 			if(StringTools.startsWithIgnoreCase(contentType, "multipart/form-data")) {
 				return parseMultiPartFormData(con, charset);
@@ -150,7 +133,7 @@ public abstract class HTTPServer extends SockServer {
 	}
 
 	private static ObjectMap parseQuery(String query, String charset) throws Exception {
-		ObjectMap ret = new ObjectMap();
+		ObjectMap ret = ObjectMap.createIgnoreCase();
 
 		for(String part : StringTools.tokenize(query, "&")) {
 			List<String> tokens = StringTools.tokenize(part, "=");
@@ -161,8 +144,6 @@ public abstract class HTTPServer extends SockServer {
 
 				key = decodeUrl(key, charset);
 				value = decodeUrl(value, charset);
-
-				key = key.toLowerCase();
 
 				ret.add(key, value);
 			}

@@ -1,17 +1,37 @@
 package charlotte.satellite;
 
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+
+import charlotte.tools.StringTools;
 
 public class ObjectMap {
-	private Map<String, Object> _map = new HashMap<String, Object>();
+	private Map<String, Object> _map;
 
 	public ObjectMap() {
+		this(StringTools.comp);
 	}
 
-	public ObjectMap(Map<?, ?> map) {
-		add(map);
+	public static ObjectMap createIgnoreCase() {
+		return new ObjectMap(StringTools.compIgnoreCase);
+	}
+
+	public ObjectMap(Comparator<String> comp) {
+		_map = new TreeMap<String, Object>(comp);
+	}
+
+	public static ObjectMap create(Map<?, ?> map) {
+		ObjectMap ret = new ObjectMap();
+		ret.add(map);
+		return ret;
+	}
+
+	public static ObjectMap createIgnoreCase(Map<?, ?> map) {
+		ObjectMap ret = ObjectMap.createIgnoreCase();
+		ret.add(map);
+		return ret;
 	}
 
 	public void add(Map<?, ?> map) {

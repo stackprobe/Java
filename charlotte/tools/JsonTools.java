@@ -5,92 +5,103 @@ import charlotte.satellite.ObjectMap;
 
 public class JsonTools {
 	public static String encode(Object src) throws Exception {
-		if(src instanceof ObjectMap) {
-			ObjectMap om = (ObjectMap)src;
-			boolean secondOrLater = false;
-			StringBuffer buff = new StringBuffer();
+		Encoder e = new Encoder();
+		e.add(src);
+		return e.get();
+	}
 
-			buff.append("{");
+	private static class Encoder {
+		private StringBuffer _buff = new StringBuffer();
 
-			for(String key : om.keySet()) {
-				Object value = om.get(key);
+		public void add(Object src) {
+			if(src instanceof ObjectMap) {
+				ObjectMap om = (ObjectMap)src;
+				boolean secondOrLater = false;
 
-				if(secondOrLater) {
-					buff.append(",");
+				_buff.append("{");
+
+				for(String key : om.keySet()) {
+					Object value = om.get(key);
+
+					if(secondOrLater) {
+						_buff.append(",");
+					}
+					_buff.append(key);
+					_buff.append(":");
+					add(value);
+
+					secondOrLater = true;
 				}
-				buff.append(key);
-				buff.append(":");
-				buff.append(encode(value));
-
-				secondOrLater = true;
+				_buff.append("}");
 			}
-			buff.append("}");
+			else if(src instanceof ObjectList) {
+				ObjectList ol = (ObjectList)src;
+				boolean secondOrLater = false;
 
-			return buff.toString();
-		}
-		if(src instanceof ObjectList) {
-			ObjectList ol = (ObjectList)src;
-			boolean secondOrLater = false;
-			StringBuffer buff = new StringBuffer();
+				_buff.append("[");
 
-			buff.append("[");
+				for(Object value : ol.getList()) {
+					if(secondOrLater) {
+						_buff.append(",");
+					}
+					add(value);
 
-			for(Object value : ol.getList()) {
-				if(secondOrLater) {
-					buff.append(",");
+					secondOrLater = true;
 				}
-				buff.append(encode(value));
-
-				secondOrLater = true;
+				_buff.append("]");
 			}
-			buff.append("]");
+			else if(src instanceof String) {
+				String str = (String)src;
 
-			return buff.toString();
-		}
-		if(src instanceof String) {
-			String str = (String)src;
-			StringBuffer buff = new StringBuffer();
+				_buff.append("\"");
 
-			buff.append("\"");
-
-			for(char chr : str.toCharArray()) {
-				if(chr == '"') {
-					buff.append("\\\"");
+				for(char chr : str.toCharArray()) {
+					if(chr == '"') {
+						_buff.append("\\\"");
+					}
+					else if(chr == '\\') {
+						_buff.append("\\\\");
+					}
+					else if(chr == '/') {
+						_buff.append("\\/");
+					}
+					else if(chr == '\b') {
+						_buff.append("\\b");
+					}
+					else if(chr == '\f') {
+						_buff.append("\\f");
+					}
+					else if(chr == '\n') {
+						_buff.append("\\n");
+					}
+					else if(chr == '\r') {
+						_buff.append("\\r");
+					}
+					else if(chr == '\t') {
+						_buff.append("\\t");
+					}
+					else {
+						_buff.append(chr);
+					}
 				}
-				else if(chr == '\\') {
-					buff.append("\\\\");
-				}
-				else if(chr == '/') {
-					buff.append("\\/");
-				}
-				else if(chr == '\b') {
-					buff.append("\\b");
-				}
-				else if(chr == '\f') {
-					buff.append("\\f");
-				}
-				else if(chr == '\n') {
-					buff.append("\\n");
-				}
-				else if(chr == '\r') {
-					buff.append("\\r");
-				}
-				else if(chr == '\t') {
-					buff.append("\\t");
-				}
-				else {
-					buff.append(chr);
-				}
+				_buff.append("\"");
 			}
-			buff.append("\"");
-
-			return buff.toString();
+			else {
+				_buff.append(src);
+			}
 		}
-		return src.toString();
+
+		public String get() {
+			return _buff.toString();
+		}
+	}
+
+	public static Object decode(byte[] src) throws Exception {
+		return decode(new String(src, StringTools.CHARSET_UTF8)); // TODO compatible other encodings
 	}
 
 	public static Object decode(String src) throws Exception {
-		return new Decoder(src).decode();
+		return new Decoder(src).get();
 	}
 
 	private static class Decoder {
@@ -116,19 +127,19 @@ public class JsonTools {
 			return chr;
 		}
 
-		private Object decode() throws Exception {
+		private Object get() throws Exception {
 			char chr = nextNS();
 
 			if(chr == '{') {
-				ObjectMap om = new ObjectMap();
+				ObjectMap om = ObjectMap.createIgnoreCase();
 
 				do {
-					Object key = decode();
+					Object key = get();
 					nextNS(); // ':'
-					Object value = decode();
+					Object value = get();
 					om.add(key, value);
 				}
-				while(nextNS() == '}');
+				while(nextNS() != '}');
 
 				return om;
 			}
@@ -136,9 +147,9 @@ public class JsonTools {
 				ObjectList ol = new ObjectList();
 
 				do {
-					ol.add(decode());
+					ol.add(get());
 				}
-				while(nextNS() == ']');
+				while(nextNS() != ']');
 
 				return ol;
 			}

@@ -128,18 +128,11 @@ public class MultiPartFormData {
 		return _parts;
 	}
 
-	/**
-	 * キーは小文字
-	 * @return
-	 * @throws Exception
-	 */
 	public ObjectMap getObjectMap() throws Exception {
-		ObjectMap ret = new ObjectMap();
+		ObjectMap ret = ObjectMap.createIgnoreCase();
 
 		for(Part part : _parts) {
 			String name = part.name;
-
-			name = name.toLowerCase();
 
 			if(part.filename != null) {
 				ret.add(name, part.body);
