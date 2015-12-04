@@ -449,4 +449,12 @@ public class StringTools {
 		}
 		return false;
 	}
+
+	public static String decodeUrl(String str, String charset) throws Exception {
+		return HTTPServer.decodeUrl(str, charset);
+	}
+
+	public static String encodeUrl(String str, String charset) throws Exception {
+		return HTTPServer.encodeUrl(str, charset);
+	}
 }

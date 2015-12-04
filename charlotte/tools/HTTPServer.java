@@ -172,4 +172,17 @@ public abstract class HTTPServer extends SockServer {
 		String ret = new String(block, charset);
 		return ret;
 	}
+
+	public static String encodeUrl(String str, String charset) throws Exception {
+		StringBuffer buff = new StringBuffer();
+
+		for(byte chr : str.getBytes(charset)) {
+			int val = chr & 0xff;
+
+			buff.append('%');
+			buff.append(StringTools.hexadecimal.charAt(val / 16));
+			buff.append(StringTools.hexadecimal.charAt(val % 16));
+		}
+		return buff.toString();
+	}
 }
