@@ -145,4 +145,23 @@ public class ReflecTools {
 	public static void setObject(FieldData fieldData, Object value) throws Exception {
 		fieldData.getField().set(fieldData.getInstance(), value);
 	}
+
+	public static boolean instanceOf(Object instance, Class<?> expectClassObj) {
+		return instanceOf(instance, expectClassObj.getName());
+	}
+
+	public static boolean instanceOf(Object instance, String expectClassName) {
+		Class<?> classObj = instance.getClass();
+
+		for(; ; ) {
+			if(classObj.getName().equals(expectClassName)) {
+				return true;
+			}
+			classObj = classObj.getSuperclass();
+
+			if(classObj == null) {
+				return false;
+			}
+		}
+	}
 }
