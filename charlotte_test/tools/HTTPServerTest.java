@@ -38,7 +38,7 @@ public class HTTPServerTest {
 					return ret;
 				}
 			}
-			.listen();
+			.perform();
 
 			dlg.dispose();
 		}

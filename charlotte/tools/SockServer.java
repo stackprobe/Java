@@ -30,17 +30,29 @@ public abstract class SockServer {
 	private QueueData<Socket> _connections = new QueueData<Socket>();
 	private int _connectionThCount;
 	private final Object SYNCROOT = new Object();
+	private ServerSocket _ss;
+
+	public void perform() {
+		try {
+			bind();
+			listen();
+		}
+		catch(Throwable e) {
+			e.printStackTrace();
+		}
+		unbind();
+	}
+
+	public void bind() throws Exception {
+		_ss = new ServerSocket();
+		_ss.setReuseAddress(true);
+		_ss.setSoTimeout(2000);
+		InetSocketAddress isa = new InetSocketAddress(_portNo);
+		_ss.bind(isa);
+	}
 
 	public void listen() {
-		ServerSocket ss = null;
-
 		try {
-			ss = new ServerSocket();
-			ss.setReuseAddress(true);
-			ss.setSoTimeout(2000);
-			InetSocketAddress isa = new InetSocketAddress(_portNo);
-			ss.bind(isa);
-
 			for(; ; ) {
 				try {
 					if(interlude() == false) {
@@ -51,7 +63,7 @@ public abstract class SockServer {
 					e.printStackTrace();
 				}
 				try {
-					Socket sock = ss.accept();
+					Socket sock = _ss.accept();
 
 					_connections.add(sock);
 
@@ -108,47 +120,54 @@ public abstract class SockServer {
 					// ignore
 				}
 			}
-			waitForAllConnectionThEnd();
 		}
 		catch(Throwable e) {
 			e.printStackTrace();
 		}
-		finally {
-			try {
-				ss.close();
+		waitForAllConnectionThEnd();
+	}
+
+	private void waitForAllConnectionThEnd() {
+		try {
+			synchronized(SYNCROOT) {
+				while(1 <= _connections.size()) {
+					Socket sock = _connections.poll();
+
+					try {
+						sock.close();
+					}
+					catch(Throwable e) {
+						e.printStackTrace();
+					}
+				}
 			}
-			catch(Throwable e) {
-				e.printStackTrace();
+			int millis = 100;
+
+			for(; ; ) {
+				synchronized(SYNCROOT) {
+					if(_connectionThCount == 0) {
+						break;
+					}
+				}
+				Thread.sleep(millis);
+
+				if(millis < 2000) {
+					millis += 100;
+				}
 			}
+		}
+		catch(Throwable e) {
+			e.printStackTrace();
 		}
 	}
 
-	private void waitForAllConnectionThEnd() throws Exception {
-		synchronized(SYNCROOT) {
-			while(1 <= _connections.size()) {
-				Socket sock = _connections.poll();
-
-				try {
-					sock.close();
-				}
-				catch(Throwable e) {
-					e.printStackTrace();
-				}
-			}
+	public void unbind() {
+		try {
+			_ss.close();
+			_ss = null;
 		}
-		int millis = 100;
-
-		for(; ; ) {
-			synchronized(SYNCROOT) {
-				if(_connectionThCount == 0) {
-					break;
-				}
-			}
-			Thread.sleep(millis);
-
-			if(millis < 2000) {
-				millis += 100;
-			}
+		catch(Throwable e) {
+			e.printStackTrace();
 		}
 	}
 

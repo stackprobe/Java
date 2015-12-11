@@ -11,6 +11,10 @@ public class CsvData {
 		this(',');
 	}
 
+	public static CsvData createTsv() {
+		return new CsvData('\t');
+	}
+
 	public CsvData(char delimiter) {
 		_delimiter = delimiter;
 	}
@@ -130,6 +134,15 @@ public class CsvData {
 		return buff.toString();
 	}
 
+	public List<String> getLines() {
+		List<String> lines = StringTools.tokenize(getText(), "\n");
+
+		if(lines.remove(lines.size() - 1).isEmpty() == false) {
+			throw new RuntimeException("BUG");
+		}
+		return lines;
+	}
+
 	public void writeFile(String csvFile) throws Exception {
 		this.writeFile(csvFile, StringTools.CHARSET_SJIS);
 	}
@@ -179,6 +192,34 @@ public class CsvData {
 		for(List<String> row : _rows) {
 			while(row.size() < w) {
 				row.add("");
+			}
+		}
+	}
+
+	public AutoTable<String> getTable() {
+		AutoTable<String> table = new AutoTable<String>();
+
+		for(int rowidx = 0; rowidx < _rows.size(); rowidx++) {
+			for(int colidx = 0; colidx < _rows.get(rowidx).size(); colidx++) {
+				table.set(colidx, rowidx, _rows.get(rowidx).get(colidx));
+			}
+		}
+		return table;
+	}
+
+	public void setTable(AutoTable<String> table) {
+		_rows.clear();
+
+		for(int rowidx = 0; rowidx < table.getHeight(); rowidx++) {
+			_rows.add(new ArrayList<String>());
+
+			for(int colidx = 0; colidx < table.getWidth(); colidx++) {
+				String cell = table.get(colidx, rowidx);
+
+				if(cell == null) {
+					cell = "";
+				}
+				_rows.get(rowidx).add(cell);
 			}
 		}
 	}
