@@ -33,6 +33,11 @@ public class SortedList<T> {
 		return _list.get(index);
 	}
 
+	public void remove(int index) {
+		trySort();
+		_list.remove(index);
+	}
+
 	private void trySort() {
 		if(_sortedFlag == false) {
 			sort();
@@ -54,7 +59,7 @@ public class SortedList<T> {
 		return buff;
 	}
 
-	public List<T> getMatchAndEdge(T ferret) {
+	public List<T> getEdgeMatch(T ferret) {
 		List<T> buff = new ArrayList<T>();
 		int[] lr = getRange(ferret);
 

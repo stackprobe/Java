@@ -1,6 +1,6 @@
-package charlotte_test.xxxtools;
+package charlotte_test.tools;
 
-import charlotte.xxxtools.DateToDay;
+import charlotte.tools.DateToDay;
 
 public class DateToDayTest {
 	public static void main(String[] args) {

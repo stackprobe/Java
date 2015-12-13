@@ -1,6 +1,6 @@
-package charlotte_test.xxxtools;
+package charlotte_test.tools;
 
-import charlotte.xxxtools.DateTimeToSec;
+import charlotte.tools.DateTimeToSec;
 
 public class DateTimeToSecTest {
 	public static void main(String[] args) {
