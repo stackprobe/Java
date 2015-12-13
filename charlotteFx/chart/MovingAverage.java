@@ -5,7 +5,7 @@ import charlotte.tools.DateTimeToSec;
 public class MovingAverage {
 	private Chart _chart;
 	private long _bound;
-	private long _sec;
+	private long _fxTime;
 	private double _total;
 
 	public MovingAverage(Chart chart, long bound) {
@@ -17,32 +17,32 @@ public class MovingAverage {
 		reload(DateTimeToSec.getSec());
 	}
 
-	private void reload(long sec) {
-		_sec = sec;
+	private void reload(long fxTime) {
+		_fxTime = fxTime;
 		_total = 0L;
 
 		for(long c = 0; c < _bound; c++) {
-			_total += _chart.getMid(sec);
-			sec--;
+			_total += _chart.getMid(FxTime.fxTimeToSec(fxTime));
+			fxTime--;
 		}
 	}
 
-	public void move(long sec) {
-		if(sec <= _sec - _bound ||
-				_sec + _bound <= sec
+	public void move(long fxTime) {
+		if(fxTime <= _fxTime - _bound ||
+				_fxTime + _bound <= fxTime
 				) {
-			reload(sec);
+			reload(fxTime);
 			return;
 		}
-		while(sec < _sec) {
-			_total -= _chart.getMid(_sec);
-			_total += _chart.getMid(_sec - _bound);
-			_sec--;
+		while(fxTime < _fxTime) {
+			_total -= _chart.getMid(FxTime.fxTimeToSec(_fxTime));
+			_total += _chart.getMid(FxTime.fxTimeToSec(_fxTime - _bound));
+			_fxTime--;
 		}
-		while(_sec < sec) {
-			_sec++;
-			_total -= _chart.getMid(_sec - _bound);
-			_total += _chart.getMid(_sec);
+		while(_fxTime < fxTime) {
+			_fxTime++;
+			_total -= _chart.getMid(FxTime.fxTimeToSec(_fxTime - _bound));
+			_total += _chart.getMid(FxTime.fxTimeToSec(_fxTime));
 		}
 	}
 
