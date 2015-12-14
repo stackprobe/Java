@@ -7,7 +7,6 @@ import java.util.List;
 import charlotte.tools.Bmp;
 import charlotte.tools.Canvas;
 import charlotte.tools.DateTimeToSec;
-import charlotte.tools.DoubleTools;
 
 public class Graph {
 	private static final int Y_SIZE = 241;
@@ -15,8 +14,8 @@ public class Graph {
 	private long _startSec;
 	private long _secStep;
 	private List<IChart> _charts = new ArrayList<IChart>();
-	private double _lowPrice = 110.0;
-	private double _hiPrice = 130.0;
+	private double _lowValue = 110.0;
+	private double _hiValue = 130.0;
 
 	public Graph(long startSec, long secStep) {
 		_startSec = startSec;
@@ -27,31 +26,31 @@ public class Graph {
 		_charts.add(chart);
 	}
 
-	public void setLowHiPrice(double lowPrice, double hiPrice) {
-		_lowPrice = lowPrice;
-		_hiPrice = hiPrice;
+	public void setLowHiValue(double lowValue, double hiValue) {
+		_lowValue = lowValue;
+		_hiValue = hiValue;
 	}
 
-	public void autoSetLowHiPrice() {
-		_lowPrice = DoubleTools.IMAX;
-		_hiPrice = 0.0;
+	public void autoSetLowHiValue() {
+		_lowValue = 999.0;
+		_hiValue = 0.0;
 
 		for(IChart chart : _charts) {
 			for(int c = 0; c < Y_SIZE; c++) {
 				long sec = _startSec + c * _secStep;
-				double price = getPrice(chart, sec);
+				double value = getValue(chart, sec);
 
-				_lowPrice = Math.min(_lowPrice, price);
-				_hiPrice = Math.max(_hiPrice, price);
+				_lowValue = Math.min(_lowValue, value);
+				_hiValue = Math.max(_hiValue, value);
 			}
 		}
 	}
 
-	private double getPrice(IChart chart, long sec) {
+	private double getValue(IChart chart, long sec) {
 		double sum = 0.0;
 
 		for(int c = 0; c < _secStep; c++) {
-			sum += chart.getPrice(sec + c);
+			sum += chart.getValue(sec + c);
 		}
 		return sum / _secStep;
 	}
@@ -82,11 +81,11 @@ public class Graph {
 		}
 
 		{
-			double midPrice = (_lowPrice + _hiPrice) / 2.0;
+			double midPrice = (_lowValue + _hiValue) / 2.0;
 
-			canvas.drawDouble(1, 47, 1, Color.BLACK, "" + _hiPrice);
+			canvas.drawDouble(1, 47, 1, Color.BLACK, "" + _hiValue);
 			canvas.drawDouble(1, 447, 1, Color.BLACK, "" + midPrice);
-			canvas.drawDouble(1, 847, 1, Color.BLACK, "" + _lowPrice);
+			canvas.drawDouble(1, 847, 1, Color.BLACK, "" + _lowValue);
 		}
 
 		{
@@ -107,10 +106,10 @@ public class Graph {
 				int x2 = 50 + (c + 1) * Y_STEP;
 				long sec1 = _startSec + c * _secStep;
 				long sec2 = _startSec + (c + 1) * _secStep;
-				double price1 = getPrice(chart, sec1);
-				double price2 = getPrice(chart, sec2);
-				int y1 = getY(price1);
-				int y2 = getY(price2);
+				double value1 = getValue(chart, sec1);
+				double value2 = getValue(chart, sec2);
+				int y1 = getY(value1);
+				int y2 = getY(value2);
 
 				canvas.drawLine(x1, y1, x2, y2, chart.getColor());
 			}
@@ -119,7 +118,7 @@ public class Graph {
 		return bmp;
 	}
 
-	private int getY(double price) {
-		return (int)(850.0 - 800.0 * (price - _lowPrice) / (_hiPrice - _lowPrice));
+	private int getY(double value) {
+		return (int)(850.0 - 800.0 * (value - _lowValue) / (_hiValue - _lowValue));
 	}
 }

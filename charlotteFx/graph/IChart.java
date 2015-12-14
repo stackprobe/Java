@@ -4,5 +4,5 @@ import java.awt.Color;
 
 public interface IChart {
 	public Color getColor();
-	public double getPrice(long sec);
+	public double getValue(long sec);
 }

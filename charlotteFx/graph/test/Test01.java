@@ -47,7 +47,7 @@ public class Test01 {
 			}
 
 			@Override
-			public double getPrice(long sec) {
+			public double getValue(long sec) {
 				return ChartManager.USDJPY.getAsk(sec);
 			}
 		});
@@ -59,7 +59,7 @@ public class Test01 {
 			}
 
 			@Override
-			public double getPrice(long sec) {
+			public double getValue(long sec) {
 				return ChartManager.USDJPY.getMid(sec);
 			}
 		});
@@ -71,12 +71,12 @@ public class Test01 {
 			}
 
 			@Override
-			public double getPrice(long sec) {
+			public double getValue(long sec) {
 				return ChartManager.USDJPY.getBid(sec);
 			}
 		});
 
-		g.autoSetLowHiPrice();
+		g.autoSetLowHiValue();
 		g.getBmp().writeToFile("C:/temp/Test01_" + dateTime + "_" + StringTools.zPad("" + secSpan, 5) + ".png");
 	}
 
@@ -105,7 +105,7 @@ public class Test01 {
 			}
 
 			@Override
-			public double getPrice(long sec) {
+			public double getValue(long sec) {
 				return ChartManager.USDJPY.getMid(sec);
 			}
 		});
@@ -119,7 +119,7 @@ public class Test01 {
 			}
 
 			@Override
-			public double getPrice(long sec) {
+			public double getValue(long sec) {
 				_ma.move(FxTime.secToFxTime(sec));
 				return _ma.getMid();
 			}
@@ -134,7 +134,7 @@ public class Test01 {
 			}
 
 			@Override
-			public double getPrice(long sec) {
+			public double getValue(long sec) {
 				_ma.move(FxTime.secToFxTime(sec));
 				return _ma.getMid();
 			}
@@ -149,7 +149,7 @@ public class Test01 {
 			}
 
 			@Override
-			public double getPrice(long sec) {
+			public double getValue(long sec) {
 				_ma.move(FxTime.secToFxTime(sec));
 				return _ma.getMid();
 			}
@@ -164,13 +164,13 @@ public class Test01 {
 			}
 
 			@Override
-			public double getPrice(long sec) {
+			public double getValue(long sec) {
 				_ma.move(FxTime.secToFxTime(sec));
 				return _ma.getMid();
 			}
 		});
 
-		g.autoSetLowHiPrice();
+		g.autoSetLowHiValue();
 		g.getBmp().writeToFile("C:/temp/Test02_" + dateTime + "_" + StringTools.zPad("" + secSpan, 5) + ".png");
 	}
 }

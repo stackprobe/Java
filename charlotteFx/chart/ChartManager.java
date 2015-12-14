@@ -1,30 +1,26 @@
 package charlotteFx.chart;
 
 public class ChartManager {
+	public static Chart AUDCHF = new Chart("AUDCHF");
+	public static Chart AUDJPY = new Chart("AUDJPY");
+	public static Chart AUDUSD = new Chart("AUDUSD");
+	public static Chart CADCHF = new Chart("CADCHF");
+	public static Chart CADJPY = new Chart("CADJPY");
+	public static Chart CHFJPY = new Chart("CHFJPY");
+	public static Chart CNHJPY = new Chart("CNHJPY");
+	public static Chart EURAUD = new Chart("EURAUD");
+	public static Chart EURCHF = new Chart("EURCHF");
+	public static Chart EURGBP = new Chart("EURGBP");
+	public static Chart EURJPY = new Chart("EURJPY");
+	public static Chart EURUSD = new Chart("EURUSD");
+	public static Chart GBPCHF = new Chart("GBPCHF");
+	public static Chart GBPJPY = new Chart("GBPJPY");
+	public static Chart GBPUSD = new Chart("GBPUSD");
+	public static Chart HKDJPY = new Chart("HKDJPY");
+	public static Chart NZDJPY = new Chart("NZDJPY");
+	public static Chart NZDUSD = new Chart("NZDUSD");
+	public static Chart USDCHF = new Chart("USDCHF");
+	public static Chart USDHKD = new Chart("USDHKD");
 	public static Chart USDJPY = new Chart("USDJPY");
-
-	/*
-	public static ChartData AUDCHF = new ChartData("AUDCHF");
-	public static ChartData AUDJPY = new ChartData("AUDJPY");
-	public static ChartData AUDUSD = new ChartData("AUDUSD");
-	public static ChartData CADCHF = new ChartData("CADCHF");
-	public static ChartData CADJPY = new ChartData("CADJPY");
-	public static ChartData CHFJPY = new ChartData("CHFJPY");
-	public static ChartData CNHJPY = new ChartData("CNHJPY");
-	public static ChartData EURAUD = new ChartData("EURAUD");
-	public static ChartData EURCHF = new ChartData("EURCHF");
-	public static ChartData EURGBP = new ChartData("EURGBP");
-	public static ChartData EURJPY = new ChartData("EURJPY");
-	public static ChartData EURUSD = new ChartData("EURUSD");
-	public static ChartData GBPCHF = new ChartData("GBPCHF");
-	public static ChartData GBPJPY = new ChartData("GBPJPY");
-	public static ChartData GBPUSD = new ChartData("GBPUSD");
-	public static ChartData HKDJPY = new ChartData("HKDJPY");
-	public static ChartData NZDJPY = new ChartData("NZDJPY");
-	public static ChartData NZDUSD = new ChartData("NZDUSD");
-	public static ChartData USDCHF = new ChartData("USDCHF");
-	public static ChartData USDHKD = new ChartData("USDHKD");
-	public static ChartData USDJPY = new ChartData("USDJPY");
-	public static ChartData ZARJPY = new ChartData("ZARJPY");
-	*/
+	public static Chart ZARJPY = new Chart("ZARJPY");
 }

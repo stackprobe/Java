@@ -1,6 +1,5 @@
 package charlotteFx.chart;
 
-import charlotte.tools.DateToDay;
 import charlotte.tools.RingList;
 
 public class Chart {
@@ -10,20 +9,28 @@ public class Chart {
 
 	public Chart(String currPair) {
 		_currPair = currPair;
-		reload(DateToDay.getDay());
+		//reload(DateToDay.getDay());
+	}
+
+	public String getCurrPair() {
+		return _currPair;
 	}
 
 	private void reload(int day) {
 		for(int index = 0; index < CACHED_DAYS; index++) {
-			_files.set(index, new ChartFile(_currPair, day - CACHED_DAYS / 2 + index));
+			_files.set(index, new ChartFile(_currPair, day + index));
 		}
 	}
 
 	public ChartFile getFile(int day) {
-		if(day <= _files.head().getDay() - CACHED_DAYS ||
-				_files.tail().getDay() + CACHED_DAYS <= day
-				) {
+		if(_files.head() == null) {
 			reload(day);
+		}
+		else if(day <= _files.head().getDay() - CACHED_DAYS) {
+			reload(day);
+		}
+		else if(_files.tail().getDay() + CACHED_DAYS <= day) {
+			reload(day - CACHED_DAYS + 1);
 		}
 		while(day < _files.head().getDay()) {
 			_files.shift(new ChartFile(_currPair, _files.head().getDay() - 1));
