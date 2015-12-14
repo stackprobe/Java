@@ -467,6 +467,10 @@ public class Bmp {
 		public int g;
 		public int b;
 
+		public Dot(int value) {
+			this(new Color(value, true));
+		}
+
 		public Dot(Color color) {
 			this.a = color.getAlpha();
 			this.r = color.getRed();
@@ -502,6 +506,10 @@ public class Bmp {
 		@Override
 		public String toString() {
 			return a + ", " + r + ", " + g + ", " + b;
+		}
+
+		public Color getColor() {
+			return new Color(r, g, b, a);
 		}
 	}
 
