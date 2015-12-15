@@ -5,7 +5,7 @@ import java.util.Comparator;
 import charlotte.tools.LongTools;
 
 public class PriceData {
-	public static final double DEF_PRICE = 120.0;
+	public static double DEF_PRICE = 120.0;
 	private long _sec;
 	private double _ask;
 	private double _bid;
