@@ -22,7 +22,8 @@ public class Test01 {
 
 			//test01();
 			//test02();
-			test03();
+			//test03();
+			test04();
 		}
 		catch(Throwable e) {
 			e.printStackTrace();
@@ -105,6 +106,31 @@ public class Test01 {
 					}
 				}
 			}
+		}
+	}
+
+	private static void test04() throws Exception {
+		long sec = DateTimeToSec.getSec();
+		sec /= 86400L;
+		sec *= 86400L;
+		long fxTime = FxTime.secToFxTime(sec);
+
+		for(long fxTimeSpan : new long[] { 2, 4, 8, 16, 32, 64 }) {
+			Graph g = new Graph(fxTime - 86400L, fxTime, fxTimeSpan);
+
+			g.addChart(new MaChart(new Color(0, 255,   0), 60L * 1));
+			g.addChart(new MaChart(new Color(0, 255,  25), 60L * 2));
+			g.addChart(new MaChart(new Color(0, 255,  50), 60L * 3));
+			g.addChart(new MaChart(new Color(0, 255,  75), 60L * 4));
+			g.addChart(new MaChart(new Color(0, 255, 100), 60L * 5));
+			g.addChart(new MaChart(new Color(0, 255, 125), 60L * 6));
+			g.addChart(new MaChart(new Color(0, 255, 150), 60L * 7));
+			g.addChart(new MaChart(new Color(0, 255, 175), 60L * 8));
+			g.addChart(new MaChart(new Color(0, 255, 200), 60L * 9));
+			g.addChart(new MaChart(new Color(0, 255, 225), 60L * 10));
+			g.addChart(new MaChart(new Color(0, 255, 255), 60L * 11));
+
+			g.generate();
 		}
 	}
 }

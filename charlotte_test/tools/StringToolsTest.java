@@ -12,6 +12,13 @@ public class StringToolsTest {
 			System.out.println(StringTools.set("ABC", 0, 'X'));
 			System.out.println(StringTools.set("ABC", 1, 'X'));
 			System.out.println(StringTools.set("ABC", 2, 'X'));
+
+			System.out.println(StringTools.replaceEnclosed(
+					"<html><head></head><body>abc</body></html>",
+					"<body>",
+					"<",
+					"123"
+					));
 		}
 		catch(Throwable e) {
 			e.printStackTrace();

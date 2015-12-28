@@ -457,4 +457,42 @@ public class StringTools {
 	public static String encodeUrl(String str, String charset) throws Exception {
 		return HTTPServer.encodeUrl(str, charset);
 	}
+
+	public static Enclosed getEnclosed(String text, String bgnTag, String endTag) {
+		Enclosed ret = new Enclosed();
+
+		ret.text = text;
+		ret.bgnBgn = text.indexOf(bgnTag);
+
+		if(ret.bgnBgn == -1) {
+			return null;
+		}
+		ret.bgnEnd = ret.bgnBgn + bgnTag.length();
+		ret.endBgn = text.indexOf(endTag, ret.bgnEnd);
+
+		if(ret.endBgn == -1) {
+			return null;
+		}
+		ret.endEnd = ret.endBgn + endTag.length();
+		ret.innerText = text.substring(ret.bgnEnd, ret.endBgn);
+
+		return ret;
+	}
+
+	public static String replace(Enclosed encl, String innerText) {
+		return encl.text.substring(0, encl.bgnEnd) + innerText + encl.text.substring(encl.endBgn);
+	}
+
+	public static String replaceEnclosed(String text, String bgnTag, String endTag, String innerText) {
+		return replace(getEnclosed(text, bgnTag, endTag), innerText);
+	}
+
+	public static class Enclosed {
+		public String text;
+		public int bgnBgn;
+		public int bgnEnd;
+		public int endBgn;
+		public int endEnd;
+		public String innerText;
+	}
 }
