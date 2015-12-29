@@ -115,11 +115,13 @@ public class TestDlg extends JDialog {
 
 		public void set() {
 			_flag = true;
+			System.out.println("Pulsar set");
 
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
 					_flag = false;
+					System.out.println("Pulsar un-set");
 				}
 			});
 		}
