@@ -16,21 +16,49 @@ public class HTTPRequestTest {
 	}
 
 	private static void main2() throws Exception {
-		HTTPRequest req = new HTTPRequest(
-				//"http://ja.wikipedia.org/wiki/Hypertext_Transfer_Protocol"
-				"http://192.168.222.101:50080/"
-				);
-		HTTPResponse res = req.perform();
-		byte[] resBody = res.getBody();
+		{
+			HTTPRequest req = new HTTPRequest(
+					//"http://ja.wikipedia.org/wiki/Hypertext_Transfer_Protocol"
+					"http://192.168.222.101:50080/"
+					);
+			HTTPResponse res = req.perform();
+			byte[] resBody = res.getBody();
 
-		FileTools.writeAllBytes("C:/temp/HTTPRequest_resBody.txt", resBody);
+			FileTools.writeAllBytes("C:/temp/HTTPRequest_resBody.txt", resBody);
 
-		String resText = new String(
-				resBody,
-				//StringTools.CHARSET_UTF8
-				StringTools.CHARSET_SJIS
-				);
+			String resText = new String(
+					resBody,
+					//StringTools.CHARSET_UTF8
+					StringTools.CHARSET_SJIS
+					);
 
-		System.out.println(resText);
+			System.out.println(resText);
+		}
+
+		{
+			HTTPRequest req = new HTTPRequest(
+					//"http://ja.wikipedia.org/wiki/Hypertext_Transfer_Protocol"
+					"http://192.168.222.101:50080/"
+					);
+			req.head();
+			HTTPResponse res = req.perform();
+			byte[] resBody = res.getBody();
+
+			if(resBody != null) {
+				throw null;
+			}
+
+			//FileTools.writeAllBytes("C:/temp/HTTPRequest_resBody.txt", resBody);
+
+			/*
+			String resText = new String(
+					resBody,
+					//StringTools.CHARSET_UTF8
+					StringTools.CHARSET_SJIS
+					);
+					*/
+
+			//System.out.println(resText);
+		}
 	}
 }

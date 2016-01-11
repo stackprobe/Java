@@ -115,7 +115,7 @@ public class Test01 {
 		sec *= 86400L;
 		long fxTime = FxTime.secToFxTime(sec);
 
-		for(long fxTimeSpan : new long[] { 2, 4, 8, 16, 32, 64 }) {
+		for(long fxTimeSpan : new long[] { 256, 128, 64, 32, 16, 8, 4, 2 }) {
 			Graph g = new Graph(fxTime - 86400L, fxTime, fxTimeSpan);
 
 			g.addChart(new MaChart(new Color(0, 255,   0), 60L * 1));

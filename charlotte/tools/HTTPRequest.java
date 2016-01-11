@@ -12,6 +12,9 @@ public class HTTPRequest {
 	private byte[] _body = null; // null -> GET, not null -> POST
 	private int _connectTimeoutMillis = 20000; // 0 -> infinite
 	private int _soTimeoutMillis = 60000; // 0 -> infinite
+	private String _proxyDomain = null; // null -> no proxy
+	private int _proxyPortNo = -1;
+	private boolean _head;
 
 	public HTTPRequest() {
 	}
@@ -61,29 +64,54 @@ public class HTTPRequest {
 		_soTimeoutMillis = millis;
 	}
 
+	public void setProxy(String domain, int portNo) {
+		_proxyDomain = domain;
+		_proxyPortNo = portNo;
+	}
+
+	public void head() {
+		_head = true;
+	}
+
 	public HTTPResponse perform() throws Exception {
-		if(_portNo != 80) {
-			setHeaderField("Host", _domain + ":" + _portNo);
+		if(_portNo == 80) {
+			setHeaderField("Host", _domain);
 		}
 		else {
-			setHeaderField("Host", _domain);
+			setHeaderField("Host", _domain + ":" + _portNo);
 		}
 		if(_body != null) {
 			setHeaderField("Content-Length", "" + _body.length);
 		}
-		SockClient client = new SockClient(_domain, _portNo, _connectTimeoutMillis, _soTimeoutMillis);
+		SockClient client;
 
+		if(_proxyDomain == null) {
+			client = new SockClient(_domain, _portNo, _connectTimeoutMillis, _soTimeoutMillis);
+		}
+		else {
+			client = new SockClient(_proxyDomain, _proxyPortNo, _connectTimeoutMillis, _soTimeoutMillis);
+		}
 		try {
 			OutputStream ws = client.getOutputStream();
 
-			if(_body == null) {
-				write(ws, "GET");
+			if(_head) {
+				write(ws, "HEAD ");
+			}
+			else if(_body == null) {
+				write(ws, "GET ");
 			}
 			else {
-				write(ws, "POST");
+				write(ws, "POST ");
 			}
-			write(ws, " ");
-			write(ws, _path);
+			if(_proxyDomain == null) {
+				write(ws, _path);
+			}
+			else if(_proxyPortNo == 80) {
+				write(ws, "http://" + _domain + "/" + _path);
+			}
+			else {
+				write(ws, "http://" + _domain + ":" + _portNo + "/" + _path);
+			}
 			write(ws, " HTTP/1.1\r\n");
 
 			for(String name : _headerFields.keySet()) {
@@ -100,7 +128,7 @@ public class HTTPRequest {
 				ws.write(_body);
 			}
 			ws.flush();
-			return new HTTPResponse(client.getInputStream());
+			return new HTTPResponse(client.getInputStream(), _head);
 		}
 		finally {
 			FileTools.close(client);

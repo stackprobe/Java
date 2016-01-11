@@ -18,11 +18,18 @@ public class HTTPResponse {
 	private byte[] _body;
 
 	public HTTPResponse(InputStream rs) throws Exception {
+		this(rs, false);
+	}
+
+	public HTTPResponse(InputStream rs, boolean noBody) throws Exception {
 		_rs = rs;
 		readFirstLine();
 		readHeaderFields();
 		checkHeaderFields();
-		readBody();
+
+		if(!noBody) {
+			readBody();
+		}
 		_rs = null;
 	}
 
