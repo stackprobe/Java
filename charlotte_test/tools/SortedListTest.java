@@ -5,8 +5,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import charlotte.tools.ArrayTools;
+import charlotte.tools.MathTools;
 import charlotte.tools.SortedList;
-import charlotte.tools.SystemTools;
 
 public class SortedListTest {
 	public static void main(String[] args) {
@@ -20,7 +20,7 @@ public class SortedListTest {
 
 	private static void main2() throws Exception {
 		for(int c = 0; c < 10000; c++) {
-			test01(0, 1000, SystemTools.random(2000));
+			test01(0, 1000, MathTools.random(2000));
 		}
 		System.out.println("OK!");
 	}
@@ -30,14 +30,14 @@ public class SortedListTest {
 		P_SortedList<Integer> psl = new P_SortedList<Integer>(new IntComp());
 
 		for(int c = 0; c < count; c++) {
-			int value = SystemTools.random(minval, maxval);
+			int value = MathTools.random(minval, maxval);
 
 			sl.add(value);
 			psl.list.add(value);
 		}
 
 		for(int c = 0; c < 20; c++) {
-			int value = SystemTools.random(minval, maxval);
+			int value = MathTools.random(minval, maxval);
 
 			int[] r1 = sl.getRange(value);
 			int[] r2 = psl.getRange(value);

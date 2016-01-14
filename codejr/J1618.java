@@ -6,7 +6,7 @@ import java.util.List;
 
 import charlotte.tools.ArrayTools;
 import charlotte.tools.IntTools;
-import charlotte.tools.SystemTools;
+import charlotte.tools.MathTools;
 
 public class J1618 {
 	public static void main(String[] args) {
@@ -68,7 +68,7 @@ public class J1618 {
 			test03_b(l);
 		}
 		for(int c = 0; c < 100; c++) {
-			test03_b(SystemTools.random(5000));
+			test03_b(MathTools.random(5000));
 		}
 
 		System.out.println("_testTimeTotal: " + _testTimeTotal);

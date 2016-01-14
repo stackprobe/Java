@@ -159,4 +159,64 @@ public class Canvas {
 		}
 		return span + 1;
 	}
+
+	public void paste(int x, int y, Color color) {
+		paste(x, y, new Bmp.Dot(color));
+	}
+
+	public void paste(int x, int y, Bmp.Dot dot) {
+		Paste p = new Paste(_bmp.getDot(x, y), dot);
+		p.bloom(x, y);
+		p.burst();
+	}
+
+	private class Paste {
+		private Bmp.Dot _tDot;
+		private Bmp.Dot _dDot;
+		private QueueData<int[]> seeds = new QueueData<int[]>();
+
+		public Paste(Bmp.Dot tDot, Bmp.Dot dDot) {
+			_tDot = tDot;
+			_dDot = dDot;
+		}
+
+		public void bloom(int x, int y) {
+			if(x < 0) {
+				return;
+			}
+			if(y < 0) {
+				return;
+			}
+			if(_bmp.getWidth() <= x) {
+				return;
+			}
+			if(_bmp.getHeight() <= y) {
+				return;
+			}
+			if(_tDot.equals(_bmp.getDot(x, y)) == false) {
+				return;
+			}
+			_bmp.setDot(x, y, _dDot);
+
+			planting(x - 1, y);
+			planting(x + 1, y);
+			planting(x, y - 1);
+			planting(x, y + 1);
+		}
+
+		private void planting(int x, int y) {
+			seeds.add(new int[] { x, y });
+		}
+
+		public void burst() {
+			for(; ; ) {
+				int[] seed = seeds.poll();
+
+				if(seed == null) {
+					break;
+				}
+				bloom(seed[0], seed[1]);
+			}
+		}
+	}
 }

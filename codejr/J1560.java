@@ -1,7 +1,7 @@
 package codejr;
 
 import charlotte.tools.IntTools;
-import charlotte.tools.SystemTools;
+import charlotte.tools.MathTools;
 
 public class J1560 {
 	public static void main(String[] args) {
@@ -25,11 +25,11 @@ public class J1560 {
 			test02(n);
 		}
 		for(int c = 0; c < 100; c++) {
-			int n = SystemTools.random(1000000) + 1;
+			int n = MathTools.random(1000000) + 1;
 			test02(n);
 		}
 		for(int c = 0; c < 100; c++) {
-			int n = SystemTools.random(100000000) + 1;
+			int n = MathTools.random(100000000) + 1;
 			test02(n);
 		}
 	}

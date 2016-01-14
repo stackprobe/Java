@@ -21,7 +21,7 @@ public class LockingFile {
 				return true;
 			}
 			try {
-				Thread.sleep(baseWaitMillis * count + SystemTools.random(200));
+				Thread.sleep(baseWaitMillis * count + MathTools.random(200));
 			}
 			catch(Throwable e) {
 				e.printStackTrace();

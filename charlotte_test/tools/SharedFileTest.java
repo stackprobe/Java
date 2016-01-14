@@ -5,8 +5,8 @@ import java.util.List;
 
 import charlotte.tools.FileTools;
 import charlotte.tools.IntTools;
+import charlotte.tools.MathTools;
 import charlotte.tools.SharedFile;
-import charlotte.tools.SystemTools;
 
 public class SharedFileTest {
 	public static void main(String[] args) {
@@ -42,7 +42,7 @@ public class SharedFileTest {
 							value++;
 							System.out.println("-> " + value);
 
-							Thread.sleep(SystemTools.random(10));
+							Thread.sleep(MathTools.random(10));
 
 							data = IntTools.toBytes(value);
 							sf.write(data);

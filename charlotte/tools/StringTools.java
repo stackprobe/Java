@@ -227,7 +227,7 @@ public class StringTools {
 	}
 
 	public static List<String> random(String chrs, int minlen, int maxlen, int minsz, int maxsz) {
-		return random(chrs, minlen, maxlen, SystemTools.random(minsz, maxsz));
+		return random(chrs, minlen, maxlen, MathTools.random(minsz, maxsz));
 	}
 
 	public static List<String> random(String chrs, int minlen, int maxlen, int size) {
@@ -240,14 +240,14 @@ public class StringTools {
 	}
 
 	public static String random(String chrs, int minlen, int maxlen) {
-		return random(chrs, SystemTools.random(minlen, maxlen));
+		return random(chrs, MathTools.random(minlen, maxlen));
 	}
 
 	public static String random(String chrs, int length) {
 		StringBuffer buff = new StringBuffer();
 
 		while(buff.length() < length) {
-			buff.append(chrs.charAt(SystemTools.random(chrs.length())));
+			buff.append(chrs.charAt(MathTools.random(chrs.length())));
 		}
 		return buff.toString();
 	}
@@ -409,10 +409,10 @@ public class StringTools {
 
 	public static String getRandString(int minlen, int maxlen, String validChrs) {
 		StringBuffer buff = new StringBuffer();
-		int count = SystemTools.random(minlen, maxlen);
+		int count = MathTools.random(minlen, maxlen);
 
 		for(int index = 0; index < count; index++) {
-			buff.append(validChrs.charAt(SystemTools.random(validChrs.length())));
+			buff.append(validChrs.charAt(MathTools.random(validChrs.length())));
 		}
 		return buff.toString();
 	}
