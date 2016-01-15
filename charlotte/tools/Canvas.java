@@ -34,7 +34,7 @@ public class Canvas {
 	}
 
 	public void drawCircle(double x, double y, double r, Bmp.Dot dot) {
-		final int DENOM = 40;
+		final int DENOM = Math.max(40, DoubleTools.toInt(r / 5.0));
 
 		for(int numer = 0; numer < DENOM; numer++) {
 			double r1 = Math.PI * 2 * numer / DENOM;
@@ -82,6 +82,10 @@ public class Canvas {
 					dot
 					);
 		}
+	}
+
+	public void fillRectCenter(int centerX, int centerY, int w, int h, Color color) {
+		fillRect(centerX - w / 2, centerY - h / 2, w, h, color);
 	}
 
 	public void fillRect(int l, int t, int w, int h, Color color) {

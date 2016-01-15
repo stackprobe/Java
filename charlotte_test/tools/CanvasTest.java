@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import charlotte.tools.Bmp;
 import charlotte.tools.Canvas;
+import charlotte.tools.DoubleTools;
 import charlotte.tools.MathTools;
 
 public class CanvasTest {
@@ -11,6 +12,7 @@ public class CanvasTest {
 		try {
 			test01();
 			test02();
+			test03();
 		}
 		catch(Throwable e) {
 			e.printStackTrace();
@@ -68,5 +70,148 @@ public class CanvasTest {
 		canvas.paste(150, 150, Color.ORANGE);
 
 		bmp.writeToFile("C:/temp/CanvasTest2c.png");
+	}
+
+	private static void test03() throws Exception {
+		//*
+		final int ROT_DIV = 16;
+		/*/
+		final int ROT_DIV = 2;
+		//*/
+
+		//final int DEST_WH = 50;
+		final int DEST_WH = 100;
+		//final int DEST_WH = 300;
+
+		Bmp bmp = new Bmp(1000, 1000, new Color(255, 255, 255, 0));
+		Canvas canvas = new Canvas(bmp);
+
+		test03_0(canvas, 950, new Color(120, 150, 120));
+		test03_0(canvas, 900, Color.WHITE);
+		test03_0(canvas, 850, Color.RED);
+
+		test03_1(canvas);
+
+		bmp = bmp.rotate_ra1();
+		canvas = new Canvas(bmp);
+
+		test03_1(canvas);
+		test03_2(canvas);
+
+		bmp = bmp.rotate_ra1();
+		canvas = new Canvas(bmp);
+
+		test03_2(canvas);
+
+		bmp.DUMMY_A = 0;
+		bmp.DUMMY_R = 255;
+		bmp.DUMMY_G = 255;
+		bmp.DUMMY_B = 255;
+		bmp = bmp.rotate(Math.PI / 4.0 + 0.2, ROT_DIV);
+
+		test03_3(bmp);
+
+		bmp.DUMMY_A = 0;
+		bmp.DUMMY_R = 255;
+		bmp.DUMMY_G = 255;
+		bmp.DUMMY_B = 255;
+		bmp = bmp.rotate(-0.2, ROT_DIV);
+
+		bmp = bmp.expand(DEST_WH, DEST_WH);
+
+		bmp.writeToFile("C:/temp/ErrorIcon.png");
+
+		// ----
+
+		bmp = new Bmp(1000, 1000, new Color(255, 255, 255, 0));
+		canvas = new Canvas(bmp);
+
+		test03_0(canvas, 950, new Color(120, 150, 120));
+		test03_0(canvas, 900, Color.WHITE);
+		test03_0(canvas, 850, new Color(255, 235, 0));
+
+		test03_4(canvas,  0, new Color(100, 100, 50));
+		test03_4(canvas, 20, Color.WHITE);
+
+		bmp.DUMMY_A = 0;
+		bmp.DUMMY_R = 255;
+		bmp.DUMMY_G = 255;
+		bmp.DUMMY_B = 255;
+		bmp = bmp.rotate(0.2 - 0.05, ROT_DIV);
+
+		test03_3(bmp);
+
+		bmp.DUMMY_A = 0;
+		bmp.DUMMY_R = 255;
+		bmp.DUMMY_G = 255;
+		bmp.DUMMY_B = 255;
+		bmp = bmp.rotate(-0.2, ROT_DIV);
+
+		bmp = bmp.expand(DEST_WH, DEST_WH);
+
+		bmp.writeToFile("C:/temp/WarningIcon.png");
+
+		// ----
+
+		bmp = new Bmp(1000, 1000, new Color(255, 255, 255, 0));
+		canvas = new Canvas(bmp);
+
+		test03_0(canvas, 950, new Color(120, 150, 120));
+		test03_0(canvas, 900, Color.WHITE);
+		test03_0(canvas, 850, new Color(100, 100, 255));
+
+		test03_4(canvas,  0, new Color(0, 0, 100));
+		test03_4(canvas, 20, Color.WHITE);
+
+		bmp.DUMMY_A = 0;
+		bmp.DUMMY_R = 255;
+		bmp.DUMMY_G = 255;
+		bmp.DUMMY_B = 255;
+		bmp = bmp.rotate(Math.PI + 0.2 - 0.05, ROT_DIV);
+
+		test03_3(bmp);
+
+		bmp.DUMMY_A = 0;
+		bmp.DUMMY_R = 255;
+		bmp.DUMMY_G = 255;
+		bmp.DUMMY_B = 255;
+		bmp = bmp.rotate(-0.2, ROT_DIV);
+
+		bmp = bmp.expand(DEST_WH, DEST_WH);
+
+		bmp.writeToFile("C:/temp/InformationIcon.png");
+	}
+
+	private static void test03_0(Canvas canvas, int wh, Color color) {
+		canvas.drawCircle(500, 500, wh / 2, color);
+		canvas.paste(500, 500, color);
+	}
+
+	private static void test03_1(Canvas canvas) {
+		canvas.fillRectCenter(500, 500, 700, 250, new Color(128, 0, 0));
+	}
+
+	private static void test03_2(Canvas canvas) {
+		canvas.fillRectCenter(500, 500, 650, 200, Color.WHITE);
+	}
+
+	private static void test03_3(Bmp bmp) {
+		for(int x = 0; x < 1000; x++) {
+			for(int y = 0; y < 1000; y++) {
+				double r = x * y;
+				r /= 2500000.0;
+				r = 1.0 - r;
+
+				bmp.setR(x, y, DoubleTools.toInt(bmp.getR(x, y) * r));
+				bmp.setG(x, y, DoubleTools.toInt(bmp.getG(x, y) * r));
+				bmp.setB(x, y, DoubleTools.toInt(bmp.getB(x, y) * r));
+			}
+		}
+	}
+
+	private static void test03_4(Canvas canvas, int minus, Color color) {
+		canvas.drawCircle(500, 765, 150 - minus, color);
+		canvas.paste(500, 765, color);
+		canvas.fillRectCenter(500, 360, 280 - minus * 2, 490 - minus * 2, color);
 	}
 }
