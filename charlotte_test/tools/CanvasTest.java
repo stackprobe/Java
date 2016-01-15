@@ -58,5 +58,15 @@ public class CanvasTest {
 		canvas.paste(150, 150, Color.GREEN);
 		bmp.setDot(150, 150, new Bmp.Dot(Color.YELLOW));
 		bmp.writeToFile("C:/temp/CanvasTest2b.png");
+
+		// ----
+
+		bmp = new Bmp(300, 300, Color.WHITE);
+		canvas = new Canvas(bmp);
+
+		canvas.fillRect(50, 50, 200, 200, Color.ORANGE);
+		canvas.paste(150, 150, Color.ORANGE);
+
+		bmp.writeToFile("C:/temp/CanvasTest2c.png");
 	}
 }

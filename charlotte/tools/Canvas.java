@@ -165,7 +165,12 @@ public class Canvas {
 	}
 
 	public void paste(int x, int y, Bmp.Dot dot) {
-		Paste p = new Paste(_bmp.getDot(x, y), dot);
+		Bmp.Dot tDot = _bmp.getDot(x, y);
+
+		if(tDot.equals(dot)) {
+			return;
+		}
+		Paste p = new Paste(tDot, dot);
 		p.bloom(x, y);
 		p.burst();
 	}
