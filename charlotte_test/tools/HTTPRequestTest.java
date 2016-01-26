@@ -21,7 +21,7 @@ public class HTTPRequestTest {
 					//"http://ja.wikipedia.org/wiki/Hypertext_Transfer_Protocol"
 					"http://192.168.222.101:50080/"
 					);
-			HTTPResponse res = req.perform();
+			HTTPResponse res = req.get();
 			byte[] resBody = res.getBody();
 
 			FileTools.writeAllBytes("C:/temp/HTTPRequest_resBody.txt", resBody);
@@ -40,8 +40,7 @@ public class HTTPRequestTest {
 					//"http://ja.wikipedia.org/wiki/Hypertext_Transfer_Protocol"
 					"http://192.168.222.101:50080/"
 					);
-			req.head();
-			HTTPResponse res = req.perform();
+			HTTPResponse res = req.head();
 			byte[] resBody = res.getBody();
 
 			if(resBody != null) {

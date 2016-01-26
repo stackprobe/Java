@@ -14,7 +14,7 @@ public class HTTPRequest {
 	private int _soTimeoutMillis = 60000; // 0 -> infinite
 	private String _proxyDomain = null; // null -> no proxy
 	private int _proxyPortNo = -1;
-	private boolean _head;
+	private boolean _head; // true -> HEAD, false -> GET or POST
 
 	public HTTPRequest() {
 	}
@@ -48,6 +48,12 @@ public class HTTPRequest {
 		}
 	}
 
+	public void setAuthorization(String user, String password) throws Exception {
+		String plain = user + ":" + password;
+		String enc = Base64.getString(plain.getBytes(StringTools.CHARSET_UTF8));
+		setHeaderField("Authorization", "Basic " + enc);
+	}
+
 	public void setHeaderField(String name, String value) {
 		_headerFields.put(name, value);
 	}
@@ -69,8 +75,24 @@ public class HTTPRequest {
 		_proxyPortNo = portNo;
 	}
 
-	public void head() {
+	public void setHeadFlag(boolean head) {
+		_head = head;
+	}
+
+	public HTTPResponse head() throws Exception {
+		_body = null;
 		_head = true;
+		return perform();
+	}
+
+	public HTTPResponse get() throws Exception {
+		return post(null);
+	}
+
+	public HTTPResponse post(byte[] body) throws Exception {
+		_body = body;
+		_head = false;
+		return perform();
 	}
 
 	public HTTPResponse perform() throws Exception {
@@ -107,10 +129,10 @@ public class HTTPRequest {
 				write(ws, _path);
 			}
 			else if(_proxyPortNo == 80) {
-				write(ws, "http://" + _domain + "/" + _path);
+				write(ws, "http://" + _domain + _path);
 			}
 			else {
-				write(ws, "http://" + _domain + ":" + _portNo + "/" + _path);
+				write(ws, "http://" + _domain + ":" + _portNo + _path);
 			}
 			write(ws, " HTTP/1.1\r\n");
 

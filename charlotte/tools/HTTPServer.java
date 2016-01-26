@@ -127,8 +127,15 @@ public abstract class HTTPServer extends SockServer {
 
 	private static ObjectMap parseQuery(Connection con, String charset) throws Exception {
 		String url = con.path;
-		String query = url.substring(url.indexOf('?') + 1);
+		int quesPos = url.indexOf('?');
+		String query;
 
+		if(quesPos != -1) {
+			query = url.substring(quesPos + 1);
+		}
+		else {
+			query = "";
+		}
 		return parseQuery(query, charset);
 	}
 

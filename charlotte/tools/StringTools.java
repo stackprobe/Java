@@ -271,11 +271,19 @@ public class StringTools {
 	}
 
 	public static boolean isSame(String str1, String str2) {
+		return isSame(str1, str2, false);
+	}
+
+	public static boolean isSame(String str1, String str2, boolean ignoreCase) {
 		if(str1 == null && str2 == null) {
 			return true;
 		}
 		if(str1 == null || str2 == null) {
 			return false;
+		}
+		if(ignoreCase) {
+			str1 = str1.toLowerCase();
+			str2 = str2.toLowerCase();
 		}
 		return str1.equals(str2);
 	}
@@ -342,28 +350,60 @@ public class StringTools {
 	}
 
 	public static boolean startsWith(String str, String ptn) {
+		return startsWith(str, ptn, false);
+	}
+
+	public static boolean startsWithIgnoreCase(String str, String ptn) {
+		return startsWith(str, ptn, true);
+	}
+
+	public static boolean startsWith(String str, String ptn, boolean ignoreCase) {
 		if(str.length() < ptn.length()) {
 			return false;
 		}
-		return str.substring(0, ptn.length()).equals(ptn);
+		return isSame(str.substring(0, ptn.length()), ptn, ignoreCase);
 	}
 
 	public static boolean endsWith(String str, String ptn) {
+		return endsWith(str, ptn, false);
+	}
+
+	public static boolean endsWithIgnoreCase(String str, String ptn) {
+		return endsWith(str, ptn, true);
+	}
+
+	public static boolean endsWith(String str, String ptn, boolean ignoreCase) {
 		if(str.length() < ptn.length()) {
 			return false;
 		}
-		return str.substring(str.length() - ptn.length()).equals(ptn);
+		return isSame(str.substring(str.length() - ptn.length()), ptn, ignoreCase);
 	}
 
 	public static String removeStartsWith(String str, String ptn) {
-		if(startsWith(str, ptn)) {
+		return removeStartsWith(str, ptn, false);
+	}
+
+	public static String removeStartsWithIgnoreCase(String str, String ptn) {
+		return removeStartsWith(str, ptn, true);
+	}
+
+	public static String removeStartsWith(String str, String ptn, boolean ignoreCase) {
+		if(startsWith(str, ptn, ignoreCase)) {
 			return remove(str, 0, ptn.length());
 		}
 		return str;
 	}
 
 	public static String removeEndsWith(String str, String ptn) {
-		if(endsWith(str, ptn)) {
+		return removeEndsWith(str, ptn, false);
+	}
+
+	public static String removeEndsWithIgnoreCase(String str, String ptn) {
+		return removeEndsWith(str, ptn, true);
+	}
+
+	public static String removeEndsWith(String str, String ptn, boolean ignoreCase) {
+		if(endsWith(str, ptn, ignoreCase)) {
 			return remove(str, str.length() - ptn.length(), ptn.length());
 		}
 		return str;
@@ -437,17 +477,6 @@ public class StringTools {
 
 	public static boolean containsIgnoreCase(String str, String ptn) {
 		return indexOfIgnoreCase(str, ptn) == -1;
-	}
-
-	public static boolean startsWithIgnoreCase(String str, String ptn) {
-		if(ptn.length() <= str.length()) {
-			String mid = str.substring(0, ptn.length());
-
-			if(mid.equalsIgnoreCase(ptn)) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	public static String decodeUrl(String str, String charset) throws Exception {

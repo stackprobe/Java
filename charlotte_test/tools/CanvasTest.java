@@ -6,6 +6,7 @@ import charlotte.tools.Bmp;
 import charlotte.tools.Canvas;
 import charlotte.tools.DoubleTools;
 import charlotte.tools.MathTools;
+import charlotte.tools.StringTools;
 
 public class CanvasTest {
 	public static void main(String[] args) {
@@ -79,10 +80,6 @@ public class CanvasTest {
 		final int ROT_DIV = 2;
 		//*/
 
-		//final int DEST_WH = 50;
-		final int DEST_WH = 100;
-		//final int DEST_WH = 300;
-
 		Bmp bmp = new Bmp(1000, 1000, new Color(255, 255, 255, 0));
 		Canvas canvas = new Canvas(bmp);
 
@@ -117,9 +114,7 @@ public class CanvasTest {
 		bmp.DUMMY_B = 255;
 		bmp = bmp.rotate(-0.2, ROT_DIV);
 
-		bmp = bmp.expand(DEST_WH, DEST_WH);
-
-		bmp.writeToFile("C:/temp/ErrorIcon.png");
+		test03_write(bmp, "Error");
 
 		// ----
 
@@ -147,9 +142,7 @@ public class CanvasTest {
 		bmp.DUMMY_B = 255;
 		bmp = bmp.rotate(-0.2, ROT_DIV);
 
-		bmp = bmp.expand(DEST_WH, DEST_WH);
-
-		bmp.writeToFile("C:/temp/WarningIcon.png");
+		test03_write(bmp, "Warning");
 
 		// ----
 
@@ -177,9 +170,7 @@ public class CanvasTest {
 		bmp.DUMMY_B = 255;
 		bmp = bmp.rotate(-0.2, ROT_DIV);
 
-		bmp = bmp.expand(DEST_WH, DEST_WH);
-
-		bmp.writeToFile("C:/temp/InformationIcon.png");
+		test03_write(bmp, "Information");
 	}
 
 	private static void test03_0(Canvas canvas, int wh, Color color) {
@@ -213,5 +204,22 @@ public class CanvasTest {
 		canvas.drawCircle(500, 765, 150 - minus, color);
 		canvas.paste(500, 765, color);
 		canvas.fillRectCenter(500, 360, 280 - minus * 2, 490 - minus * 2, color);
+	}
+
+	private static void test03_write(Bmp bmp, String kind) throws Exception {
+		test03_w1(bmp, kind, 16);
+		test03_w1(bmp, kind, 32);
+		test03_w1(bmp, kind, 48);
+		test03_w1(bmp, kind, 64);
+		test03_w1(bmp, kind, 100);
+		test03_w1(bmp, kind, 150);
+		test03_w1(bmp, kind, 200);
+		test03_w1(bmp, kind, 250);
+		test03_w1(bmp, kind, 300);
+	}
+
+	private static void test03_w1(Bmp bmp, String kind, int dest_wh) throws Exception {
+		bmp = bmp.expand(dest_wh, dest_wh);
+		bmp.writeToFile("C:/temp/" + kind + "Icon_" + StringTools.zPad(dest_wh, 3) + ".png");
 	}
 }

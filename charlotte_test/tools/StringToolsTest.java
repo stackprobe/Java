@@ -19,6 +19,14 @@ public class StringToolsTest {
 					"<",
 					"123"
 					));
+
+			if(StringTools.startsWith("ABC123", "ABC") == false ||
+					StringTools.startsWith("ABC123", "abc") ||
+					StringTools.startsWithIgnoreCase("ABC123", "ABC") == false ||
+					StringTools.startsWithIgnoreCase("ABC123", "abc") == false
+					) {
+				throw new Exception();
+			}
 		}
 		catch(Throwable e) {
 			e.printStackTrace();
