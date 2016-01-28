@@ -150,15 +150,20 @@ public class Canvas {
 			break;
 		case 'J': drPtn = "0100111"; break;
 		case 'K':
-			drawLine(l, t + span, l + span, t, dot);
-			drawLine(l, t + span, l + span, t + dSpan, dot);
+			drawLine(l, t + span, l + hSpan, t + span, dot);
+			drawLine(l + hSpan, t + span, l + span, t + hSpan, dot);
+			drawLine(l + hSpan, t + span, l + span, t + span + hSpan, dot);
+			drawLine(l + span, t, l + span, t + hSpan, dot);
+			drawLine(l + span, t + span + hSpan, l + span, t + dSpan, dot);
 			drPtn = "1100000";
 			break;
 		case 'L': drPtn = "1100100"; break;
 		case 'M':
-			drawLine(l + hSpan, t, l + hSpan, t + span + hSpan, dot);
-			drPtn = "1110011";
-			break;
+			drawLine(l, t, l, t + dSpan, dot);
+			drawLine(l + span, t, l + span, t + dSpan, dot);
+			drawLine(l + dSpan, t, l + dSpan, t + dSpan, dot);
+			drawLine(l, t, l + dSpan, t, dot);
+			return dSpan + 1;
 		case 'N': drPtn = "1110011"; break;
 		case 'O': drPtn = "1110111"; break;
 		case 'P': drPtn = "1111010"; break;
@@ -178,18 +183,26 @@ public class Canvas {
 			drPtn = "1000010";
 			break;
 		case 'W':
-			drawLine(l + hSpan, t + hSpan, l + hSpan, t + dSpan, dot);
-			drPtn = "1100111";
-			break;
+			drawLine(l, t, l, t + dSpan, dot);
+			drawLine(l + span, t, l + span, t + dSpan, dot);
+			drawLine(l + dSpan, t, l + dSpan, t + dSpan, dot);
+			drawLine(l, t + dSpan, l + dSpan, t + dSpan, dot);
+			return dSpan + 1;
 		case 'X':
-			drawLine(l, t + span, l + span, t + dSpan, dot);
-			drawLine(l, t + dSpan, l + span, t + span, dot);
+			drawLine(l, t, l, t + hSpan, dot);
+			drawLine(l + span, t, l + span, t + hSpan, dot);
+			drawLine(l, t + hSpan, l + span, t + span + hSpan, dot);
+			drawLine(l, t + span + hSpan, l + span, t + hSpan, dot);
+			drawLine(l, t + span + hSpan, l, t + dSpan, dot);
+			drawLine(l + span, t + span + hSpan, l + span, t + dSpan, dot);
 			drPtn = "0000000";
 			break;
 		case 'Y': drPtn = "1001111"; break;
 		case 'Z':
-			drawLine(l, t + dSpan, l + span, t + span, dot);
-			drPtn = "0001100";
+			drawLine(l + span, t, l + span, t + hSpan, dot);
+			drawLine(l, t + span + hSpan, l + span, t + hSpan, dot);
+			drawLine(l, t + span + hSpan, l, t + dSpan, dot);
+			drPtn = "0010100";
 			break;
 		default:
 			throw new RuntimeException("Unknown chr: " + chr);
