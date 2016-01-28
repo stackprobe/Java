@@ -171,6 +171,27 @@ public class HTTPResponse {
 		return _firstLine;
 	}
 
+	private String[] _firstLineTokens;
+
+	public String[] getFirstLineTokens() {
+		if(_firstLineTokens == null) {
+			_firstLineTokens = StringTools.tokenize(getFirstLine(), " ").toArray(new String[3]);
+		}
+		return _firstLineTokens;
+	}
+
+	public String getHTTPVersion() {
+		return getFirstLineTokens()[0];
+	}
+
+	public int getStatus() {
+		return Integer.parseInt(getFirstLineTokens()[1]);
+	}
+
+	public String getReasonPhrase() {
+		return getFirstLineTokens()[2];
+	}
+
 	public Map<String, String> getHeaderFields() {
 		return _headerFields;
 	}

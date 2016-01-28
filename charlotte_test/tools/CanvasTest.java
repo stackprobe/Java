@@ -35,7 +35,25 @@ public class CanvasTest {
 		for(int c = 0; c < 3; c++) {
 			canvas.drawDouble(152, 160 + c * 6, 1, Color.BLUE, "" + Math.random());
 		}
-		bmp.writeToFile("C:/temp/CanvasTest.png");
+		canvas.drawDouble(152, 178, 1, Color.BLUE, "0123456789abcdef.ABCDEF");
+
+		bmp.writeToFile("C:/temp/CanvasTest1a.png");
+
+		// ----
+
+		bmp = new Bmp(400, 200, Color.WHITE);
+		canvas = new Canvas(bmp);
+
+		canvas.drawDouble(1, 1, 1, Color.BLACK, StringTools.ALPHA);
+		canvas.drawDouble(1, 8, 1, Color.BLUE, StringTools.alpha);
+
+		canvas.drawDouble(1, 15, 2, Color.BLACK, StringTools.ALPHA);
+		canvas.drawDouble(1, 25, 2, Color.BLUE, StringTools.alpha);
+
+		canvas.drawDouble(1, 35, 3, Color.BLACK, StringTools.ALPHA);
+		canvas.drawDouble(1, 49, 3, Color.BLUE, StringTools.alpha);
+
+		bmp.writeToFile("C:/temp/CanvasTest1b.png");
 	}
 
 	private static void test02() throws Exception {
@@ -74,7 +92,7 @@ public class CanvasTest {
 	}
 
 	private static void test03() throws Exception {
-		//*
+		/*
 		final int ROT_DIV = 16;
 		/*/
 		final int ROT_DIV = 2;

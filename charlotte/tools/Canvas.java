@@ -113,22 +113,21 @@ public class Canvas {
 	private int drawDoubleChar(int l, int t, int hSpan, Bmp.Dot dot, char chr) {
 		int span = hSpan * 2;
 		int dSpan = span * 2;
-
-		if(chr == '.') {
-			_bmp.setDot(l, t + dSpan, dot);
-			return 1;
-		}
-		if(chr == '1') {
-			drawLine(l, t, l + hSpan, t, dot);
-			drawLine(l + hSpan, t, l + hSpan, t + dSpan, dot);
-			drawLine(l, t + dSpan, l + span, t + dSpan, dot);
-			return span + 1;
-		}
 		String drPtn = null;
 
+		chr = Character.toUpperCase(chr);
+
 		switch(chr) {
+		case '.':
+			_bmp.setDot(l, t + dSpan, dot);
+			return 1;
 		case '-': drPtn = "0001000"; break;
 		case '0': drPtn = "1110111"; break;
+		case '1':
+			drawLine(l, t, l + hSpan, t, dot);
+			drawLine(l + hSpan, t, l + hSpan, t + dSpan, dot);
+			drPtn = "0000100";
+			break;
 		case '2': drPtn = "0111110"; break;
 		case '3': drPtn = "0011111"; break;
 		case '4': drPtn = "1001011"; break;
@@ -137,6 +136,61 @@ public class Canvas {
 		case '7': drPtn = "1010011"; break;
 		case '8': drPtn = "1111111"; break;
 		case '9': drPtn = "1011111"; break;
+		case 'A': drPtn = "1111011"; break;
+		case 'B': drPtn = "1101101"; break;
+		case 'C': drPtn = "1110100"; break;
+		case 'D': drPtn = "0101111"; break;
+		case 'E': drPtn = "1111100"; break;
+		case 'F': drPtn = "1111000"; break;
+		case 'G': drPtn = "1110101"; break;
+		case 'H': drPtn = "1101011"; break;
+		case 'I':
+			drawLine(l + hSpan, t, l + hSpan, t + dSpan, dot);
+			drPtn = "0010100";
+			break;
+		case 'J': drPtn = "0100111"; break;
+		case 'K':
+			drawLine(l, t + span, l + span, t, dot);
+			drawLine(l, t + span, l + span, t + dSpan, dot);
+			drPtn = "1100000";
+			break;
+		case 'L': drPtn = "1100100"; break;
+		case 'M':
+			drawLine(l + hSpan, t, l + hSpan, t + span + hSpan, dot);
+			drPtn = "1110011";
+			break;
+		case 'N': drPtn = "1110011"; break;
+		case 'O': drPtn = "1110111"; break;
+		case 'P': drPtn = "1111010"; break;
+		case 'Q': drPtn = "1011011"; break;
+		case 'R': drPtn = "0101000"; break;
+		case 'S': drPtn = "1011101"; break;
+		case 'T':
+			drawLine(l + hSpan, t, l + hSpan, t + dSpan, dot);
+			drPtn = "0010000";
+			break;
+		case 'U': drPtn = "1100111"; break;
+		case 'V':
+			drawLine(l, t + span, l, t + span + hSpan, dot);
+			drawLine(l, t + span + hSpan, l + hSpan, t + dSpan, dot);
+			drawLine(l + span, t + span, l + span, t + span + hSpan, dot);
+			drawLine(l + span, t + span + hSpan, l + hSpan, t + dSpan, dot);
+			drPtn = "1000010";
+			break;
+		case 'W':
+			drawLine(l + hSpan, t + hSpan, l + hSpan, t + dSpan, dot);
+			drPtn = "1100111";
+			break;
+		case 'X':
+			drawLine(l, t + span, l + span, t + dSpan, dot);
+			drawLine(l, t + dSpan, l + span, t + span, dot);
+			drPtn = "0000000";
+			break;
+		case 'Y': drPtn = "1001111"; break;
+		case 'Z':
+			drawLine(l, t + dSpan, l + span, t + span, dot);
+			drPtn = "0001100";
+			break;
 		default:
 			throw new RuntimeException("Unknown chr: " + chr);
 		}
