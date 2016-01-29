@@ -180,16 +180,44 @@ public class FileTools {
 	}
 
 	public static byte[] readToEnd(InputStream is) throws Exception {
+		return readToEnd(is, false);
+	}
+
+	public static byte[] readToEnd(InputStream is, boolean readZeroKeepReading) throws Exception {
 		BlockBuffer buff = new BlockBuffer();
+		int size = 1024;
+		byte[] block = new byte[size];
+		int waitMillis = 0;
 
-		for(int size = 1024; ; size += size / 2) {
-			byte[] block = new byte[size];
-			int readSize = is.read(block);
+		for(; ; ) {
+			int readSize = is.read(block, 0, block.length);
 
-			if(readSize <= 0) {
+			if(readSize < 0) {
 				break;
 			}
-			buff.add(block, 0, readSize);
+			if(readSize == 0) {
+				if(readZeroKeepReading == false) {
+					break;
+				}
+				if(waitMillis < 200) {
+					waitMillis++;
+				}
+				Thread.sleep(waitMillis);
+			}
+			else {
+				waitMillis = 0;
+
+				if(readSize < block.length) {
+					if(1024 < size) {
+						size /= 2;
+					}
+				}
+				else {
+					size *= 2;
+				}
+				buff.add(block, 0, readSize);
+				block = new byte[size];
+			}
 		}
 		return buff.getBytes();
 	}

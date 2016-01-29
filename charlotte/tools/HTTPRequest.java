@@ -24,6 +24,9 @@ public class HTTPRequest {
 	}
 
 	public void setUrl(String url) {
+		if(url.startsWith("https://")) {
+			throw new RuntimeException("not compatible with HTTPS!");
+		}
 		if(url.startsWith("http://")) {
 			url = url.substring(7);
 		}
@@ -46,6 +49,18 @@ public class HTTPRequest {
 		else {
 			_portNo = 80;
 		}
+	}
+
+	public void setDomain(String domain) {
+		_domain = domain;
+	}
+
+	public void setPortNo(int portNo) {
+		_portNo = portNo;
+	}
+
+	public void setPath(String path) {
+		_path = path;
 	}
 
 	public void setAuthorization(String user, String password) throws Exception {
