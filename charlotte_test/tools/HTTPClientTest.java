@@ -17,7 +17,7 @@ public class HTTPClientTest {
 
 	public static void test01() throws Exception {
 		HTTPClient hc = new HTTPClient("https://msdn.microsoft.com/ja-jp/subscriptions/downloads/hh442898.aspx");
-		hc.setProxy("inetgate.informatix.co.jp", 3128);
+		//hc.setProxy("proxy.com", 8080);
 		hc.get();
 		byte[] bResBody = hc.getResBody();
 		String resBody = new String(bResBody, StringTools.CHARSET_UTF8);
