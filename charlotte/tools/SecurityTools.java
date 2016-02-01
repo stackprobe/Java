@@ -30,4 +30,18 @@ public class SecurityTools {
 		byte[] digest = md.digest();
 		return StringTools.toHex(digest);
 	}
+
+	public static byte[] getSHA512(byte[] block) throws Exception {
+		return getSHA512(new byte[][] { block });
+	}
+
+	public static byte[] getSHA512(byte[][] blocks) throws Exception {
+		MessageDigest md = MessageDigest.getInstance("SHA-512");
+
+		for(byte[] block : blocks) {
+			md.update(block);
+		}
+		byte[] ret = md.digest();
+		return ret;
+	}
 }

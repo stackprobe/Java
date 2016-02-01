@@ -162,6 +162,10 @@ public class ArrayTools {
 		return dest;
 	}
 
+	public static byte[] copy(byte[] src) {
+		return getBytes(src, 0, src.length);
+	}
+
 	public static byte[] changeSize(byte[] src, int size, byte pad) {
 		byte[] dest = new byte[size];
 
