@@ -1,12 +1,11 @@
 package charlotte.tools;
 
 import java.awt.Color;
-import java.security.SecureRandom;
 import java.util.List;
 import java.util.Random;
 
 public class MathTools {
-	private static Random _random = new SecureRandom();
+	private static Random _random = new Random();
 
 	public static int random(int modulo) {
 		return _random.nextInt(modulo);

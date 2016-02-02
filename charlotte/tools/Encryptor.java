@@ -12,8 +12,16 @@ public class Encryptor {
 	public Encryptor() {
 	}
 
+	public Encryptor(String passphrase) throws Exception {
+		addPassphrase(passphrase);
+	}
+
 	public Encryptor(byte[] rawKey) {
 		addRawKey(rawKey);
+	}
+
+	public void addPassphrase(String passphrase) throws Exception {
+		addRawKey(SecurityTools.getSHA512(passphrase));
 	}
 
 	public void addRawKey(byte[] rawKey) {
@@ -51,25 +59,34 @@ public class Encryptor {
 			throw new IllegalArgumentException();
 		}
 		for(int index = 0; index < rawKey.length; index += keyWidth) {
-			_keyBundle.add(ArrayTools.getBytes(rawKey, index, index + keyWidth));
+			_keyBundle.add(ArrayTools.getBytes(rawKey, index, keyWidth));
 		}
 	}
 
-	public static byte[] encrypt(byte[] src, byte[] rawKey) {
+	public static byte[] encrypt(byte[] src, String passphrase) throws Exception {
+		return new Encryptor(passphrase).encrypt(src);
+	}
+
+	public static byte[] decrypt(byte[] src, String passphrase) throws Exception {
+		return new Encryptor(passphrase).decrypt(src);
+	}
+
+	public static byte[] encrypt(byte[] src, byte[] rawKey) throws Exception {
 		return new Encryptor(rawKey).encrypt(src);
 	}
 
-	public static byte[] decrypt(byte[] src, byte[] rawKey) {
+	public static byte[] decrypt(byte[] src, byte[] rawKey) throws Exception {
 		return new Encryptor(rawKey).decrypt(src);
 	}
 
-	public byte[] encrypt(byte[] src) {
+	public byte[] encrypt(byte[] src) throws Exception {
 		if(src == null) {
 			throw null;
 		}
 		byte[] padding = getPadding(src);
 		byte[] randPart = getRandPart();
 		byte[] hash = getHash(src, padding, randPart);
+		byte[] randPart_2nd = getRandPart();
 
 		BlockBuffer buff = new BlockBuffer();
 
@@ -77,6 +94,7 @@ public class Encryptor {
 		buff.add(padding);
 		buff.add(randPart);
 		buff.add(hash);
+		buff.add(randPart_2nd);
 
 		byte[] dest = buff.getBytes();
 
@@ -85,7 +103,13 @@ public class Encryptor {
 		return dest;
 	}
 
-	public byte[] decrypt(byte[] src) {
+	/**
+	 * 鍵が間違っているか、src が破損している場合、例外を投げる。
+	 * @param src
+	 * @return
+	 * @throws Exception
+	 */
+	public byte[] decrypt(byte[] src) throws Exception {
 		if(src == null) {
 			throw null;
 		}
@@ -93,6 +117,7 @@ public class Encryptor {
 
 		decryptRingCBC(dest);
 
+		dest = removeRandPart(dest);
 		dest = removeHash(dest);
 		dest = removeRandPart(dest);
 		dest = removePadding(dest);
@@ -160,26 +185,64 @@ public class Encryptor {
 	}
 
 	private static byte[] getPadding(byte[] src) {
-		return null; // TODO
+		int size = src.length;
+		size %= 16;
+		size = 15 - size;
+		size += SecurityTools.random(16) << 4;
+
+		BlockBuffer buff = new BlockBuffer();
+
+		buff.add(SecurityTools.randSq(size));
+		buff.add((byte)size);
+
+		return buff.getBytes();
 	}
 
-	private static byte[] removePadding(byte[] src) {
-		return null; // TODO
+	private static byte[] removePadding(byte[] src) throws Exception {
+		int size = getTail(src, 1)[0] & 0xff;
+		size++;
+		return removeTail(src, size);
 	}
 
 	private static byte[] getRandPart() {
-		return null; // TODO
+		return SecurityTools.randSq(64);
 	}
 
-	private static byte[] removeRandPart(byte[] src) {
-		return null; // TODO
+	private static byte[] removeRandPart(byte[] src) throws Exception {
+		return removeTail(src, 64);
 	}
 
-	private static byte[] getHash(byte[] src, byte[] padding, byte[] randPart) {
-		return null; // TODO
+	private static byte[] getHash(byte[] src, byte[] padding, byte[] randPart) throws Exception {
+		return SecurityTools.getSHA512(
+				new byte[][] {
+						src,
+						padding,
+						randPart,
+				}
+				);
 	}
 
-	private static byte[] removeHash(byte[] src) {
-		return null; // TODO
+	private static byte[] removeHash(byte[] src) throws Exception {
+		byte[] dest = removeTail(src, 64);
+		byte[] hash = SecurityTools.getSHA512(dest);
+
+		if(ArrayTools.isSame(hash, getTail(src, 64)) == false) {
+			throw new Exception("ハッシュが一致しません。");
+		}
+		return dest;
+	}
+
+	private static byte[] removeTail(byte[] src, int tailSize) throws Exception {
+		if(src.length < tailSize) {
+			throw new Exception("短すぎます。");
+		}
+		return ArrayTools.getBytes(src, 0, src.length - tailSize);
+	}
+
+	private static byte[] getTail(byte[] src, int tailSize) throws Exception {
+		if(src.length < tailSize) {
+			throw new Exception("短すぎます。");
+		}
+		return ArrayTools.getBytes(src, src.length - tailSize, tailSize);
 	}
 }

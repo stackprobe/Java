@@ -251,4 +251,11 @@ public class FileTools {
 		}
 		return path.substring(index + 1);
 	}
+
+	public static String addExt(String path, String ext) {
+		if(1 <= ext.length()) {
+			path += "." + ext;
+		}
+		return path;
+	}
 }

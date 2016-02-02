@@ -187,4 +187,17 @@ public class ArrayTools {
 		}
 		return true;
 	}
+
+	public static boolean isSame(byte[] block1, byte[] block2) {
+		if(block1 == null && block2 == null) {
+			return true;
+		}
+		if(block1 == null || block2 == null) {
+			return false;
+		}
+		if(block1.length != block2.length) {
+			return false;
+		}
+		return isSame(block1, 0, block2, 0, block1.length);
+	}
 }
