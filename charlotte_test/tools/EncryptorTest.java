@@ -18,10 +18,9 @@ public class EncryptorTest {
 	}
 
 	private static void test01() throws Exception {
-		test01_file("C:/tmp/B-aCrH0CUAA5wtn.jpg");
-		test01_file("C:/tmp/Test05_Log.txt");
-		test01_file("C:/tmp/20141209055801.bmp");
-		test01_file("C:/tmp/ifxまとめ/GHClientLoginTunnelLog.txt");
+		test01_file("C:/tmp/a.txt");
+		test01_file("C:/tmp/20150618192826.png");
+		test01_file("C:/tmp/20141016183913.png");
 	}
 
 	private static int _test01_file_no = 1;

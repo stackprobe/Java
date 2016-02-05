@@ -253,6 +253,10 @@ public class StringTools {
 	}
 
 	public static boolean isSame(List<String> list1, List<String> list2) {
+		return isSame(list1, list2, false);
+	}
+
+	public static boolean isSame(List<String> list1, List<String> list2, boolean ignoreCase) {
 		if(list1 == null && list2 == null) {
 			return true;
 		}
@@ -263,7 +267,7 @@ public class StringTools {
 			return false;
 		}
 		for(int index = 0; index < list1.size(); index++) {
-			if(isSame(list1.get(index), list2.get(index)) == false) {
+			if(isSame(list1.get(index), list2.get(index), ignoreCase) == false) {
 				return false;
 			}
 		}

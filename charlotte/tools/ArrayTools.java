@@ -11,6 +11,13 @@ public class ArrayTools {
 		return new ArrayList<T>(src);
 	}
 
+	public static <T> T[] copy(T[] src, T[] dest) {
+		if(src.length != dest.length) {
+			throw new IllegalArgumentException("コピー元配列とコピー先配列の長さが違います。" + src.length + ", " + dest.length);
+		}
+		return extend(src, dest, null);
+	}
+
 	public static <T> T[] extend(T[] src, T[] dest, T elementNew) {
 		if(src.length < dest.length) {
 			System.arraycopy(src, 0, dest, 0, src.length);
@@ -199,5 +206,23 @@ public class ArrayTools {
 			return false;
 		}
 		return isSame(block1, 0, block2, 0, block1.length);
+	}
+
+	public static int[] toArray(List<Integer> src) {
+		int[] dest = new int[src.size()];
+
+		for(int index = 0; index < src.size(); index++) {
+			dest[index] = src.get(index).intValue();
+		}
+		return dest;
+	}
+
+	public static List<Integer> toList(int[] src) {
+		List<Integer> dest = new ArrayList<Integer>();
+
+		for(int index = 0; index < src.length; index++) {
+			dest.add(src[index]);
+		}
+		return dest;
 	}
 }

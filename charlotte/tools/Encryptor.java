@@ -28,7 +28,10 @@ public class Encryptor {
 		if(rawKey == null) {
 			throw null;
 		}
-		if(rawKey.length % 32 == 0) {
+		if(rawKey.length == 32) {
+			addRawKey(rawKey, 16);
+		}
+		else if(rawKey.length % 32 == 0) {
 			addRawKey(rawKey, 32);
 		}
 		else if(rawKey.length % 24 == 0) {
@@ -188,7 +191,7 @@ public class Encryptor {
 		int size = src.length;
 		size %= 16;
 		size = 15 - size;
-		size += SecurityTools.random(16) << 4;
+		size |= SecurityTools.random(16) << 4;
 
 		BlockBuffer buff = new BlockBuffer();
 
