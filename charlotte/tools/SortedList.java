@@ -74,6 +74,11 @@ public class SortedList<T> {
 		return buff;
 	}
 
+	/**
+	 *
+	 * @param ferret
+	 * @return { ferret より小さい最後の位置。無ければ、-1, ferret より大きい最初の位置。無ければ、size() }
+	 */
 	public int[] getRange(T ferret) {
 		int l = -1;
 		int r = size();

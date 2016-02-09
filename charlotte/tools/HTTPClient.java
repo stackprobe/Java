@@ -17,8 +17,9 @@ public class HTTPClient {
 	private byte[] _body = null; // null == GET, not null == POST
 	private int _connectTimeoutMillis = 20000;
 	private int _readTimeoutMillis = 60000;
-	private String _proxyDomain = null;
+	private String _proxyDomain = null; // null -> no proxy
 	private int _proxyPortNo = 8080;
+	private boolean _head; // true -> HEAD, false -> GET or POST
 
 	public HTTPClient() {
 	}
@@ -58,11 +59,22 @@ public class HTTPClient {
 		_proxyPortNo = portNo;
 	}
 
+	public void setHeadFlag(boolean head) {
+		_head = head;
+	}
+
+	public void head() throws Exception {
+		_head = true;
+		_body = null;
+		perform();
+	}
+
 	public void get() throws Exception {
 		post(null);
 	}
 
 	public void post(byte[] body) throws Exception {
+		_head = false;
 		_body = body;
 		perform();
 	}
@@ -85,14 +97,16 @@ public class HTTPClient {
 				}
 			}
 
-			if(_body == null) {
+			if(_head) {
+				con.setRequestMethod("HEAD");
+			}
+			else if(_body == null) {
 				con.setRequestMethod("GET");
-				con.setDoOutput(false);
 			}
 			else {
 				con.setRequestMethod("POST");
-				con.setDoOutput(true);
 			}
+			con.setDoOutput(_body != null);
 			con.setInstanceFollowRedirects(false);
 			con.setConnectTimeout(_connectTimeoutMillis);
 			con.setReadTimeout(_readTimeoutMillis);
