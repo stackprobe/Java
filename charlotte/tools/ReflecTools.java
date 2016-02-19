@@ -20,7 +20,7 @@ public class ReflecTools {
 	}
 
 	public static Object invokeDeclaredMethod(Class<?> classObj, String methodName, Object instance, Object[] params) throws Exception {
-		return invokeDeclaredMethod(classObj, methodName, params, getTypes(params));
+		return invokeDeclaredMethod(classObj, methodName, instance, params, getTypes(params));
 	}
 
 	public static Object invokeDeclaredMethod(Class<?> classObj, String methodName, Object instance, Object[] params, Class<?>[] paramTypes) throws Exception {

@@ -5,8 +5,12 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.Window;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.Vector;
 
 public class DebugTools {
 	public static <T> void printList(String title, Iterable<T> list) {
@@ -163,5 +167,65 @@ public class DebugTools {
 
 	public static void writeHierarchyString(Component root, String wTextFile) throws Exception {
 		FileTools.writeAllBytes(wTextFile, getString(getHierarchy(root)).getBytes(StringTools.CHARSET_SJIS));
+	}
+
+	public static void snapshot(Component root, String wDir) throws Exception {
+		String file = FileTools.combine(wDir, TimeData.now().getString());
+
+		writeHierarchyVisual(root, file + ".png");
+		writeHierarchyString(root, file + ".txt");
+	}
+
+	public static void snapshot(Component root) throws Exception {
+		snapshot(root, "C:/temp");
+	}
+
+	public static List<Window> getAllWindow() throws Exception {
+		/*
+		List<Window> dest = new ArrayList<Window>();
+
+		for(AppContext ac : AppContext.getAppContexts()) {
+			Vector<WeakReference<Window>> windowList = (Vector<WeakReference<Window>>)ac.get(Window.class);
+
+			if(windowList != null) {
+				for(WeakReference<Window> wr : windowList) {
+					Window win = wr.get();
+
+					dest.add(win);
+				}
+			}
+		}
+		return dest;
+		/*/
+		List<Window> dest = new ArrayList<Window>();
+
+		Set<?> appContextSet = (Set<?>)ReflecTools.invokeDeclaredMethod(
+				"sun.awt.AppContext",
+				"getAppContexts",
+				null,
+				new Object[0]
+				);
+
+		for(Object acObj : appContextSet) {
+			Object windowListObj = ReflecTools.invokeDeclaredMethod(
+					acObj.getClass(),
+					"get",
+					acObj,
+					new Object[] { Window.class },
+					new Class<?>[] { Object.class }
+					);
+
+			Vector<WeakReference<Window>> windowList = (Vector<WeakReference<Window>>)windowListObj;
+
+			if(windowList != null) {
+				for(WeakReference<Window> wr : windowList) {
+					Window win = wr.get();
+
+					dest.add(win);
+				}
+			}
+		}
+		return dest;
+		//*/
 	}
 }

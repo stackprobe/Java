@@ -54,10 +54,23 @@ public class WktParser {
 		for(; ; ) {
 			char chr = next();
 
-			// TODO character escape ???
-
 			if(chr == '"') {
 				break;
+			}
+			if(chr == '\\') {
+				chr = next();
+			}
+			buff.append(chr);
+		}
+		return buff.toString();
+	}
+
+	public static String encodeString(String str) {
+		StringBuffer buff = new StringBuffer();
+
+		for(char chr : str.toCharArray()) {
+			if(chr == '"' || chr == '\\') {
+				buff.append('\\');
 			}
 			buff.append(chr);
 		}
