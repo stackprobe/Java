@@ -4,23 +4,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CrossMap<K, V> {
-	private Map<K, V> _map = new HashMap<K, V>();
-	private Map<V, K> _inv = new HashMap<V, K>();
+	private Map<K, V> _kv = new HashMap<K, V>();
+	private Map<V, K> _vk = new HashMap<V, K>();
 
 	public CrossMap() {
 		// noop
 	}
 
 	public void put(K key, V value) {
-		_map.put(key, value);
-		_inv.put(value, key);
+		_kv.put(key, value);
+		_vk.put(value, key);
 	}
 
-	public Map<K, V> map() {
-		return _map;
+	public Map<K, V> values() {
+		return _kv;
 	}
 
-	public Map<V, K> inv() {
-		return _inv;
+	public Map<V, K> keys() {
+		return _vk;
 	}
 }

@@ -5,10 +5,12 @@ import java.awt.Font;
 
 import charlotte.tools.Bmp;
 import charlotte.tools.BmpTools;
+import charlotte.tools.Canvas;
 
 public class BmpTest {
 	public static void main(String[] args) {
 		try {
+			//mkMikoLkBg();
 			//test01();
 			test02();
 
@@ -17,6 +19,14 @@ public class BmpTest {
 		catch(Throwable e) {
 			e.printStackTrace();
 		}
+	}
+
+	private static void mkMikoLkBg() throws Exception {
+		Bmp g = Bmp.fromFile("C:/etc/画像/壁紙/wide/viploader764502.jpg");
+		g = g.expand(1920, 1080);
+		Canvas c = new Canvas(g);
+		c.fillRect(1600, 0, 320, 1080, Color.BLUE);
+		g.writeToFile("C:/temp/viploader764502_mikoLkBg.png");
 	}
 
 	private static void test01() throws Exception {

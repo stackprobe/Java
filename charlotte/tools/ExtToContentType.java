@@ -241,7 +241,7 @@ public class ExtToContentType {
 	}
 
 	public static String getContentType(String ext) {
-		String ret = map().map().get(ext);
+		String ret = map().values().get(ext);
 
 		if(ret == null) {
 			ret = DEF_CONTENT_TYPE;
@@ -250,7 +250,7 @@ public class ExtToContentType {
 	}
 
 	public static String getExt(String contentType) {
-		String ret = map().inv().get(contentType);
+		String ret = map().keys().get(contentType);
 
 		if(ret == null) {
 			ret = DEF_EXT;
