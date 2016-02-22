@@ -47,6 +47,9 @@ public class TabletStore {
 		if(count < 0) {
 			throw new IllegalArgumentException();
 		}
+		if(millis < 0) {
+			throw new IllegalArgumentException();
+		}
 		synchronized(SYNCROOT_get) {
 			OneTime oneTime;
 
