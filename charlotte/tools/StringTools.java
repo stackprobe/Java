@@ -184,7 +184,7 @@ public class StringTools {
 	}
 
 	public static final String CHARSET_ASCII = "US-ASCII";
-	public static final String CHARSET_SJIS = "Shift_JIS";
+	public static final String CHARSET_SJIS = "MS932";
 	public static final String CHARSET_UTF8 = "UTF-8";
 
 	public static boolean isEmpty(String str) {

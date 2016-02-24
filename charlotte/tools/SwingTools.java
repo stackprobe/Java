@@ -9,9 +9,9 @@ public class SwingTools {
 
 	public static void invokeLaterDeep(final Runnable runner, final int deep, final long millis) {
 		try {
-			if(1 <= deep) {
-				ThreadTools.sleep(millis);
+			ThreadTools.sleep(millis);
 
+			if(1 <= deep) {
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {

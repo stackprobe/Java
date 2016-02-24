@@ -14,6 +14,8 @@ public class CanvasTest {
 			test01();
 			test02();
 			test03();
+
+			System.out.println("OK!");
 		}
 		catch(Throwable e) {
 			e.printStackTrace();
@@ -92,7 +94,7 @@ public class CanvasTest {
 	}
 
 	private static void test03() throws Exception {
-		/*
+		//*
 		final int ROT_DIV = 16;
 		/*/
 		final int ROT_DIV = 2;

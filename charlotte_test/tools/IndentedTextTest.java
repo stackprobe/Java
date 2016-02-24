@@ -38,6 +38,6 @@ public class IndentedTextTest {
 		wb.leave();
 		wb.leave();
 
-		System.out.println(wb.getText());
+		System.out.println(wb.getWkt());
 	}
 }
