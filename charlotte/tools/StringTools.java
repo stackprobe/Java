@@ -464,6 +464,10 @@ public class StringTools {
 	public static final String S_TRUE = "true";
 	public static final String S_FALSE = "false";
 
+	public static String toString(boolean flag) {
+		return flag ? S_TRUE : S_FALSE;
+	}
+
 	public static int indexOfIgnoreCase(String str, String ptn, int fromIndex) {
 		for(int index = fromIndex; index + ptn.length() <= str.length(); index++) {
 			String mid = str.substring(index, index + ptn.length());

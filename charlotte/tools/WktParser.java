@@ -173,28 +173,37 @@ public class WktParser {
 
 	public static void removeLabelledValue(ObjectList root, String label) {
 		for(int index = 0; index + 1 < root.size(); index++) {
-			if(root.get(index) instanceof Word && root.get(index + 1) instanceof ObjectList) {
+			if(root.get(index) instanceof Word &&
+					root.get(index).toString().equals(label) &&
+					root.get(index + 1) instanceof ObjectList
+					) {
 				root.getList().remove(index + 1);
 				root.getList().remove(index);
 				index--;
 			}
 		}
-		antiDoubleComma(root);
+		trimComma(root);
 	}
 
 	public static void addLabelledValue(ObjectList root, String label, ObjectList value) {
 		root.add(comma);
-		root.add(label);
+		root.add(new Word(label));
 		root.add(value);
-		antiDoubleComma(root);
+		trimComma(root);
 	}
 
-	private static void antiDoubleComma(ObjectList root) {
+	private static void trimComma(ObjectList root) {
 		for(int index = 0; index + 1 < root.size(); index++) {
 			if(root.get(index) instanceof Comma && root.get(index + 1) instanceof Comma) {
 				root.getList().remove(index + 1);
 				index--;
 			}
+		}
+		if(1 <= root.size() && root.get(0) instanceof Comma) {
+			root.getList().remove(0);
+		}
+		if(1 <= root.size() && root.get(root.size() - 1) instanceof Comma) {
+			root.getList().remove(root.size() - 1);
 		}
 	}
 
