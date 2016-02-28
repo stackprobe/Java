@@ -24,8 +24,9 @@ public class WinAPITools {
 
 	private WinAPITools() {
 		try {
-			String file1 = FileTools.makeTempPath(StringTools.getUUID() + "_Temporary_WinAPITools.exe");
-			String file2 = FileTools.makeTempPath(StringTools.getUUID() + "_Temporary_WinAPITools.exe_");
+			String tmpId = StringTools.getUUID();
+			String file1 = FileTools.makeTempPath(tmpId + "_WinAPITools.exe");
+			String file2 = FileTools.makeTempPath(tmpId + "_WinAPITools.exe_");
 			byte[] fileData = FileTools.readToEnd(WinAPITools.class.getResource("res/WinAPITools.exe_"));
 			String fileHash = SecurityTools.getSHA512_128String(fileData);
 			String file3 = FileTools.makeTempPath(WIN_API_TOOLS_FILE_ID + "/" + fileHash + "/WinAPITools.exe");
