@@ -22,30 +22,62 @@ public class SorterTest {
 	}
 
 	private static void test01() throws Exception {
-		test01_cvt(1, 1, 1);
-		test01_cvt(2, 2, 10);
-		test01_cvt(5, 5, 10);
+		test01(1);
+		//test01(2);
+		test01(3);
+		//test01(4);
 
-		test01_cvt(3,  3000, 100);
-		test01_cvt(10, 1000, 100);
-		test01_cvt(20,  500, 100);
-		test01_cvt(30,  300, 100);
-		test01_cvt(100, 100, 100);
-		test01_cvt(300,  30, 100);
-		test01_cvt(500,  20, 100);
-		test01_cvt(1000, 10, 100);
-		test01_cvt(3000,  3, 100);
+		test01_b(5);
+	}
+
+	private static void test01(int algo) throws Exception {
+		test01_cvt(algo, 1, 1, 1);
+		test01_cvt(algo, 2, 2, 10);
+		test01_cvt(algo, 5, 5, 10);
+
+		test01_cvt(algo, 3,  3000, 100);
+		test01_cvt(algo, 10, 1000, 100);
+		test01_cvt(algo, 20,  500, 100);
+		test01_cvt(algo, 30,  300, 100);
+		test01_cvt(algo, 100, 100, 100);
+		test01_cvt(algo, 300,  30, 100);
+		test01_cvt(algo, 500,  20, 100);
+		test01_cvt(algo, 1000, 10, 100);
+//		test01_cvt(algo, 3000,  3, 100);
 
 		/*
 		 * クイックソートは同値が多いと遅くなる。<- 実装による。
 		 */
-		test01_cvt(3000,  10, 100);
-		test01_cvt(3000,  30, 100);
-		test01_cvt(3000, 100, 100);
+		test01_cvt(algo, 3000,     1, 100);
+		test01_cvt(algo, 3000,     2, 100);
+		test01_cvt(algo, 3000,     3, 100);
+		test01_cvt(algo, 3000,     4, 100);
+		test01_cvt(algo, 3000,     5, 100);
+		test01_cvt(algo, 3000,    10, 100);
+		test01_cvt(algo, 3000,    30, 100);
+		test01_cvt(algo, 3000,   100, 100);
+		test01_cvt(algo, 3000,   300, 100);
+		test01_cvt(algo, 3000,  1000, 100);
+		test01_cvt(algo, 3000,  3000, 100);
+		test01_cvt(algo, 3000, 10000, 100);
+		test01_cvt(algo, 3000, 30000, 100);
 	}
 
-	private static void test01_cvt(int countMod, int valueMod, int testMax) throws Exception {
-		System.out.println(countMod + "_" + valueMod + "_" + testMax);
+	private static void test01_b(int algo) throws Exception {
+		test01_cvt(algo, 1, 1, 1);
+		test01_cvt(algo, 2, 2, 10);
+
+		test01_cvt(algo, 5, 1, 1);
+		test01_cvt(algo, 5, 5, 10);
+		test01_cvt(algo, 5, 10, 10);
+
+		test01_cvt(algo, 10, 1, 1);
+		test01_cvt(algo, 10, 10, 10);
+		test01_cvt(algo, 10, 20, 10);
+	}
+
+	private static void test01_cvt(int algo, int countMod, int valueMod, int testMax) throws Exception {
+		System.out.println(algo + "_" + countMod + "_" + valueMod + "_" + testMax);
 
 		long startedTime = System.currentTimeMillis();
 
@@ -63,7 +95,7 @@ public class SorterTest {
 
 			final List<String> f_list = list2;
 
-			Sorter.sort(new Sorter.List<String>() {
+			Sorter.List<String> list = new Sorter.List<String>() {
 				@Override
 				public int size() {
 					return f_list.size();
@@ -83,7 +115,27 @@ public class SorterTest {
 				public int compare(String a, String b) {
 					return StringTools.comp.compare(a, b);
 				}
-			});
+			};
+
+			switch(algo) {
+			case 1:
+				Sorter.sort(list);
+				break;
+			case 2:
+				Sorter.insertSort(list);
+				break;
+			case 3:
+				Sorter.combSort(list);
+				break;
+			case 4:
+				Sorter.gnomeSort(list);
+				break;
+			case 5:
+				Sorter.bogoSort(list);
+				break;
+			default:
+				throw null;
+			}
 
 			if(list1.size() != list2.size()) {
 				throw new Exception("SIZE_ERROR");

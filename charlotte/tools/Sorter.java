@@ -5,42 +5,48 @@ import java.util.Stack;
 
 public abstract class Sorter {
 	public static <T> void sort(List<T> list) {
-		Stack<List<T>> parts = new Stack<List<T>>();
+		Stack<Integer> ranges = new Stack<Integer>();
 
-		parts.add(list);
+		ranges.add(0);
+		ranges.add(list.size());
 
-		while(1 <= parts.size()) {
-			List<T> part = parts.pop();
+		while(1 <= ranges.size()) {
+			int end = ranges.pop();
+			int begin = ranges.pop();
 
-			if(part.size() < 16) {
-				insertSort(part);
+			if(end - begin < 16) {
+				insertSort(list, begin, end);
 				continue;
 			}
-			int l = 0;
-			int pivot = part.size() / 2;
-			int r = part.size() - 1;
+			if(100 <= ranges.size()) {
+				combSort(list);
+				break;
+			}
+			int l = begin;
+			int pivot = (begin + end) / 2;
+			int r = end - 1;
 
 			for(; ; ) {
 				//*
-				while(compare(part, l, pivot) < 0) {
+				while(compare(list, l, pivot) < 0) {
 					l++;
 				}
-				while(compare(part, pivot, r) < 0) {
+				while(compare(list, pivot, r) < 0) {
 					r--;
 				}
 				/*/
 				// 同値が多いと遅くなる!!!
-				while(l < pivot && compare(part, l, pivot) <= 0) {
+				while(l < pivot && compare(list, l, pivot) <= 0) {
 					l++;
 				}
-				while(pivot < r && compare(part, pivot, r) <= 0) {
+				while(pivot < r && compare(list, pivot, r) <= 0) {
 					r--;
 				}
 				//*/
 				if(l == r) {
 					break;
 				}
-				part.swap(l, r);
+				list.swap(l, r);
 
 				if(l == pivot) {
 					pivot = r;
@@ -55,21 +61,22 @@ public abstract class Sorter {
 					r--;
 				}
 			}
-			parts.push(new Part<T>(part, 0, pivot));
-			parts.push(new Part<T>(part, pivot + 1, part.size() - pivot - 1));
-
-			if(512 <= parts.size()) {
-				combSort(list);
-				break;
-			}
+			ranges.add(begin);
+			ranges.add(pivot);
+			ranges.add(pivot + 1);
+			ranges.add(end);
 		}
 	}
 
 	public static <T> void insertSort(List<T> list) {
-		for(int l = 0; l + 1 < list.size(); l++) {
+		insertSort(list, 0, list.size());
+	}
+
+	public static <T> void insertSort(List<T> list, int begin, int end) {
+		for(int l = begin; l + 1 < end; l++) {
 			int minPos = l;
 
-			for(int r = l + 1; r < list.size(); r++) {
+			for(int r = l + 1; r < end; r++) {
 				if(compare(list, r, minPos) < 0) {
 					minPos = r;
 				}
@@ -113,40 +120,11 @@ public abstract class Sorter {
 		}
 	}
 
-	public static class Part<T> extends List<T> {
-		private List<T> _list;
-		private int _begin;
-		private int _size;
-
-		public Part(List<T> list) {
-			this(list, 0, list.size());
+	public static <T> void bogoSort(List<T> list) {
+		do {
+			shuffle(list);
 		}
-
-		public Part(List<T> list, int begin, int size) {
-			_list = list;
-			_begin = begin;
-			_size = size;
-		}
-
-		@Override
-		public int size() {
-			return _size;
-		}
-
-		@Override
-		public T get(int index) {
-			return _list.get(_begin + index);
-		}
-
-		@Override
-		public void swap(int i, int j) {
-			_list.swap(_begin + i, _begin + j);
-		}
-
-		@Override
-		public int compare(T a, T b) {
-			return _list.compare(a, b);
-		}
+		while(isSorted(list) == false);
 	}
 
 	public static abstract class List<T> implements Comparator<T> {
@@ -155,7 +133,24 @@ public abstract class Sorter {
 		public abstract void swap(int i, int j);
 	}
 
-	private static <T> int compare(List<T> list, int i, int j) {
+	public static <T> int compare(List<T> list, int i, int j) {
 		return list.compare(list.get(i), list.get(j));
+	}
+
+	public static <T> void shuffle(List<T> list) {
+		for(int i = 0; i < list.size() - 1; i++) {
+			int j = MathTools.random(i, list.size() - 1);
+
+			list.swap(i, j);
+		}
+	}
+
+	public static <T> boolean isSorted(List<T> list) {
+		for(int i = 0; i < list.size() - 1; i++) {
+			if(0 < compare(list, i, i + 1)) {
+				return false;
+			}
+		}
+		return true;
 	}
 }
