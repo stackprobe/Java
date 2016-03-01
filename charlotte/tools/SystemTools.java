@@ -1,5 +1,7 @@
 package charlotte.tools;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.management.ManagementFactory;
 
 public class SystemTools {
@@ -13,5 +15,14 @@ public class SystemTools {
 				proc
 				))
 				.longValue();
+	}
+
+	public static String toString(Throwable e) {
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		e.printStackTrace(pw);
+		pw.flush();
+		String ret = sw.toString();
+		return ret;
 	}
 }
