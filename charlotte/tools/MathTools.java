@@ -4,8 +4,10 @@ import java.awt.Color;
 import java.util.List;
 import java.util.Random;
 
+import net.goui.util.MTRandom;
+
 public class MathTools {
-	private static Random _random = new Random();
+	private static Random _random = new MTRandom();
 
 	public static int random(int modulo) {
 		return _random.nextInt(modulo);

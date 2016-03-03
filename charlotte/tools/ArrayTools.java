@@ -225,4 +225,13 @@ public class ArrayTools {
 		}
 		return dest;
 	}
+
+	public static <T> List<T> toList(T[] src) {
+		List<T> dest = new ArrayList<T>();
+
+		for(int index = 0; index < src.length; index++) {
+			dest.add(src[index]);
+		}
+		return dest;
+	}
 }

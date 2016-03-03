@@ -8,7 +8,6 @@ import charlotte.tools.MathTools;
 import charlotte.tools.Sorter;
 import charlotte.tools.StringTools;
 
-
 public class SorterTest {
 	public static void main(String[] args) {
 		try {
@@ -23,9 +22,9 @@ public class SorterTest {
 
 	private static void test01() throws Exception {
 		test01(1);
-		//test01(2);
+		test01(2);
 		test01(3);
-		//test01(4);
+		test01(4);
 
 		test01_b(5);
 	}
@@ -33,6 +32,8 @@ public class SorterTest {
 	private static void test01(int algo) throws Exception {
 		test01_cvt(algo, 1, 1, 1);
 		test01_cvt(algo, 2, 2, 10);
+		test01_cvt(algo, 3, 3, 10);
+		test01_cvt(algo, 4, 4, 10);
 		test01_cvt(algo, 5, 5, 10);
 
 		test01_cvt(algo, 3,  3000, 100);
@@ -66,14 +67,17 @@ public class SorterTest {
 	private static void test01_b(int algo) throws Exception {
 		test01_cvt(algo, 1, 1, 1);
 		test01_cvt(algo, 2, 2, 10);
+		test01_cvt(algo, 3, 3, 10);
+		test01_cvt(algo, 4, 4, 10);
+//		test01_cvt(algo, 5, 5, 10);
 
 		test01_cvt(algo, 5, 1, 1);
-		test01_cvt(algo, 5, 5, 10);
-		test01_cvt(algo, 5, 10, 10);
+		test01_cvt(algo, 5, 5, 100);
+		test01_cvt(algo, 5, 10, 100);
 
 		test01_cvt(algo, 10, 1, 1);
-		test01_cvt(algo, 10, 10, 10);
-		test01_cvt(algo, 10, 20, 10);
+		test01_cvt(algo, 10, 10, 100);
+		test01_cvt(algo, 10, 20, 100);
 	}
 
 	private static void test01_cvt(int algo, int countMod, int valueMod, int testMax) throws Exception {
@@ -92,30 +96,7 @@ public class SorterTest {
 			List<String> list2 = ArrayTools.copy(src);
 
 			ArrayTools.sort(list1, StringTools.comp);
-
-			final List<String> f_list = list2;
-
-			Sorter.List<String> list = new Sorter.List<String>() {
-				@Override
-				public int size() {
-					return f_list.size();
-				}
-
-				@Override
-				public String get(int index) {
-					return f_list.get(index);
-				}
-
-				@Override
-				public void swap(int i, int j) {
-					ArrayTools.swap(f_list, i, j);
-				}
-
-				@Override
-				public int compare(String a, String b) {
-					return StringTools.comp.compare(a, b);
-				}
-			};
+			Sorter.Sortable<String> list = Sorter.Sortable.<String>create(list2, StringTools.comp);
 
 			switch(algo) {
 			case 1:

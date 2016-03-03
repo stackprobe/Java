@@ -61,6 +61,10 @@ public class SecurityTools {
 		return _random.nextInt(modulo);
 	}
 
+	public static int random(int minval, int maxval) {
+		return random(maxval + 1 - minval) + minval;
+	}
+
 	public static byte[] randSq(byte[] dest, int startPos, int size) {
 		for(int index = 0; index < size; index++) {
 			dest[startPos + index] = (byte)_random.nextInt(256);

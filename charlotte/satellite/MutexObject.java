@@ -40,7 +40,7 @@ public class MutexObject {
 
 		if(FileTools.exists(_wObj0File)) {
 			FileTools.delete(_wObj0File);
-			//System.out.println("G"); // test
+			//System.out.println("O"); // test
 			return true;
 		}
 		release();

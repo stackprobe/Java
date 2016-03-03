@@ -9,19 +9,30 @@ public class SwingTools {
 
 	public static void invokeLaterDeep(final Runnable runner, final int deep, final long millis) {
 		try {
-			ThreadTools.sleep(millis);
+			new Thread() {
+				@Override
+				public void run() {
+					try {
+						Thread.sleep(millis);
 
-			if(1 <= deep) {
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						invokeLaterDeep(runner, deep - 1, millis);
+						if(1 <= deep) {
+							SwingUtilities.invokeLater(new Runnable() {
+								@Override
+								public void run() {
+									invokeLaterDeep(runner, deep - 1, millis);
+								}
+							});
+						}
+						else {
+							SwingUtilities.invokeLater(runner);
+						}
 					}
-				});
+					catch(Throwable e) {
+						e.printStackTrace();
+					}
+				}
 			}
-			else {
-				SwingUtilities.invokeLater(runner);
-			}
+			.start();
 		}
 		catch(Throwable e) {
 			e.printStackTrace();
