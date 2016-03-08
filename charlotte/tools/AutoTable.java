@@ -86,6 +86,9 @@ public class AutoTable<T> {
 
 	public void mirror() {
 		for(List<T> row : _rows) {
+			while(row.size() < _w) {
+				row.add(null);
+			}
 			ArrayTools.reverse(row);
 		}
 	}
