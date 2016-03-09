@@ -108,47 +108,33 @@ public class CsvData {
 		_text = null;
 	}
 
-	public String getText() {
-		StringBuffer buff = new StringBuffer();
+	public List<String> getLines() {
+		List<String> lines = new ArrayList<String>();
 
 		for(List<String> row : _rows) {
-			for(int colidx = 0; colidx < row.size(); colidx++) {
-				if(1 <= colidx) {
-					buff.append(_delimiter);
-				}
-				String cell = row.get(colidx);
+			List<String> cells = new ArrayList<String>();
 
+			for(String cell : row) {
 				if(StringTools.containsChar(cell, "\r\n\"" + _delimiter)) {
-					String dq2dqdqCell = cell.replace("\"", "\"\"");
-
-					buff.append('"');
-					buff.append(dq2dqdqCell);
-					buff.append('"');
+					cell = "\"" + cell.replace("\"", "\"\"") + "\"";
 				}
-				else {
-					buff.append(cell);
-				}
+				cells.add(cell);
 			}
-			buff.append('\n');
-		}
-		return buff.toString();
-	}
-
-	public List<String> getLines() {
-		List<String> lines = StringTools.tokenize(getText(), "\n");
-
-		if(lines.remove(lines.size() - 1).isEmpty() == false) {
-			throw new RuntimeException("BUG");
+			lines.add(StringTools.join("" + _delimiter, cells));
 		}
 		return lines;
 	}
 
-	public void writeFile(String csvFile) throws Exception {
-		this.writeFile(csvFile, StringTools.CHARSET_SJIS);
+	public String getText() {
+		return StringTools.join("\n", getLines());
 	}
 
 	public void writeFile(String csvFile, String charset) throws Exception {
 		FileTools.writeAllBytes(csvFile, getText().getBytes(charset));
+	}
+
+	public void writeFile(String csvFile) throws Exception {
+		this.writeFile(csvFile, StringTools.CHARSET_SJIS);
 	}
 
 	public void tt() {

@@ -13,14 +13,14 @@ public class CsvDataTest {
 	}
 
 	private static void main2() throws Exception {
-		CsvData cd = new CsvData();
+		CsvData csv = new CsvData();
 
-		cd.readFile("C:/tmp/test.csv");
-		cd.ttr();
-		cd.writeFile("C:/temp/test.csv");
+		csv.readFile("C:/tmp/test.csv");
+		csv.ttr();
+		csv.writeFile("C:/temp/test.csv");
 
-		cd.readFile("C:/tmp/test2.csv");
-		cd.tt();
-		cd.writeFile("C:/temp/test2.csv");
+		csv.readFile("C:/tmp/test2.csv");
+		csv.tt();
+		csv.writeFile("C:/temp/test2.csv");
 	}
 }
