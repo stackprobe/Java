@@ -13,11 +13,11 @@ public class TimeData {
 	}
 
 	public TimeData(int y, int m, int d, int h, int i, int s) {
-		_t = getTime(y, m, d, h, i, s);
+		_t = parseTime(y, m, d, h, i, s);
 	}
 
 	public TimeData(int y, int m, int d) {
-		_t = getTime(y, m, d, 0, 0, 0);
+		_t = parseTime(y, m, d, 0, 0, 0);
 	}
 
 	public TimeData(Calendar cal) {
@@ -26,7 +26,7 @@ public class TimeData {
 
 	@SuppressWarnings("deprecation")
 	public TimeData(Date src) {
-		_t = getTime(
+		_t = parseTime(
 				src.getYear() + 1900,
 				src.getMonth() + 1,
 				src.getDate(),
@@ -41,7 +41,7 @@ public class TimeData {
 	}
 
 	public int[] getC() {
-		return parseTime(_t);
+		return timeParser(_t);
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class TimeData {
 	@Override
 	public String toString() {
 		try {
-			int[] c = parseTime(_t);
+			int[] c = timeParser(_t);
 
 			return String.format(
 					"%04d/%02d/%02d (%s曜日) %02d:%02d:%02d",
@@ -88,7 +88,7 @@ public class TimeData {
 		return "" + _t;
 	}
 
-	private static long getTime(int y, int m, int d, int h, int i, int s) {
+	private static long parseTime(int y, int m, int d, int h, int i, int s) {
 		if(
 				y < 1 ||
 				m < 1 ||
@@ -138,7 +138,7 @@ public class TimeData {
 		return t;
 	}
 
-	private static int[] parseTime(long t) {
+	private static int[] timeParser(long t) {
 		if(t < 0) {
 			return new int[]{ 0, 0, 0, 0, 0, 0 };
 		}
@@ -174,7 +174,7 @@ public class TimeData {
 		t %= 31;
 
 		if(Integer.MAX_VALUE <= ly) {
-			return new int[]{ 9999, 99, 99, 99, 99, 99 };
+			return new int[]{ Integer.MAX_VALUE, 99, 99, 99, 99, 99 };
 		}
 		int y = (int)ly;
 		int d = (int)t + 1;
@@ -392,6 +392,14 @@ public class TimeData {
 		String ret = format;
 		int[] c = getC();
 
+		if(9999 < c[0]) {
+			c[0] = 9999;
+			c[1] = 99;
+			c[2] = 99;
+			c[3] = 99;
+			c[4] = 99;
+			c[5] = 99;
+		}
 		ret = ret.replace("Y", StringTools.zPad(c[0], 4));
 		ret = ret.replace("M", StringTools.zPad(c[1], 2));
 		ret = ret.replace("D", StringTools.zPad(c[2], 2));

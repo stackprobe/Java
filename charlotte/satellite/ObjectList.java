@@ -44,4 +44,16 @@ public class ObjectList {
 	public Object get(int index) {
 		return _list.get(index);
 	}
+
+	public String getString(int index) {
+		return (String)get(index);
+	}
+
+	public ObjectList getList(int index) {
+		return (ObjectList)get(index);
+	}
+
+	public ObjectMap getMap(int index) {
+		return (ObjectMap)get(index);
+	}
 }

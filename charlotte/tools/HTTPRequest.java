@@ -10,8 +10,8 @@ public class HTTPRequest {
 	private String _path = "/";
 	private Map<String, String> _headerFields = new HashMap<String, String>();
 	private byte[] _body = null; // null -> GET, not null -> POST
-	private int _connectTimeoutMillis = 20000; // 0 -> infinite
-	private int _soTimeoutMillis = 60000; // 0 -> infinite
+	private int _connectTimeoutMillis = 180000;//20000; // 0 -> infinite
+	private int _soTimeoutMillis = 180000;//60000; // 0 -> infinite
 	private String _proxyDomain = null; // null -> no proxy
 	private int _proxyPortNo = -1;
 	private boolean _head; // true -> HEAD, false -> GET or POST

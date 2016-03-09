@@ -55,4 +55,16 @@ public class ObjectMap {
 	public Object get(String key) {
 		return _map.get(key);
 	}
+
+	public String getString(String key) {
+		return (String)get(key);
+	}
+
+	public ObjectList getList(String key) {
+		return (ObjectList)get(key);
+	}
+
+	public ObjectMap getMap(String key) {
+		return (ObjectMap)get(key);
+	}
 }
