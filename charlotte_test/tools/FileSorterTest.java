@@ -60,7 +60,7 @@ public class FileSorterTest {
 	private static void test01(int linecnt, int chrcnt) throws Exception {
 		System.out.println("begin: " + linecnt + ", " + chrcnt);
 
-		System.out.println("begin make rand text file");
+		System.out.println("begin make random text file");
 		DebugTools.makeRandTextFile(
 				"C:/temp/1.txt",
 				StringTools.CHARSET_SJIS,

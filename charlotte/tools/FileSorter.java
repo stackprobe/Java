@@ -9,11 +9,13 @@ import java.util.Comparator;
 import java.util.List;
 
 public abstract class FileSorter<Reader, Writer, Record> {
-	public void mergeSort(String rwFile) {
+	public void mergeSort(String rwFile) throws Exception {
 		mergeSort(rwFile, rwFile);
 	}
 
-	public void mergeSort(String rFile, String wFile) {
+	public void mergeSort(String rFile, String wFile) throws Exception {
+		new FileInputStream(rFile).close(); // read check !
+
 		QueueData<String> divFiles = makeDivFiles(rFile);
 
 		while(2 < divFiles.size()) {
@@ -25,6 +27,9 @@ public abstract class FileSorter<Reader, Writer, Record> {
 
 			divFiles.add(divFile3);
 		}
+
+		new FileOutputStream(wFile).close(); // write check !
+
 		switch(divFiles.size()) {
 		case 2:
 			mergeFile(divFiles.poll(), divFiles.poll(), wFile);
@@ -138,14 +143,9 @@ public abstract class FileSorter<Reader, Writer, Record> {
 	}
 
 
-	private void flowFile(String rFile, String wFile) {
-		try {
-			FileTools.copy(rFile, wFile);
-			FileTools.delete(rFile);
-		}
-		catch(Throwable e) {
-			e.printStackTrace();
-		}
+	private void flowFile(String rFile, String wFile) throws Exception {
+		FileTools.copy(rFile, wFile);
+		FileTools.delete(rFile);
 		// old
 		/*
 		Reader reader = readOpen(rFile);
