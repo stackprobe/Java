@@ -1,4 +1,4 @@
-package codejr;
+package codeiq;
 
 import java.util.ArrayList;
 import java.util.Comparator;

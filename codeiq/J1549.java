@@ -1,4 +1,4 @@
-package codejr;
+package codeiq;
 
 public class J1549 {
 	public static void main(String[] args) {

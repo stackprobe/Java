@@ -1,4 +1,4 @@
-package codejr;
+package codeiq;
 
 import charlotte.tools.IntTools;
 import charlotte.tools.MathTools;
