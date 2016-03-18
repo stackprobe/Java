@@ -258,4 +258,32 @@ public class FileTools {
 		}
 		return path;
 	}
+
+	public static void copy(String rFile, String wFile) throws Exception {
+		copy(rFile, wFile, 1000000); // 1 MB
+	}
+
+	public static void copy(String rFile, String wFile, int buffSize) throws Exception {
+		FileInputStream fis = null;
+		FileOutputStream fos = null;
+		try {
+			fis = new FileInputStream(rFile);
+			fos = new FileOutputStream(wFile);
+
+			byte[] buff = new byte[buffSize];
+
+			for(; ; ) {
+				int readSize = fis.read(buff);
+
+				if(readSize < 0) {
+					break;
+				}
+				fos.write(buff, 0, readSize);
+			}
+		}
+		finally {
+			FileTools.close(fis);
+			FileTools.close(fos);
+		}
+	}
 }

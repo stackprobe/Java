@@ -51,7 +51,7 @@ public abstract class FileSorter<Reader, Writer, Record> {
 		QueueData<String> divFiles = new QueueData<String>();
 
 		for(; ; ) {
-			Record record = this.readRecord(reader);
+			Record record = readRecord(reader);
 
 			if(record == null) {
 				break;
@@ -137,7 +137,17 @@ public abstract class FileSorter<Reader, Writer, Record> {
 		FileTools.delete(rFile2);
 	}
 
+
 	private void flowFile(String rFile, String wFile) {
+		try {
+			FileTools.copy(rFile, wFile);
+			FileTools.delete(rFile);
+		}
+		catch(Throwable e) {
+			e.printStackTrace();
+		}
+		// old
+		/*
 		Reader reader = readOpen(rFile);
 		Writer writer = writeOpen(wFile);
 
@@ -153,6 +163,7 @@ public abstract class FileSorter<Reader, Writer, Record> {
 		writeClose(writer);
 
 		FileTools.delete(rFile);
+		*/
 	}
 
 	protected abstract Reader readOpen(String file);

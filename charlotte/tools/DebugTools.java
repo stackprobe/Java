@@ -6,6 +6,9 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Window;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -169,15 +172,26 @@ public class DebugTools {
 		FileTools.writeAllBytes(wTextFile, getString(getHierarchy(root)).getBytes(StringTools.CHARSET_SJIS));
 	}
 
-	public static void snapshot(Component root, String wDir) throws Exception {
-		String file = FileTools.combine(wDir, TimeData.now().getString());
+	public static void snapshot(Component root, String wDir, int wIndex) throws Exception {
+		String file = FileTools.combine(wDir, TimeData.now().getString() + StringTools.zPad(wIndex, 3));
 
 		writeHierarchyVisual(root, file + ".png");
 		writeHierarchyString(root, file + ".txt");
 	}
 
+	private static final String DEF_OUT_DIR = "C:/temp";
+
 	public static void snapshot(Component root) throws Exception {
-		snapshot(root, "C:/temp");
+		snapshot(root, DEF_OUT_DIR, 0);
+	}
+
+	public static void snapshot() throws Exception {
+		int wIndex = 1;
+
+		for(Window win : getAllWindow()) {
+			snapshot(win, DEF_OUT_DIR, wIndex);
+			wIndex++;
+		}
 	}
 
 	public static List<Window> getAllWindow() throws Exception {
@@ -227,5 +241,80 @@ public class DebugTools {
 		}
 		return dest;
 		//*/
+	}
+
+	public static void makeRandTextFile(String file, String charset, String chrs, String newLine, int linecnt, int chrcntMin, int chrcntMax) throws Exception {
+		byte[] bNewLine = newLine.getBytes(charset);
+		FileOutputStream fos = new FileOutputStream(file);
+		try {
+			for(int index = 0; index < linecnt; index++) {
+				fos.write(makeRandString(chrs, MathTools.random(chrcntMin, chrcntMax)).getBytes(charset));
+				fos.write(bNewLine);
+			}
+		}
+		finally {
+			FileTools.close(fos);
+		}
+	}
+
+	public static String makeRandString(String chrs, int chrcnt) {
+		StringBuffer buff = new StringBuffer();
+
+		for(int index = 0; index < chrcnt; index++) {
+			buff.append(chrs.charAt(MathTools.random(chrs.length())));
+		}
+		return buff.toString();
+	}
+
+	private static final int FILE_COPY_BUFF_SIZE = 10000000; // 10 MB !!!
+
+	public static void copyFile(String rFile, String wFile) throws Exception {
+		FileInputStream fis = null;
+		FileOutputStream fos = null;
+		try {
+			fis = new FileInputStream(rFile);
+			fos = new FileOutputStream(wFile);
+
+			byte[] buff = new byte[FILE_COPY_BUFF_SIZE];
+
+			for(; ; ) {
+				int readSize = fis.read(buff);
+
+				if(readSize < 0) {
+					break;
+				}
+				fos.write(buff, 0, readSize);
+			}
+		}
+		finally {
+			FileTools.close(fis);
+			FileTools.close(fos);
+		}
+	}
+
+	public static boolean isSameFile(String file1, String file2) throws Exception {
+		BufferedInputStream fis1 = null;
+		BufferedInputStream fis2 = null;
+		try {
+			fis1 = new BufferedInputStream(new FileInputStream(file1));
+			fis2 = new BufferedInputStream(new FileInputStream(file2));
+
+			for(; ; ) {
+				int chr1 = fis1.read();
+				int chr2 = fis2.read();
+
+				if(chr1 != chr2) {
+					return false;
+				}
+				if(chr1 == -1) {
+					break;
+				}
+			}
+		}
+		finally {
+			FileTools.close(fis1);
+			FileTools.close(fis2);
+		}
+		return true;
 	}
 }
