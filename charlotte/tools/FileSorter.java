@@ -13,47 +13,62 @@ public abstract class FileSorter<Reader, Writer, Record> {
 		mergeSort(rwFile, rwFile);
 	}
 
+	private String _divFileBase;
+	private long _rSerial;
+	private long _wSerial;
+
 	public void mergeSort(String rFile, String wFile) throws Exception {
-		new FileInputStream(rFile).close(); // read check !
+		_divFileBase = FileTools.makeTempPath() + "_FileSorter_div_";
+		_rSerial = 0L;
+		_wSerial = 0L;
 
-		QueueData<String> divFiles = makeDivFiles(rFile);
+		try {
+			new FileInputStream(rFile).close(); // read check !
 
-		while(2 < divFiles.size()) {
-			String divFile1 = divFiles.poll();
-			String divFile2 = divFiles.poll();
-			String divFile3 = FileTools.makeTempPath();
+			makeDivFiles(rFile);
 
-			mergeFile(divFile1, divFile2, divFile3);
+			while(_rSerial + 2 < _wSerial) {
+				String divFile1 = getDivFile(_rSerial++);
+				String divFile2 = getDivFile(_rSerial++);
+				String divFile3 = getDivFile(_wSerial++);
 
-			divFiles.add(divFile3);
+				mergeFile(divFile1, divFile2, divFile3);
+			}
+
+			new FileOutputStream(wFile).close(); // write check !
+
+			switch((int)(_wSerial - _rSerial)) {
+			case 2:
+				mergeFile(getDivFile(_rSerial++), getDivFile(_rSerial++), wFile);
+				break;
+
+			case 1:
+				flowFile(getDivFile(_rSerial++), wFile);
+				break;
+
+			case 0:
+				writeClose(writeOpen(wFile));
+				break;
+
+			default:
+				throw null;
+			}
 		}
-
-		new FileOutputStream(wFile).close(); // write check !
-
-		switch(divFiles.size()) {
-		case 2:
-			mergeFile(divFiles.poll(), divFiles.poll(), wFile);
-			break;
-
-		case 1:
-			flowFile(divFiles.poll(), wFile);
-			break;
-
-		case 0:
-			writeClose(writeOpen(wFile));
-			break;
-
-		default:
-			throw null;
+		finally {
+			while(_rSerial < _wSerial) {
+				FileTools.del(getDivFile(_rSerial++));
+			}
+			_divFileBase = null;
+			_rSerial = -1L;
+			_wSerial = -1L;
 		}
 	}
 
-	private QueueData<String> makeDivFiles(String rFile) {
+	private void makeDivFiles(String rFile) {
 		Reader reader = readOpen(rFile);
 		List<Record> records = new ArrayList<Record>();
 		long weight = 0L;
 		long weightMax = getWeightMax();
-		QueueData<String> divFiles = new QueueData<String>();
 
 		for(; ; ) {
 			Record record = readRecord(reader);
@@ -65,7 +80,7 @@ public abstract class FileSorter<Reader, Writer, Record> {
 			weight += getWeight(record);
 
 			if(weightMax < weight) {
-				divFiles.add(makeDivFile(records));
+				makeDivFile(records);
 				records.clear();
 				weight = 0L;
 			}
@@ -73,13 +88,12 @@ public abstract class FileSorter<Reader, Writer, Record> {
 		readClose(reader);
 
 		if(1 <= records.size()) {
-			divFiles.add(makeDivFile(records));
+			makeDivFile(records);
 		}
-		return divFiles;
 	}
 
-	private String makeDivFile(List<Record> records) {
-		String wFile = FileTools.makeTempPath();
+	private void makeDivFile(List<Record> records) {
+		String wFile = getDivFile(_wSerial++);
 
 		ArrayTools.sort(records, new Comparator<Record>() {
 			@Override
@@ -94,7 +108,10 @@ public abstract class FileSorter<Reader, Writer, Record> {
 			writeRecord(writer, record);
 		}
 		writeClose(writer);
-		return wFile;
+	}
+
+	private String getDivFile(long serial) {
+		return _divFileBase + serial;
 	}
 
 	private void mergeFile(String rFile1, String rFile2, String wFile) {

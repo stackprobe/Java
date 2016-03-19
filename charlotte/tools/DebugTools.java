@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Window;
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.lang.ref.WeakReference;
@@ -245,7 +246,7 @@ public class DebugTools {
 
 	public static void makeRandTextFile(String file, String charset, String chrs, String newLine, int linecnt, int chrcntMin, int chrcntMax) throws Exception {
 		byte[] bNewLine = newLine.getBytes(charset);
-		FileOutputStream fos = new FileOutputStream(file);
+		BufferedOutputStream fos = new BufferedOutputStream(new FileOutputStream(file));
 		try {
 			for(int index = 0; index < linecnt; index++) {
 				fos.write(makeRandString(chrs, MathTools.random(chrcntMin, chrcntMax)).getBytes(charset));
