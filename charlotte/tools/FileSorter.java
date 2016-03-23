@@ -159,7 +159,6 @@ public abstract class FileSorter<Reader, Writer, Record> {
 		FileTools.delete(rFile2);
 	}
 
-
 	private void flowFile(String rFile, String wFile) throws Exception {
 		FileTools.copy(rFile, wFile);
 		FileTools.delete(rFile);

@@ -154,10 +154,10 @@ public class WinAPITools {
 		go("/SEND-TO-FORTEWAVE " + identHash + " \"" + dir + "\"");
 	}
 
-	public void recvFromFortewave(String identHash, QueueData<byte[]> rq, long millis, int recvLimit) throws Exception {
+	public void recvFromFortewave(String identHash, QueueData<byte[]> rq, long millis, int recvLimit, int recvLimitSize) throws Exception {
 		String dir = FileTools.makeTempPath();
 		FileTools.mkdir(dir);
-		go("/RECV-FROM-FORTEWAVE " + identHash + " \"" + dir + "\" " + millis + " " + recvLimit);
+		go("/RECV-FROM-FORTEWAVE " + identHash + " \"" + dir + "\" " + millis + " " + recvLimit + " " + recvLimitSize);
 
 		for(int index = 0; ; index++) {
 			String file = FileTools.combine(dir, StringTools.zPad(index, 4));

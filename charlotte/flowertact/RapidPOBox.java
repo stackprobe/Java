@@ -63,7 +63,7 @@ public class RapidPOBox extends PostOfficeBox {
 	@Override
 	public byte[] recv(long millis) throws Exception {
 		if(_rq.size() == 0) {
-			WinAPITools.i().recvFromFortewave(_identHash, _rq, millis, 100);
+			WinAPITools.i().recvFromFortewave(_identHash, _rq, millis, 100, 5000000); // 5 MB
 		}
 		return _rq.poll();
 	}
