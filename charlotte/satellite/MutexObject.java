@@ -21,7 +21,8 @@ public class MutexObject {
 
 	public boolean waitOne(final long millis) {
 		//System.out.println("W"); // test
-		//new Exception().printStackTrace(); // test
+		//new Exception().printStackTrace(System.out); // test
+		//System.out.println("PID: " + SystemTools.PID); // test
 		//System.out.println("W_2"); // test
 
 		_beganName = StringTools.getUUID();

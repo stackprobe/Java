@@ -52,7 +52,7 @@ public class WinAPITools {
 
 			{
 				String trueFile = FileTools.makeTempPath();
-				int millis = 1;
+				int millis = 0;
 
 				for(; ; ) {
 					{
@@ -64,8 +64,10 @@ public class WinAPITools {
 					if(FileTools.exists(trueFile)) {
 						break;
 					}
+					if(millis < 2000) {
+						millis++;
+					}
 					Thread.sleep(millis);
-					millis = Math.min(millis + 1, 2000);
 				}
 				FileTools.delete(trueFile);
 			}

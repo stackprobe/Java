@@ -17,7 +17,9 @@ public class Test01 implements HttService {
 				@Override
 				public void run() {
 					try {
+						System.out.println("1"); // test
 						HttServer.perform(service);
+						System.out.println("2"); // test
 					}
 					catch(Throwable e) {
 						e.printStackTrace();
