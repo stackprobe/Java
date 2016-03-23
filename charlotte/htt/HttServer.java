@@ -30,7 +30,7 @@ public class HttServer {
 		if(service == null) {
 			throw new NullPointerException("service is null");
 		}
-		// XXX WHTTR.exe もロックする。
+		// XXX WHTTR.exe, Service.exe もロックする。
 		if(_mutex.waitOne(3000)) {
 			try {
 				_pipeline = new BlueFortewave(HTT_SERVICE_ID, HTT_ID);
