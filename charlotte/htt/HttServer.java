@@ -10,11 +10,13 @@ import charlotte.flowertact.BlueFortewave;
 import charlotte.flowertact.Fortewave;
 import charlotte.satellite.MutexObject;
 import charlotte.satellite.ObjectList;
+import charlotte.satellite.WinAPITools;
 import charlotte.tools.FileTools;
 import charlotte.tools.StringTools;
 
 public class HttServer {
 	private static final String COMMON_ID = "{7da01163-efa3-4941-a5a6-be0800720d8e}"; // shared_uuid
+	private static final String EXCL_ID = COMMON_ID + "_e";
 	private static final String MUTEX_ID = COMMON_ID + "_m";
 	private static final String HTT_ID = COMMON_ID + "_h";
 	private static final String HTT_SERVICE_ID = COMMON_ID + "_hs";
@@ -23,6 +25,7 @@ public class HttServer {
 	private static final byte[] COMMAND_RESPONSE = new byte[] { 0x52 };
 	private static final byte[] COMMAND_ERROR = new byte[] { 0x45 };
 
+	private static MutexObject _excl = new MutexObject(EXCL_ID);
 	private static MutexObject _mutex = new MutexObject(MUTEX_ID);
 	private static Fortewave _pipeline;
 
@@ -30,8 +33,9 @@ public class HttServer {
 		if(service == null) {
 			throw new NullPointerException("service is null");
 		}
-		// XXX WHTTR.exe, Service.exe もロックする。
-		if(_mutex.waitOne(3000)) {
+		if(_excl.waitOne(0)) {
+			_mutex.waitOne(WinAPITools.INFINITE); // handled by also WHTTR.exe, Service.exe
+
 			try {
 				_pipeline = new BlueFortewave(HTT_SERVICE_ID, HTT_ID);
 
@@ -124,6 +128,7 @@ public class HttServer {
 					_pipeline = null;
 				}
 				_mutex.release();
+				_excl.release();
 			}
 		}
 	}
