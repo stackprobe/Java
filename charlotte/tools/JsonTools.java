@@ -133,24 +133,30 @@ public class JsonTools {
 			if(chr == '{') {
 				ObjectMap om = ObjectMap.createIgnoreCase();
 
-				do {
-					Object key = get();
-					nextNS(); // ':'
-					Object value = get();
-					om.add(key, value);
-				}
-				while(nextNS() != '}');
+				if(nextNS() != '}') {
+					_rPos--;
 
+					do {
+						Object key = get();
+						nextNS(); // ':'
+						Object value = get();
+						om.add(key, value);
+					}
+					while(nextNS() != '}');
+				}
 				return om;
 			}
 			if(chr == '[') {
 				ObjectList ol = new ObjectList();
 
-				do {
-					ol.add(get());
-				}
-				while(nextNS() != ']');
+				if(nextNS() != ']') {
+					_rPos--;
 
+					do {
+						ol.add(get());
+					}
+					while(nextNS() != ']');
+				}
 				return ol;
 			}
 			if(chr == '"') {

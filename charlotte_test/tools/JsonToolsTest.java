@@ -13,6 +13,7 @@ public class JsonToolsTest {
 		catch(Throwable e) {
 			e.printStackTrace();
 		}
+		System.exit(0);
 	}
 
 	public static void test01() throws Exception {
