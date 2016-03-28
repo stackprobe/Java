@@ -1,11 +1,14 @@
 package charlotte.tools;
 
+import java.io.BufferedInputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FileTools {
 	public static byte[] readAllBytes(String file) throws Exception {
@@ -285,5 +288,37 @@ public class FileTools {
 			FileTools.close(fis);
 			FileTools.close(fos);
 		}
+	}
+
+	public static boolean isSameFile(String file1, String file2) throws Exception {
+		BufferedInputStream bis1 = new BufferedInputStream(new FileInputStream(file1));
+		BufferedInputStream bis2 = new BufferedInputStream(new FileInputStream(file2));
+		try {
+			for(; ; ) {
+				int chr1 = bis1.read();
+				int chr2 = bis2.read();
+
+				if(chr1 != chr2) {
+					return false;
+				}
+				if(chr1 == -1) {
+					break;
+				}
+			}
+		}
+		finally {
+			FileTools.close(bis1);
+			FileTools.close(bis2);
+		}
+		return true;
+	}
+
+	public static List<String> ls(String dir) {
+		List<String> dest = new ArrayList<String>();
+
+		for(String lPath : list(dir)) {
+			dest.add(FileTools.combine(dir, lPath));
+		}
+		return dest;
 	}
 }

@@ -1,5 +1,11 @@
 package charlotte.tools;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -208,5 +214,196 @@ public class CsvData {
 				_rows.get(rowidx).add(cell);
 			}
 		}
+	}
+
+	public static class Stream {
+		private String _file;
+		private String _charset;
+		private char _delimiter;
+
+		public Stream(String file) {
+			this(file, StringTools.CHARSET_SJIS);
+		}
+
+		public Stream(String file, String charset) {
+			this(file, charset, ',');
+		}
+
+		public static Stream createTsv(String file) {
+			return createTsv(file, StringTools.CHARSET_SJIS);
+		}
+
+		public static Stream createTsv(String file, String charset) {
+			return new Stream(file, charset, '\t');
+		}
+
+		public Stream(String file, String charset, char delimiter) {
+			_file = file;
+			_charset = charset;
+			_delimiter = delimiter;
+		}
+
+		// ---- reader ----
+
+		private InputStreamReader _r = null;
+
+		public void readOpen() throws Exception {
+			_r = new InputStreamReader(new BufferedInputStream(new FileInputStream(_file)), _charset);
+		}
+
+		public int nextChar() throws Exception {
+			int chr;
+
+			do {
+				chr = _r.read();
+			}
+			while(chr == '\r');
+
+			return chr;
+		}
+
+		private int _termChr;
+
+		public String readCell() throws Exception {
+			StringBuffer buff = new StringBuffer();
+			int chr = nextChar();
+
+			if(chr == '"') {
+				for(; ; ) {
+					chr = nextChar();
+
+					if(chr == -1) {
+						break;
+					}
+					if(chr == '"') {
+						chr = nextChar();
+
+						if(chr != '"') {
+							break;
+						}
+					}
+					buff.append((char)chr);
+				}
+			}
+			else {
+				for(; ; ) {
+					if(chr == _delimiter || chr == '\n' || chr == -1) {
+						break;
+					}
+					buff.append((char)chr);
+					chr = nextChar();
+				}
+			}
+			_termChr = chr;
+			return buff.toString();
+		}
+
+		public List<String> readRow() throws Exception {
+			List<String> row = new ArrayList<String>();
+
+			do {
+				row.add(readCell());
+			}
+			while(_termChr != '\n' && _termChr != -1);
+
+			if(_termChr == -1 && row.size() == 1 && row.get(0).length() == 0) {
+				return null;
+			}
+			return row;
+		}
+
+		public List<List<String>> readToEnd() throws Exception {
+			List<List<String>> rows = new ArrayList<List<String>>();
+
+			for(; ; ) {
+				List<String> row = readRow();
+
+				if(row == null) {
+					break;
+				}
+				rows.add(row);
+			}
+			return rows;
+		}
+
+		public void readClose() {
+			if(_r != null) {
+				FileTools.close(_r);
+				_r = null;
+			}
+		}
+
+		// ---- writer ----
+
+		private OutputStreamWriter _w = null;
+
+		public void writeOpen() throws Exception {
+			_w = new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(_file)), _charset);
+		}
+
+		public void writeCell(String cell) throws Exception {
+			if(StringTools.containsChar(cell, "\r\n\"" + _delimiter)) {
+				_w.write('"');
+
+				for(char chr : cell.toCharArray()) {
+					if(chr == '"') {
+						_w.write('"');
+					}
+					_w.write(chr);
+				}
+				_w.write('"');
+			}
+			else {
+				_w.write(cell);
+			}
+		}
+
+		public void writeDelimiter() throws Exception {
+			_w.write(_delimiter);
+		}
+
+		public void writeReturn() throws Exception {
+			_w.write("\r\n");
+		}
+
+		public void writeRow(String[] row) throws Exception {
+			for(int index = 0; index < row.length; index++) {
+				if(1 <= index) {
+					writeDelimiter();
+				}
+				writeCell(row[index]);
+			}
+			writeReturn();
+		}
+
+		public void writeRow(List<String> row) throws Exception {
+			writeRow(row.toArray(new String[row.size()]));
+		}
+
+		public void writeRows(List<List<String>> rows) throws Exception {
+			for(List<String> row : rows) {
+				writeRow(row);
+			}
+		}
+
+		public void writeClose() {
+			if(_w != null) {
+				FileTools.close(_w);
+				_w = null;
+			}
+		}
+
+		private List<String> _row = new ArrayList<String>();
+
+		public void add(String cell) {
+			_row.add(cell);
+		}
+
+		public void endRow() throws Exception {
+			writeRow(_row);
+			_row.clear();
+		}
+
+		// ----
 	}
 }
