@@ -8,7 +8,7 @@ public class CsvDataTest {
 	public static void main(String[] args) {
 		try {
 			//test01();
-			test02();
+			//test02();
 			test03();
 		}
 		catch(Throwable e) {
