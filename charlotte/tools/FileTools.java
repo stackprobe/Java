@@ -262,7 +262,7 @@ public class FileTools {
 		return path;
 	}
 
-	public static void copy(String rFile, String wFile) throws Exception {
+	public static void copyFile(String rFile, String wFile) throws Exception {
 		copy(rFile, wFile, 1000000); // 1 MB
 	}
 

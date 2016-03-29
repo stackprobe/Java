@@ -194,4 +194,19 @@ public class IntTools {
 
 		return (b1 & 0xff) | ((b2 & 0xff) << 8);
 	}
+
+	public static String toString0x(int value) {
+		return toString0x(value, 8);
+	}
+
+	public static String toString0x(int value, int size) {
+		StringBuffer buff = new StringBuffer();
+
+		for(int c = 0; c < size; c++) {
+			buff.append(StringTools.hexadecimal.charAt(value & 0xf));
+			value >>>= 4;
+		}
+		buff.reverse();
+		return buff.toString();
+	}
 }

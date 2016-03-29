@@ -427,6 +427,52 @@ public class StringTools {
 		}
 	};
 
+	public static int nCompare(String a, String b) {
+		return nCompare(a, b, false);
+	}
+
+	public static int nCompareIgnoreCase(String a, String b) {
+		return nCompare(a, b, true);
+	}
+
+	/**
+	 * ANY_STRING < null
+	 *
+	 * @param a
+	 * @param b
+	 * @param ignoreCase
+	 * @return
+	 */
+	public static int nCompare(String a, String b, boolean ignoreCase) {
+		if(a == null) {
+			if(b == null) {
+				return 0;
+			}
+			return 1;
+		}
+		if(b == null) {
+			return -1;
+		}
+		if(ignoreCase) {
+			return a.compareToIgnoreCase(b);
+		}
+		return a.compareTo(b);
+	}
+
+	public static Comparator<String> nComp = new Comparator<String>() {
+		@Override
+		public int compare(String a, String b) {
+			return nCompare(a, b);
+		}
+	};
+
+	public static Comparator<String> nCompIgnoreCase = new Comparator<String>() {
+		@Override
+		public int compare(String a, String b) {
+			return nCompareIgnoreCase(a, b);
+		}
+	};
+
 	public static String ASCII;
 	public static String ASCII_SPC;
 

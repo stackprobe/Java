@@ -160,7 +160,7 @@ public abstract class FileSorter<Reader, Writer, Record> {
 	}
 
 	private void flowFile(String rFile, String wFile) throws Exception {
-		FileTools.copy(rFile, wFile);
+		FileTools.copyFile(rFile, wFile);
 		FileTools.delete(rFile);
 		// old
 		/*
