@@ -475,11 +475,13 @@ public class StringTools {
 
 	public static String ASCII;
 	public static String ASCII_SPC;
+	public static String HAN_KATAKANA;
 
 	static {
 		try {
 			ASCII = new String(ArrayTools.byteSq(0x21, 0x7e), CHARSET_ASCII);
 			ASCII_SPC = new String(ArrayTools.byteSq(0x20, 0x7e), CHARSET_ASCII);
+			HAN_KATAKANA = new String(ArrayTools.byteSq(0xa1, 0xdf), CHARSET_SJIS);
 		}
 		catch(Throwable e) {
 			e.printStackTrace();

@@ -263,10 +263,10 @@ public class FileTools {
 	}
 
 	public static void copyFile(String rFile, String wFile) throws Exception {
-		copy(rFile, wFile, 1000000); // 1 MB
+		copyFile(rFile, wFile, 1000000); // 1 MB
 	}
 
-	public static void copy(String rFile, String wFile, int buffSize) throws Exception {
+	public static void copyFile(String rFile, String wFile, int buffSize) throws Exception {
 		FileInputStream fis = null;
 		FileOutputStream fos = null;
 		try {
@@ -320,5 +320,22 @@ public class FileTools {
 			dest.add(FileTools.combine(dir, lPath));
 		}
 		return dest;
+	}
+
+	public static void copyDir(String rDir, String wDir) throws Exception {
+		if(exists(wDir) == false) {
+			mkdir(wDir);
+		}
+		for(String lPath : list(rDir)) {
+			String rPath = combine(rDir, lPath);
+			String wPath = combine(wDir, lPath);
+
+			if(isDirectory(rPath)) {
+				copyDir(rPath, wPath);
+			}
+			else {
+				copyFile(rPath, wPath);
+			}
+		}
 	}
 }

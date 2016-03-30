@@ -29,4 +29,19 @@ public class LongTools {
 			return 0;
 		}
 	};
+
+	public static String toString0x(int value) {
+		return toString0x(value, 8);
+	}
+
+	public static String toString0x(int value, int size) {
+		StringBuffer buff = new StringBuffer();
+
+		for(int c = 0; c < size; c++) {
+			buff.append(StringTools.hexadecimal.charAt((int)(value & 0xfL)));
+			value >>>= 4;
+		}
+		buff.reverse();
+		return buff.toString();
+	}
 }
