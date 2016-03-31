@@ -86,7 +86,7 @@ public class CsvDataTest {
 	}
 
 	private static void test03() throws Exception {
-		for(String file : FileTools.ls("C:/tmp/テスト用csv")) {
+		for(String file : FileTools.ls("C:/var/テスト用csv")) {
 			if(StringTools.endsWithIgnoreCase(file, ".csv")) {
 				test03(file);
 			}

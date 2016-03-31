@@ -580,4 +580,14 @@ public class StringTools {
 		public int endEnd;
 		public String innerText;
 	}
+
+	public static String charsetFilter(String str, String charset) {
+		try {
+			return new String(str.getBytes(charset), charset);
+		}
+		catch(Throwable e) {
+			e.printStackTrace();
+			throw null;
+		}
+	}
 }

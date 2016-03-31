@@ -29,16 +29,16 @@ public class SortedList<T> {
 	}
 
 	public T get(int index) {
-		trySort();
+		sortIfNeed();
 		return _list.get(index);
 	}
 
 	public void remove(int index) {
-		trySort();
+		sortIfNeed();
 		_list.remove(index);
 	}
 
-	private void trySort() {
+	private void sortIfNeed() {
 		if(_sortedFlag == false) {
 			sort();
 			_sortedFlag = true;

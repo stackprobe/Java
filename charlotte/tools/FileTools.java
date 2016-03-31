@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class FileTools {
 	public static byte[] readAllBytes(String file) throws Exception {
@@ -314,10 +315,23 @@ public class FileTools {
 	}
 
 	public static List<String> ls(String dir) {
-		List<String> dest = new ArrayList<String>();
+		return ls(dir, new ArrayList<String>());
+	}
 
+	public static List<String> ls(String dir, List<String> dest) {
 		for(String lPath : list(dir)) {
 			dest.add(FileTools.combine(dir, lPath));
+		}
+		return dest;
+	}
+
+	public static List<String> lss(String dir) {
+		List<String> dest = ls(dir);
+
+		for(int index = 0; index < dest.size(); index++) {
+			if(isDirectory(dest.get(index))) {
+				ls(dest.get(index), dest);
+			}
 		}
 		return dest;
 	}
@@ -337,5 +351,80 @@ public class FileTools {
 				copyFile(rPath, wPath);
 			}
 		}
+	}
+
+	public static Set<String> windowsReservedFiles;
+
+	static {
+		Set<String> wrf = SetTools.createIgnoreCase();
+
+		wrf.add("AUX");
+		wrf.add("CON");
+		wrf.add("NUL");
+		wrf.add("PRN");
+
+		for(int c = 1; c < 9; c++) {
+			wrf.add("COM" + c);
+			wrf.add("LPT" + c);
+		}
+		wrf.add("COM0"); // XXX
+		wrf.add("LPT0"); // XXX
+		wrf.add("CLOCK$"); // XXX
+		wrf.add("CONFIG$"); // XXX
+
+		windowsReservedFiles = wrf;
+	}
+
+	public static final int PATH_MAX = 250;
+	public static final String PATH_NG_CHRS = "\"*/:<>?\\|";
+
+	public static String toFairLocalPath(String src) {
+		return toFairLocalPath(src, 100);
+	}
+
+	public static String toFairLocalPath(String str, int dirSize) {
+		int lenmax = PATH_MAX - dirSize;
+
+		if(str == null) {
+			str = "$null";
+		}
+		str = StringTools.charsetFilter(str, StringTools.CHARSET_SJIS);
+
+		if(lenmax < str.length()) {
+			str = str.substring(0, lenmax);
+		}
+		List<String> nodes = StringTools.tokenize(str, ".");
+
+		for(int index = 0; index < nodes.size(); index++) {
+			String node = nodes.get(index);
+
+			node = node.trim(); // XXX
+
+			{
+				StringBuffer buff = new StringBuffer();
+
+				for(char chr : node.toCharArray()) {
+					if(chr < ' ' || StringTools.contains(PATH_NG_CHRS, chr)) {
+						chr = '$';
+					}
+					buff.append(chr);
+				}
+				node = buff.toString();
+			}
+
+			nodes.set(index, node);
+		}
+		if(windowsReservedFiles.contains(nodes.get(0))) {
+			nodes.set(0, "$" + nodes.get(0).substring(1));
+		}
+		str = StringTools.join(".", nodes);
+
+		if(str.length() == 0) {
+			str = "$";
+		}
+		if(str.charAt(str.length() - 1) == '.') {
+			str = str.substring(0, str.length() - 1) + "$";
+		}
+		return str;
 	}
 }

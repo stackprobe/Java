@@ -95,12 +95,21 @@ public abstract class FileSorter<Reader, Writer, Record> {
 	private void makeDivFile(List<Record> records) {
 		String wFile = getDivFile(_wSerial++);
 
+		//*/
+		Sorter.sort(Sorter.Sortable.<Record>create(records, new Comparator<Record>() {
+			@Override
+			public int compare(Record a, Record b) {
+				return comp(a, b);
+			}
+		}));
+		/*/
 		ArrayTools.sort(records, new Comparator<Record>() {
 			@Override
 			public int compare(Record a, Record b) {
 				return comp(a, b);
 			}
 		});
+		//*/
 
 		Writer writer = writeOpen(wFile);
 
