@@ -21,20 +21,20 @@ public class LongTools {
 		@Override
 		public int compare(Long v1, Long v2) {
 			if(v1 < v2) {
-				return 1;
+				return -1;
 			}
 			if(v2 < v1) {
-				return -1;
+				return 1;
 			}
 			return 0;
 		}
 	};
 
-	public static String toString0x(int value) {
+	public static String toString0x(long value) {
 		return toString0x(value, 8);
 	}
 
-	public static String toString0x(int value, int size) {
+	public static String toString0x(long value, int size) {
 		StringBuffer buff = new StringBuffer();
 
 		for(int c = 0; c < size; c++) {

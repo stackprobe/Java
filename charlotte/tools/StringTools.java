@@ -333,6 +333,10 @@ public class StringTools {
 		return buff.toString();
 	}
 
+	public static boolean isContainsOnly(String str, String validChrs) {
+		return str.equals(toContainsOnly(str, validChrs));
+	}
+
 	public static String set(String str, int index, char chr) {
 		return str.substring(0, index) + chr + str.substring(index + 1);
 	}

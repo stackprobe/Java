@@ -1,5 +1,7 @@
 package charlotte_test.tools;
 
+import java.util.List;
+
 import charlotte.tools.DebugTools;
 import charlotte.tools.FileSorter;
 import charlotte.tools.StringTools;
@@ -8,7 +10,8 @@ public class FileSorterTest {
 	public static void main(String[] args) {
 		try {
 			//test01();
-			test02();
+			//test02();
+			test03();
 
 			System.out.println("OK!");
 		}
@@ -126,5 +129,15 @@ public class FileSorterTest {
 
 		//System.out.println("elapsed: " + FileSorter.elapsed);
 		//FileSorter.elapsed = 0L;
+	}
+
+	private static void test03() throws Exception {
+		new FileSorter.CsvFileSorter(StringTools.CHARSET_SJIS) {
+			@Override
+			protected int comp(List<String> a, List<String> b) {
+				return comp(a, b, 1);
+			}
+		}
+		.mergeSort("C:/var/201408.csv", "C:/temp/1.csv");
 	}
 }

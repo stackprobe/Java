@@ -209,4 +209,11 @@ public class IntTools {
 		buff.reverse();
 		return buff.toString();
 	}
+
+	public static int revEndian(int value) {
+		return ((value >>> 24) & 0x000000ff) |
+				((value >>> 8) & 0x0000ff00) |
+				((value <<  8) & 0x00ff0000) |
+				((value << 24) & 0xff000000);
+	}
 }

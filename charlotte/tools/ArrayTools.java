@@ -234,4 +234,12 @@ public class ArrayTools {
 		}
 		return dest;
 	}
+
+	public static <T> void copy(T[] src, int rPos, T[] dest, int wPos, int size) {
+		System.arraycopy(src, rPos, dest, wPos, size);
+	}
+
+	public static void copy(byte[] src, int rPos, byte[] dest, int wPos, int size) {
+		System.arraycopy(src, rPos, dest, wPos, size);
+	}
 }
