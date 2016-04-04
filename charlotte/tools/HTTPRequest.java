@@ -120,6 +120,8 @@ public class HTTPRequest {
 		if(_body != null) {
 			setHeaderField("Content-Length", "" + _body.length);
 		}
+		setHeaderField("Connection", "close");
+
 		SockClient client;
 
 		if(_proxyDomain == null) {

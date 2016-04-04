@@ -7,7 +7,8 @@ import charlotte.tools.StringTools;
 public class FileSorterTest {
 	public static void main(String[] args) {
 		try {
-			test01();
+			//test01();
+			test02();
 
 			System.out.println("OK!");
 		}
@@ -93,5 +94,37 @@ public class FileSorterTest {
 			throw null;
 		}
 		System.out.println("done");
+	}
+
+	private static void test02() throws Exception {
+		test02(1000000, 1);
+		test02(1000000, 2);
+		test02(1000000, 3);
+		//test02(100000, 1000);
+		//test02(200000, 1000);
+		//test02(300000, 1000);
+	}
+
+	private static void test02(int linecnt, int chrcnt) throws Exception {
+		System.out.println("begin: " + linecnt + ", " + chrcnt);
+
+		DebugTools.makeRandTextFile(
+				"C:/temp/1.txt",
+				StringTools.CHARSET_SJIS,
+				StringTools.ASCII,
+				"\r\n",
+				linecnt,
+				0,
+				chrcnt
+				);
+
+		long startedTime = System.currentTimeMillis();
+		new FileSorter.TextFileSorter(StringTools.CHARSET_SJIS).mergeSort("C:/temp/1.txt");
+		long endedTime = System.currentTimeMillis();
+
+		System.out.println("done: " + (endedTime - startedTime));
+
+		//System.out.println("elapsed: " + FileSorter.elapsed);
+		//FileSorter.elapsed = 0L;
 	}
 }

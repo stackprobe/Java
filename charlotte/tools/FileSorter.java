@@ -92,10 +92,13 @@ public abstract class FileSorter<Reader, Writer, Record> {
 		}
 	}
 
+	//public static long elapsed = 0L;
+
 	private void makeDivFile(List<Record> records) {
 		String wFile = getDivFile(_wSerial++);
 
-		//*/
+		//long beforeSortTime = System.currentTimeMillis();
+		/*/
 		Sorter.sort(Sorter.Sortable.<Record>create(records, new Comparator<Record>() {
 			@Override
 			public int compare(Record a, Record b) {
@@ -110,6 +113,7 @@ public abstract class FileSorter<Reader, Writer, Record> {
 			}
 		});
 		//*/
+		//elapsed += System.currentTimeMillis() - beforeSortTime;
 
 		Writer writer = writeOpen(wFile);
 
