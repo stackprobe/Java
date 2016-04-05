@@ -61,7 +61,7 @@ public class Box {
 			}
 		}
 		catch(Throwable e) {
-			e.printStackTrace(System.out);
+			//e.printStackTrace(System.out);
 
 			boxes.clear();
 		}

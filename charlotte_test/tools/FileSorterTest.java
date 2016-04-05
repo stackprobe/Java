@@ -9,9 +9,9 @@ import charlotte.tools.StringTools;
 public class FileSorterTest {
 	public static void main(String[] args) {
 		try {
-			//test01();
+			test01();
 			//test02();
-			test03();
+			//test03();
 
 			System.out.println("OK!");
 		}
