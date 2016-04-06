@@ -31,7 +31,7 @@ public class LongTools {
 	};
 
 	public static String toString0x(long value) {
-		return toString0x(value, 8);
+		return toString0x(value, 16);
 	}
 
 	public static String toString0x(long value, int size) {

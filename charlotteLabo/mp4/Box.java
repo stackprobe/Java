@@ -91,7 +91,7 @@ public class Box {
 
 	// ----
 
-	public List<Box> find(String name) {
+	public List<Box> findBox(String name) {
 		List<Box> dest = new ArrayList<Box>();
 
 		for(Box box : boxes) {
@@ -103,7 +103,41 @@ public class Box {
 		return dest;
 	}
 
-	public Box get(String name) {
-		return find(name).get(0);
+	public Box getBox(String name) {
+		return findBox(name).get(0);
+	}
+
+	public Box get(String path) {
+		return get(StringTools.tokenize(path, "/"), 0);
+	}
+
+	private Box get(List<String> names, int index) {
+		if(index == names.size()) {
+			return this;
+		}
+		for(Box box : findBox(names.get(index))) {
+			Box ret = box.get(names, index + 1);
+
+			if(ret != null) {
+				return ret;
+			}
+		}
+		return null;
+	}
+
+	public List<Box> find(String path) {
+		List<Box> dest = new ArrayList<Box>();
+		find(StringTools.tokenize(path, "/"), 0, dest);
+		return dest;
+	}
+
+	private void find(List<String> names, int index, List<Box> dest) {
+		if(index == names.size()) {
+			dest.add(this);
+			return;
+		}
+		for(Box box : findBox(names.get(index))) {
+			box.find(names, index + 1, dest);
+		}
 	}
 }

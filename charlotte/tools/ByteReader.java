@@ -44,6 +44,7 @@ public class ByteReader {
 
 		int readSize = Math.min(size, remaining());
 		ArrayTools.copy(_src, _rPos, buff, wPos, readSize);
+		_rPos += readSize;
 		return readSize;
 	}
 
@@ -69,5 +70,9 @@ public class ByteReader {
 			return _src[_rPos++] & 0xff;
 		}
 		return -1;
+	}
+
+	public void seek(int size) {
+		_rPos += size;
 	}
 }
