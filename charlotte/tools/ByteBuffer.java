@@ -1,6 +1,6 @@
 package charlotte.tools;
 
-public class ByteBuffer implements ByteWriter {
+public class ByteBuffer {
 	private BlockBuffer _buff = new BlockBuffer();
 
 	private int _nextBlockSize = 1024;
@@ -11,7 +11,6 @@ public class ByteBuffer implements ByteWriter {
 	public ByteBuffer() {
 	}
 
-	@Override
 	public void add(byte chr) {
 		if(_block == null) {
 			_block = new byte[_nextBlockSize];
@@ -28,22 +27,19 @@ public class ByteBuffer implements ByteWriter {
 		}
 	}
 
-	@Override
-	public void add(byte[] block) {
+	public void bindAdd(byte[] block) {
 		flush();
-		_buff.add(block);
+		_buff.bindAdd(block);
 	}
 
-	@Override
-	public void add(byte[] block, int startPos) {
+	public void bindAdd(byte[] block, int startPos) {
 		flush();
-		_buff.add(block, startPos);
+		_buff.bindAdd(block, startPos);
 	}
 
-	@Override
-	public void add(byte[] block, int startPos, int size) {
+	public void bindAdd(byte[] block, int startPos, int size) {
 		flush();
-		_buff.add(block, startPos, size);
+		_buff.bindAdd(block, startPos, size);
 	}
 
 	public byte[] getBytes() {
@@ -58,7 +54,7 @@ public class ByteBuffer implements ByteWriter {
 
 	public void flush() {
 		if(_startPos < _index) {
-			_buff.add(_block, _startPos, _index - _startPos);
+			_buff.bindAdd(_block, _startPos, _index - _startPos);
 			_startPos = _index;
 		}
 	}

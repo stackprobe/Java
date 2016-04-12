@@ -163,6 +163,14 @@ public class ArrayTools {
 		return indexOf(list, target, comp) != -1;
 	}
 
+	public static byte[] getBytes(byte[] src) {
+		return getBytes(src, 0);
+	}
+
+	public static byte[] getBytes(byte[] src, int startPos) {
+		return getBytes(src, startPos, src.length - startPos);
+	}
+
 	public static byte[] getBytes(byte[] src, int startPos, int size) {
 		byte[] dest = new byte[size];
 		System.arraycopy(src, startPos, dest, 0, size);

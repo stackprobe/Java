@@ -184,17 +184,34 @@ public class FileTools {
 	}
 
 	public static byte[] readToEnd(InputStream is) throws Exception {
-		return readToEnd(is, false);
+		return readToEnd(is, Integer.MAX_VALUE);
 	}
 
-	public static byte[] readToEnd(InputStream is, boolean readZeroKeepReading) throws Exception {
-		BlockBuffer buff = new BlockBuffer();
-		int size = 1024;
-		byte[] block = new byte[size];
-		int waitMillis = 0;
+	public static byte[] readToEnd(InputStream is, int size) throws Exception {
+		ByteBuffer buff = new ByteBuffer();
 
-		for(; ; ) {
-			int readSize = is.read(block, 0, block.length);
+		for(int count = 0; count < size; count++) {
+			int chr = is.read();
+
+			if(chr == -1) {
+				break;
+			}
+			buff.add((byte)chr);
+		}
+		return buff.getBytes();
+	}
+
+	public static byte[] readToSize(InputStream is, int size) throws Exception {
+		return readToSize(is, size, false);
+	}
+
+	public static byte[] readToSize(InputStream is, int size, boolean readZeroKeepReading) throws Exception {
+		byte[] buff = new byte[size];
+		int waitMillis = 0;
+		int wPos = 0;
+
+		while(wPos < size) {
+			int readSize = is.read(buff, wPos, buff.length - wPos);
 
 			if(readSize < 0) {
 				break;
@@ -210,20 +227,13 @@ public class FileTools {
 			}
 			else {
 				waitMillis = 0;
-
-				if(readSize < block.length) {
-					if(1024 < size) {
-						size /= 2;
-					}
-				}
-				else {
-					size *= 2;
-				}
-				buff.add(block, 0, readSize);
-				block = new byte[size];
+				wPos += readSize;
 			}
 		}
-		return buff.getBytes();
+		if(wPos < size) {
+			buff = ArrayTools.getBytes(buff, 0, wPos);
+		}
+		return buff;
 	}
 
 	/**

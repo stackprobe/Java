@@ -124,24 +124,24 @@ public class DBaseFile {
 		buff.add(updateY);
 		buff.add(updateM);
 		buff.add(updateD);
-		buff.add(IntTools.toBytes(recordCount));
-		buff.add(IntTools.toBytes(firstRecordPos), 0, 2);
-		buff.add(IntTools.toBytes(recordSize), 0, 2);
-		buff.add(reserved);
+		buff.bindAdd(IntTools.toBytes(recordCount));
+		buff.bindAdd(IntTools.toBytes(firstRecordPos), 0, 2);
+		buff.bindAdd(IntTools.toBytes(recordSize), 0, 2);
+		buff.bindAdd(reserved);
 		buff.add(flag);
 		buff.add(codePageMark);
-		buff.add(reserved2);
+		buff.bindAdd(reserved2);
 
 		for(FieldSubrecord fsr : fieldSubrecords) {
-			buff.add(fsr.name);
+			buff.bindAdd(fsr.name);
 			buff.add(fsr.fieldType);
-			buff.add(fsr.reserved);
-			buff.add(IntTools.toBytes(fsr.fieldSize), 0, 1);
+			buff.bindAdd(fsr.reserved);
+			buff.bindAdd(IntTools.toBytes(fsr.fieldSize), 0, 1);
 			buff.add(fsr.decimalPlaceNum);
 			buff.add(fsr.flag);
-			buff.add(IntTools.toBytes(fsr.nextValue));
-			buff.add(IntTools.toBytes(fsr.stepValue), 0, 1);
-			buff.add(fsr.reserved2);
+			buff.bindAdd(IntTools.toBytes(fsr.nextValue));
+			buff.bindAdd(IntTools.toBytes(fsr.stepValue), 0, 1);
+			buff.bindAdd(fsr.reserved2);
 		}
 		buff.add((byte)0x0d); // terminator
 
@@ -149,7 +149,7 @@ public class DBaseFile {
 			buff.add(row.delFlag);
 
 			for(CellData cell : row.cells) {
-				buff.add(cell.fieldData);
+				buff.bindAdd(cell.fieldData);
 			}
 		}
 		buff.add((byte)0x1a); // terminator ???

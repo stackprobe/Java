@@ -93,11 +93,11 @@ public class Encryptor {
 
 		BlockBuffer buff = new BlockBuffer();
 
-		buff.add(src);
-		buff.add(padding);
-		buff.add(randPart);
-		buff.add(hash);
-		buff.add(randPart_2nd);
+		buff.bindAdd(src);
+		buff.bindAdd(padding);
+		buff.bindAdd(randPart);
+		buff.bindAdd(hash);
+		buff.bindAdd(randPart_2nd);
 
 		byte[] dest = buff.getBytes();
 
@@ -195,7 +195,7 @@ public class Encryptor {
 
 		BlockBuffer buff = new BlockBuffer();
 
-		buff.add(SecurityTools.randSq(size));
+		buff.bindAdd(SecurityTools.randSq(size));
 		buff.add((byte)size);
 
 		return buff.getBytes();

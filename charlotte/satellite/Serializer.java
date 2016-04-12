@@ -57,7 +57,7 @@ public class Serializer {
 
 	private void addBlock(byte[] block) {
 		addInt(block.length);
-		_buff.add(block);
+		_buff.bindAdd(block);
 	}
 
 	/**
