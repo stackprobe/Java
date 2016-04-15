@@ -231,7 +231,7 @@ public class ExtToContentType {
 
 	public static CrossMap<String, String> map() {
 		if(_map == null) {
-			_map = new CrossMap<String, String>();
+			_map = CrossMap.createIgnoreCase();
 
 			for(int index = 0; index < _rawData.length; index += 2) {
 				_map.put(_rawData[index], _rawData[index + 1]);
