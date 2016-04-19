@@ -1,10 +1,16 @@
 package charlotte.tools;
 
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class StringIndexOf {
-	private Map<Character, Integer> _map = new HashMap<Character, Integer>();
+	private Map<Character, Integer> _map = new TreeMap<Character, Integer>(new Comparator<Character>() {
+		@Override
+		public int compare(Character a, Character b) {
+			return (int)a.charValue() - (int)b.charValue();
+		}
+	});
 
 	public StringIndexOf(String str) {
 		for(int index = str.length() - 1; 0 <= index; index--) {
