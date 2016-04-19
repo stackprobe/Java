@@ -1,13 +1,12 @@
 package charlotteFx.chart;
 
-import java.util.List;
-
 import charlotte.tools.AutoTable;
 import charlotte.tools.CsvData;
 import charlotte.tools.DateTimeToSec;
 import charlotte.tools.DateToDay;
 import charlotte.tools.FileTools;
 import charlotte.tools.SortedList;
+import charlotte.tools.SubList;
 
 public class ChartFile {
 	private String _currPair;
@@ -81,7 +80,7 @@ public class ChartFile {
 	}
 
 	public PriceData getPrice(long sec) {
-		List<PriceData> ret = _prices.getEdgeMatch(PriceData.ferret(sec));
+		SubList<PriceData> ret = _prices.getMatchWithEdge(PriceData.ferret(sec));
 
 		if(ret.size() == 3) {
 			return ret.get(1);

@@ -73,7 +73,7 @@ public class MutexObjectTest {
 							MutexObject mo = new MutexObject(StringTools.getUUID());
 
 							if(mo.waitOne(0) == false) {
-								throw null;
+								throw new Exception("ng");
 							}
 							mo.release();
 						}

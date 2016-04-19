@@ -31,10 +31,10 @@ public class EncryptorTest {
 		byte[] dec = Encryptor.decrypt(enc, "abc");
 
 		if(ArrayTools.isSame(src, enc)) {
-			throw null;
+			throw new Exception("ng");
 		}
 		if(ArrayTools.isSame(src, dec) == false) {
-			throw null;
+			throw new Exception("ng");
 		}
 		String ext = FileTools.getExt(file);
 

@@ -94,7 +94,7 @@ public class FileSorterTest {
 				);
 
 		if(ret == false) {
-			throw null;
+			throw new Exception("ng");
 		}
 		System.out.println("done");
 	}

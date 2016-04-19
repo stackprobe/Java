@@ -44,7 +44,7 @@ public class HTTPRequestTest {
 			byte[] resBody = res.getBody();
 
 			if(resBody != null) {
-				throw null;
+				throw new Exception("ng");
 			}
 
 			//FileTools.writeAllBytes("C:/temp/HTTPRequest_resBody.txt", resBody);

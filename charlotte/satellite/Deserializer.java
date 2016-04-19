@@ -1,5 +1,7 @@
 package charlotte.satellite;
 
+import charlotte.tools.ObjectList;
+import charlotte.tools.ObjectMap;
 import charlotte.tools.StringTools;
 
 public class Deserializer {
@@ -52,7 +54,7 @@ public class Deserializer {
 			return readBlock();
 		}
 		if(kind == Serializer.KIND_MAP) {
-			ObjectMap om = new ObjectMap();
+			ObjectMap om = ObjectMap.create();
 			int size = readInt();
 
 			for(int index = 0; index < size; index++) {

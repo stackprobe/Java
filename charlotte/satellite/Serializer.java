@@ -1,6 +1,8 @@
 package charlotte.satellite;
 
 import charlotte.tools.ByteBuffer;
+import charlotte.tools.ObjectList;
+import charlotte.tools.ObjectMap;
 import charlotte.tools.StringTools;
 
 public class Serializer {

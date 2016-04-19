@@ -37,17 +37,17 @@ public class Box {
 
 			while(rPos < image.length) {
 				if(image.length - rPos < 8) {
-					throw null;
+					throw new Exception("image is broken");
 				}
 				int size = IntTools.toInt(image, rPos);
 
 				size = IntTools.revEndian(size);
 
 				if(size < 8) {
-					throw null;
+					throw new Exception("image is broken");
 				}
 				if(image.length - rPos < size) {
-					throw null;
+					throw new Exception("image is broken");
 				}
 				Box box = new Box();
 

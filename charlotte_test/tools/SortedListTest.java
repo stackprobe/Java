@@ -54,8 +54,8 @@ public class SortedListTest {
 		public List<T> list = new ArrayList<T>();
 		public Comparator<T> comp;
 
-		public P_SortedList(Comparator<T> cmp) {
-			comp = cmp;
+		public P_SortedList(Comparator<T> comp) {
+			this.comp = comp;
 		}
 
 		public int[] getRange(T ferret) {

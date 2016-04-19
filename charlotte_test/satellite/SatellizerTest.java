@@ -1,8 +1,8 @@
 package charlotte_test.satellite;
 
-import charlotte.satellite.ObjectList;
-import charlotte.satellite.ObjectMap;
 import charlotte.satellite.Satellizer;
+import charlotte.tools.ObjectList;
+import charlotte.tools.ObjectMap;
 
 public class SatellizerTest {
 	public static void main(String[] args) {

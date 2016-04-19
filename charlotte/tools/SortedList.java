@@ -9,14 +9,14 @@ public class SortedList<T> {
 	private Comparator<T> _comp;
 	private boolean _sortedFlag;
 
-	public SortedList(List<T> bind_list, Comparator<T> cmp, boolean sortedFlag) {
+	public SortedList(List<T> bind_list, Comparator<T> comp, boolean sortedFlag) {
 		_list = bind_list;
-		_comp = cmp;
+		_comp = comp;
 		_sortedFlag = sortedFlag;
 	}
 
-	public SortedList(Comparator<T> cmp) {
-		this(new ArrayList<T>(), cmp, true);
+	public SortedList(Comparator<T> comp) {
+		this(new ArrayList<T>(), comp, true);
 	}
 
 	public void add(T element) {
@@ -49,29 +49,63 @@ public class SortedList<T> {
 		ArrayTools.sort(_list, _comp);
 	}
 
-	public List<T> getMatch(T ferret) {
-		List<T> buff = new ArrayList<T>();
+	/**
+	 * マッチした範囲を返す。
+	 * @param ferret
+	 * @return
+	 * _list が { A, B, C } のとき...
+	 * B にマッチしたとき -> { B }
+	 * A ～ B にマッチしたとき -> { A, B }
+	 * B ～ C にマッチしたとき -> { B, C }
+	 * A ～ C にマッチしたとき -> { A, B, C }
+	 * A より前にマッチしたとき -> { }
+	 * A ～ B の間にマッチしたとき -> { }
+	 * B ～ C の間にマッチしたとき -> { }
+	 * C より後にマッチしたとき -> { }
+	 * _list が { } のとき -> { }
+	 */
+	public SubList<T> getMatch(T ferret) {
 		int[] lr = getRange(ferret);
-
-		for(int index = lr[0] + 1; index < lr[1]; index++) {
-			buff.add(get(index));
-		}
-		return buff;
+		return SubList.create(_list, lr[0] + 1, (lr[1] - lr[0]) - 1);
 	}
 
-	public List<T> getEdgeMatch(T ferret) {
-		List<T> buff = new ArrayList<T>();
-		int[] lr = getRange(ferret);
+	/**
+	 * マッチした範囲と「両端の1つ先の要素」も含めて返す。
+	 * @param ferret
+	 * @return
+	 * _list が { A, B, C } のとき...
+	 * B にマッチしたとき -> { A, B, C }
+	 * A ～ B にマッチしたとき -> { null, A, B, C }
+	 * B ～ C にマッチしたとき -> { A, B, C, null }
+	 * A ～ C にマッチしたとき -> { null, A, B, C, null }
+	 * A より前にマッチしたとき -> { null, A }
+	 * A ～ B の間にマッチしたとき -> { A, B }
+	 * B ～ C の間にマッチしたとき -> { B, C }
+	 * C より後にマッチしたとき -> { C, null }
+	 * _list が { } のとき -> { null, null }
+	 */
+	public SubList<T> getMatchWithEdge(T ferret) {
+		final int[] lr = getRange(ferret);
 
-		for(int index = lr[0]; index <= lr[1]; index++) {
-			if(index == -1 || index == size()) {
-				buff.add(null);
-			}
-			else {
-				buff.add(get(index));
-			}
+		if(lr[0] == -1 || lr[1] == size()) {
+			return new SubList<T>() {
+				@Override
+				public int size() {
+					return (lr[1] - lr[0]) + 1;
+				}
+
+				@Override
+				public T get(int index) {
+					index += lr[0];
+
+					if(index == -1 || index == SortedList.this.size()) {
+						return null;
+					}
+					return _list.get(index);
+				}
+			};
 		}
-		return buff;
+		return SubList.create(_list, lr[0], (lr[1] - lr[0]) + 1);
 	}
 
 	/**
@@ -88,12 +122,12 @@ public class SortedList<T> {
 			int ret = _comp.compare(get(m), ferret);
 
 			if(ret == 0) {
-				final Comparator<T> f_cmp = _comp;
+				final Comparator<T> f_comp = _comp;
 
 				l = getBorder(l, m, ferret, new Comparator<T>() {
 					@Override
 					public int compare(T a, T b) {
-						return f_cmp.compare(a, b) == 0 ? 1 : 0;
+						return f_comp.compare(a, b) == 0 ? 1 : 0;
 					}
 				})[0];
 				r = getBorder(m, r, ferret, _comp)[1];
@@ -109,10 +143,10 @@ public class SortedList<T> {
 		return new int[] { l, r };
 	}
 
-	private int[] getBorder(int l, int r, T ferret, Comparator<T> cmp) {
+	private int[] getBorder(int l, int r, T ferret, Comparator<T> comp) {
 		while(l + 1 < r) {
 			int m = (l + r) / 2;
-			int ret = cmp.compare(get(m), ferret);
+			int ret = comp.compare(get(m), ferret);
 
 			if(ret == 0) {
 				l = m;

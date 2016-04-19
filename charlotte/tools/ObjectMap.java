@@ -1,21 +1,23 @@
-package charlotte.satellite;
+package charlotte.tools;
 
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import charlotte.tools.StringTools;
-
 public class ObjectMap {
 	private Map<String, Object> _map;
 
-	public ObjectMap() {
-		this(StringTools.comp);
+	public static ObjectMap create() {
+		return new ObjectMap(StringTools.comp);
 	}
 
 	public static ObjectMap createIgnoreCase() {
 		return new ObjectMap(StringTools.compIgnoreCase);
+	}
+
+	public ObjectMap() {
+		this(StringTools.comp);
 	}
 
 	public ObjectMap(Comparator<String> comp) {

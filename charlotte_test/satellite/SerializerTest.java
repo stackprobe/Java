@@ -10,9 +10,9 @@ import java.util.Random;
 import java.util.Set;
 
 import charlotte.satellite.Deserializer;
-import charlotte.satellite.ObjectList;
-import charlotte.satellite.ObjectMap;
 import charlotte.satellite.Serializer;
+import charlotte.tools.ObjectList;
+import charlotte.tools.ObjectMap;
 import charlotte.tools.StringTools;
 
 public class SerializerTest {

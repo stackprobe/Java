@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import charlotte.satellite.ObjectList;
-
 public class WktParser {
 	private Stack<ObjectList> _rootStack = new Stack<ObjectList>();
 	private ObjectList _root = new ObjectList();

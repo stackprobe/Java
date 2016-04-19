@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import charlotte.satellite.ObjectMap;
-
 public abstract class HTTPServer extends SockServer {
 	public HTTPServer() {
 		this(80);

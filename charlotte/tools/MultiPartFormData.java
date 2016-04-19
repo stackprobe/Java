@@ -3,8 +3,6 @@ package charlotte.tools;
 import java.util.ArrayList;
 import java.util.List;
 
-import charlotte.satellite.ObjectMap;
-
 public class MultiPartFormData {
 	private byte[] _body;
 	private String _charset;

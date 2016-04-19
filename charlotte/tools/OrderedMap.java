@@ -52,7 +52,7 @@ public class OrderedMap<K, V> {
 		return dest;
 	}
 
-	public void setPairs(List<Pair> src) {
+	public void overwritePairs(List<Pair> src) {
 		clear();
 		add(src);
 	}
@@ -75,7 +75,7 @@ public class OrderedMap<K, V> {
 	public void sort(Comparator<Pair> comp) {
 		List<Pair> pairs = getPairs();
 		ArrayTools.sort(pairs, comp);
-		setPairs(pairs);
+		overwritePairs(pairs);
 	}
 
 	public void sortByKey(final Comparator<K> comp) {

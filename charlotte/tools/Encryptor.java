@@ -26,7 +26,7 @@ public class Encryptor {
 
 	public void addRawKey(byte[] rawKey) {
 		if(rawKey == null) {
-			throw null;
+			throw new IllegalArgumentException();
 		}
 		if(rawKey.length == 32) {
 			addRawKey(rawKey, 16);
@@ -47,7 +47,7 @@ public class Encryptor {
 
 	public void addRawKey(byte[] rawKey, int keyWidth) {
 		if(rawKey == null) {
-			throw null;
+			throw new IllegalArgumentException();
 		}
 		switch(keyWidth) {
 		case 16:
@@ -84,7 +84,7 @@ public class Encryptor {
 
 	public byte[] encrypt(byte[] src) throws Exception {
 		if(src == null) {
-			throw null;
+			throw new IllegalArgumentException();
 		}
 		byte[] padding = getPadding(src);
 		byte[] randPart = getRandPart();
@@ -114,7 +114,7 @@ public class Encryptor {
 	 */
 	public byte[] decrypt(byte[] src) throws Exception {
 		if(src == null) {
-			throw null;
+			throw new IllegalArgumentException();
 		}
 		byte[] dest = ArrayTools.copy(src);
 
@@ -168,7 +168,7 @@ public class Encryptor {
 
 	private void checkRingCBCParams(byte[] dest) {
 		if(dest == null) {
-			throw null;
+			throw new IllegalArgumentException();
 		}
 		if(dest.length < 32) {
 			throw new IllegalArgumentException();
