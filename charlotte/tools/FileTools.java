@@ -20,7 +20,7 @@ public class FileTools {
 		long lFileSize = f.length();
 
 		if(Integer.MAX_VALUE < lFileSize) {
-			throw new Exception("so_big");
+			throw new Exception("too_big");
 		}
 		int fileSize = (int)lFileSize;
 		byte[] fileData = new byte[fileSize];

@@ -594,4 +594,19 @@ public class StringTools {
 			throw null;
 		}
 	}
+
+	public static int indexOfChar(String str, String chrs) {
+		for(int index = 0; index < str.length(); index++) {
+			if(contains(chrs, str.charAt(index))) {
+				return index;
+			}
+		}
+		return -1; // not found
+	}
+
+	public static int indexOfCharIgnoreCase(String str, String chrs) {
+		return indexOfChar(str.toLowerCase(), chrs.toLowerCase());
+	}
+
+	public static final String S_ESCAPE = "\u001b";
 }

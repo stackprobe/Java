@@ -20,6 +20,24 @@ public abstract class SubList<T> {
 		};
 	}
 
+	public static <E> SubList<E> create(E[] arr, int startPos) {
+		return create(arr, startPos, arr.length - startPos);
+	}
+
+	public static <E> SubList<E> create(final E[] arr, final int startPos, final int size) {
+		return new SubList<E>() {
+			@Override
+			public int size() {
+				return size;
+			}
+
+			@Override
+			public E get(int index) {
+				return arr[startPos + index];
+			}
+		};
+	}
+
 	public static <E> SubList<E> create(final List<E> list) {
 		return new SubList<E>() {
 			@Override

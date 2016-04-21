@@ -267,6 +267,15 @@ public class DebugTools {
 		return buff.toString();
 	}
 
+	public static byte[] makeRandBlock(int size) {
+		byte[] buff = new byte[size];
+
+		for(int index = 0; index < size; index++) {
+			buff[index] = (byte)MathTools.random(256);
+		}
+		return buff;
+	}
+
 	private static final int FILE_COPY_BUFF_SIZE = 10000000; // 10 MB !!!
 
 	public static void copyFile(String rFile, String wFile) throws Exception {
