@@ -46,6 +46,12 @@ public class LongTools {
 	}
 
 	public static long revEndian(long value) {
+		value = (value >>> 32) | (value << 32);
+		value = ((value >>> 16) & 0x0000ffff0000ffffL) | ((value << 16) & 0xffff0000ffff0000L);
+		return  ((value >>>  8) & 0x00ff00ff00ff00ffL) | ((value <<  8) & 0xff00ff00ff00ff00L);
+
+		// old
+		/*
 		return  ((value >>> 56) & 0x00000000000000ffL) |
 				((value >>> 40) & 0x000000000000ff00L) |
 				((value >>> 24) & 0x0000000000ff0000L) |
@@ -54,5 +60,6 @@ public class LongTools {
 				((value <<  24) & 0x0000ff0000000000L) |
 				((value <<  40) & 0x00ff000000000000L) |
 				((value <<  56) & 0xff00000000000000L);
+		*/
 	}
 }

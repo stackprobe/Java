@@ -20,12 +20,7 @@ public class LockingFile {
 			if(tryOpen()) {
 				return true;
 			}
-			try {
-				Thread.sleep(baseWaitMillis * count + MathTools.random(200));
-			}
-			catch(Throwable e) {
-				e.printStackTrace();
-			}
+			ThreadTools.sleep(baseWaitMillis * count + MathTools.random(200));
 		}
 		return false;
 	}
