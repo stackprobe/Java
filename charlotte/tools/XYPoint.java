@@ -1,5 +1,7 @@
 package charlotte.tools;
 
+import java.util.List;
+
 public class XYPoint {
 	public double x;
 	public double y;
@@ -116,14 +118,14 @@ public class XYPoint {
 		return getPoint(getAngle(p) + angle, rNew);
 	}
 
-	public static XYPoint rotate(XYPoint p, double angle) {
-		return rotate(p, angle, getDistance(p));
-	}
-
 	public static XYPoint rotate(XYPoint p, double angle, double rNew, XYPoint origin) {
 		p = reduce(p, origin);
 		p = rotate(p, angle, rNew);
 		return add(p, origin);
+	}
+
+	public static XYPoint rotate(XYPoint p, double angle) {
+		return rotate(p, angle, getDistance(p));
 	}
 
 	public static XYPoint rotate(XYPoint p, double angle, XYPoint origin) {
@@ -132,19 +134,74 @@ public class XYPoint {
 		return add(p, origin);
 	}
 
-	public static XYPoint rotateRa(XYPoint p, int ra) {
-		ra %= 4;
-		ra += 4;
-		ra %= 4;
+	public static XYPoint rotd(XYPoint p, int degree) {
+		degree %= 360;
+		degree += 360;
+		degree %= 360;
 
-		switch(ra) {
+		switch(degree) {
 		case 0: return new XYPoint(p.x, p.y);
-		case 1: return new XYPoint(-p.y, p.x);
-		case 2: return new XYPoint(-p.x, -p.y);
-		case 3: return new XYPoint(p.y, -p.x);
-
-		default:
-			throw null;
+		case 90: return new XYPoint(-p.y, p.x);
+		case 180: return new XYPoint(-p.x, -p.y);
+		case 270: return new XYPoint(p.y, -p.x);
 		}
+		return rotate(p, ((double)degree * Math.PI) / 180.0);
+	}
+
+	public static XYPoint rotd(XYPoint p, int degree, XYPoint origin) {
+		p = reduce(p, origin);
+		p = rotd(p, degree);
+		return add(p, origin);
+	}
+
+	public static XYPoint average(List<XYPoint> list) {
+		double x = list.get(0).x;
+		double y = list.get(0).y;
+
+		for(int index = 1; index < list.size(); index++) {
+			x += list.get(index).x;
+			y += list.get(index).y;
+		}
+		return new XYPoint(
+				x / list.size(),
+				y / list.size()
+				);
+	}
+
+	public static final XYPoint ORIGIN = new XYPoint(0.0, 0.0);
+
+	public static double getNearestDistance(List<XYPoint> list) {
+		return getNearestDistance(list, ORIGIN);
+	}
+
+	public static double getNearestDistance(List<XYPoint> list, XYPoint origin) {
+		return getDistance(getNearest(list, origin), origin);
+	}
+
+	public static XYPoint getNearest(List<XYPoint> list) {
+		return getNearest(list, ORIGIN);
+	}
+
+	public static XYPoint getNearest(List<XYPoint> list, XYPoint origin) {
+		return list.get(getNearestIndex(list, origin));
+	}
+
+	public static int getNearestIndex(List<XYPoint> list) {
+		return getNearestIndex(list, ORIGIN);
+	}
+
+	public static int getNearestIndex(List<XYPoint> list, XYPoint origin) {
+		int ret = 0;
+		double nearestD = getDistance(list.get(0), origin);
+
+		for(int index = 1; index < list.size(); index++) {
+			double d = getDistance(list.get(index), origin);
+
+			if(d < nearestD) {
+				ret = index;
+				nearestD = d;
+			}
+		}
+		return ret;
 	}
 }

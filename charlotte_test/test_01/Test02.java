@@ -1,4 +1,4 @@
-package charlotte_test.test;
+package charlotte_test.test_01;
 
 import java.awt.Container;
 import java.awt.event.WindowAdapter;

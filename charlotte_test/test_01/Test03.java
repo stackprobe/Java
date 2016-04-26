@@ -1,4 +1,4 @@
-package charlotte_test.test;
+package charlotte_test.test_01;
 
 public class Test03 {
 	public static void main(String[] args) {

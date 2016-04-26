@@ -3,6 +3,8 @@ package charlotte.tools;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReflecTools {
 	/**
@@ -53,10 +55,21 @@ public class ReflecTools {
 	}
 
 	public static Object invokeDeclaredCtor(Class<?> classObj, Object[] params, Class<?>[] paramTypes) throws Exception {
-		Constructor<?> ctor = classObj.getDeclaredConstructor(paramTypes);
-		ctor.setAccessible(true);
+		Constructor<?> ctor = getDeclaredCtor(classObj, paramTypes);
 		Object instance = ctor.newInstance(params);
 		return instance;
+	}
+
+	public static Constructor<?> getDeclaredCtor(Class<?> classObj, Class<?>[] paramTypes) {
+		for(Constructor<?> ctor : classObj.getDeclaredConstructors()) {
+			Class<?>[] ctorParamTypes = ctor.getParameterTypes();
+
+			if(isSameTypeArray(paramTypes, ctorParamTypes)) {
+				ctor.setAccessible(true);
+				return ctor;
+			}
+		}
+		return null;
 	}
 
 	private static Class<?>[] getTypes(Object[] params) {
@@ -72,23 +85,69 @@ public class ReflecTools {
 		if(t1.length != t2.length) {
 			return false;
 		}
-		// TODO
-		/*
 		for(int index = 0; index < t1.length; index++) {
 			if(isSameType(t1[index], t2[index]) == false) {
 				return false;
 			}
 		}
-		*/
 		return true;
 	}
 
-	// TODO [class java.lang.Integer, class java.lang.Boolean] <-> [int, boolean]
-	/*
 	private static boolean isSameType(Class<?> t1, Class<?> t2) {
-		return t1.getName().equals(t2.getName());
+		return univPrimitive(t1.getName()).equals(univPrimitive(t2.getName()));
 	}
-	*/
+
+	// XXX m(int a), m(Integer a) みたいなメソッド、コンストラクタが混在しているとアウト
+
+	private static String univPrimitive(String name) {
+		//System.out.println("name.1: " + name); // test
+		name = univPrimitive_main(name);
+		//System.out.println("name.2: " + name); // test
+		return name;
+	}
+
+	private static String univPrimitive_main(String name) {
+		for(String[] pair : _prmtvPairs) {
+			if(name.equals(pair[0])) {
+				return pair[1];
+			}
+		}
+		for(String[] pair : _prmtvArrPairs) {
+			if(name.endsWith(pair[0])) {
+				return name.substring(0, name.length() - pair[0].length()) + pair[1];
+			}
+		}
+		return name;
+	}
+
+	private static List<String[]> _prmtvPairs;
+	private static List<String[]> _prmtvArrPairs;
+
+	static {
+		_prmtvPairs = new ArrayList<String[]>();
+
+		addPrmtvPair(_prmtvPairs, Boolean.class, boolean.class);
+		addPrmtvPair(_prmtvPairs, Byte.class, byte.class);
+		addPrmtvPair(_prmtvPairs, Character.class, char.class);
+		addPrmtvPair(_prmtvPairs, Integer.class, int.class);
+		addPrmtvPair(_prmtvPairs, Long.class, long.class);
+		addPrmtvPair(_prmtvPairs, Float.class, float.class);
+		addPrmtvPair(_prmtvPairs, Double.class, double.class);
+
+		_prmtvArrPairs = new ArrayList<String[]>();
+
+		addPrmtvPair(_prmtvArrPairs, new Boolean[0].getClass(), new boolean[0].getClass());
+		addPrmtvPair(_prmtvArrPairs, new Byte[0].getClass(), new byte[0].getClass());
+		addPrmtvPair(_prmtvArrPairs, new Character[0].getClass(), new char[0].getClass());
+		addPrmtvPair(_prmtvArrPairs, new Integer[0].getClass(), new int[0].getClass());
+		addPrmtvPair(_prmtvArrPairs, new Long[0].getClass(), new long[0].getClass());
+		addPrmtvPair(_prmtvArrPairs, new Float[0].getClass(), new float[0].getClass());
+		addPrmtvPair(_prmtvArrPairs, new Double[0].getClass(), new double[0].getClass());
+	}
+
+	private static void addPrmtvPair(List<String[]> dest, Class<?> t1, Class<?> t2) {
+		dest.add(new String[] { t1.getName(), t2.getName() });
+	}
 
 	public static Field getDeclaredField(Class<?> classObj, String fieldName) throws Exception {
 		for(; ; ) {
