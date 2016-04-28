@@ -1,5 +1,6 @@
 package charlotte.tools;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class XYPoint {
@@ -38,8 +39,15 @@ public class XYPoint {
 		return add(p, origin);
 	}
 
-	public static XYPoint inverse(XYPoint p) {
+	public static XYPoint opposite(XYPoint p) {
 		return mul(p, -1.0);
+	}
+
+	public static XYPoint reciprocal(XYPoint p) {
+		return new XYPoint(
+				1.0 / p.x,
+				1.0 / p.y
+				);
 	}
 
 	public static XYPoint div(XYPoint a, double r) {
@@ -166,6 +174,10 @@ public class XYPoint {
 				x / list.size(),
 				y / list.size()
 				);
+	}
+
+	public static XYPoint average(XYPoint[] arr) {
+		return average(Arrays.asList(arr));
 	}
 
 	public static final XYPoint ORIGIN = new XYPoint(0.0, 0.0);

@@ -1,5 +1,9 @@
 package charlotte.tools;
 
+/**
+ * thread safe
+ *
+ */
 public class TabletStore {
 	private final Object SYNCROOT = new Object();
 	private final Object SYNCROOT_get = new Object();
@@ -40,7 +44,10 @@ public class TabletStore {
 	}
 
 	public boolean get(int count) {
-		return get(count, Long.MAX_VALUE);
+		//return get(count, 2000);
+		//return get(count, 30000);
+		return get(count, 60000);
+		//return get(count, Long.MAX_VALUE);
 	}
 
 	public boolean get(int count, long millis) {
@@ -57,6 +64,9 @@ public class TabletStore {
 				if(count <= _count) {
 					_count -= count;
 					return true;
+				}
+				if(_ending) {
+					millis = Math.min(millis, 100);
 				}
 				oneTime = new OneTime(millis);
 				_oneTime4Add = oneTime;
@@ -103,5 +113,17 @@ public class TabletStore {
 		public void get() {
 			ThreadTools.join(_th);
 		}
+	}
+
+	private boolean _ending = false;
+
+	/**
+	 * プロセス終了直前などに呼ぶと吉。
+	 */
+	public void ending() {
+		synchronized(SYNCROOT) {
+			_ending = true;
+		}
+		add(0);
 	}
 }

@@ -35,8 +35,8 @@ public class JammerTest {
 		System.out.println("size: " + size);
 
 		byte[] src = DebugTools.makeRandBlock(size);
-		byte[] enc = Jammer.encrypt(src);
-		byte[] dec = Jammer.decrypt(enc);
+		byte[] enc = Jammer.encode(src);
+		byte[] dec = Jammer.decode(enc);
 
 		if(ArrayTools.isSame(src, enc)) {
 			throw new Exception("ng");
