@@ -1,8 +1,12 @@
-package charlotte.tools;
+package charlotte.xxxtools;
 
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
+
+import charlotte.tools.FileTools;
+import charlotte.tools.IntTools;
+import charlotte.tools.StringTools;
 
 public class XText {
 	public static class Writer {
