@@ -237,14 +237,14 @@ public class Encryptor {
 
 	private static byte[] removeTail(byte[] src, int tailSize) throws Exception {
 		if(src.length < tailSize) {
-			throw new Exception("短すぎます。");
+			throw new Exception("データが短すぎます。" + src.length + "_" + tailSize);
 		}
 		return ArrayTools.getBytes(src, 0, src.length - tailSize);
 	}
 
 	private static byte[] getTail(byte[] src, int tailSize) throws Exception {
 		if(src.length < tailSize) {
-			throw new Exception("短すぎます。");
+			throw new Exception("データが短すぎます。" + src.length + "_" + tailSize);
 		}
 		return ArrayTools.getBytes(src, src.length - tailSize, tailSize);
 	}

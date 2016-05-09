@@ -9,6 +9,10 @@ public class Canvas {
 		_bmp = bmp;
 	}
 
+	public Bmp getBmp() {
+		return _bmp;
+	}
+
 	public void drawLine(int x1, int y1, int x2, int y2, Color color) {
 		drawLine(x1, y1, x2, y2, new Bmp.Dot(color));
 	}
@@ -98,6 +102,14 @@ public class Canvas {
 				_bmp.setDot(l + x, t + y, dot);
 			}
 		}
+	}
+
+	public void fill(Color color) {
+		fill(new Bmp.Dot(color));
+	}
+
+	public void fill(Bmp.Dot dot) {
+		fillRect(0, 0, _bmp.getWidth(), _bmp.getHeight(), dot);
 	}
 
 	public void drawDouble(int l, int t, int hSpan, Color color, String value) {
