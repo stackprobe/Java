@@ -120,10 +120,16 @@ public class Encryptor {
 
 		decryptRingCBC(dest);
 
-		dest = removeRandPart(dest);
-		dest = removeHash(dest);
-		dest = removeRandPart(dest);
-		dest = removePadding(dest);
+		{
+			SubBytes mid = new SubBytes(dest);
+
+			mid = removeRandPart(mid);
+			mid = removeHash(mid);
+			mid = removeRandPart(mid);
+			mid = removePadding(mid);
+
+			dest = mid.getBytes();
+		}
 
 		return dest;
 	}
@@ -201,8 +207,8 @@ public class Encryptor {
 		return buff.getBytes();
 	}
 
-	private static byte[] removePadding(byte[] src) throws Exception {
-		int size = getTail(src, 1)[0] & 0xff;
+	private static SubBytes removePadding(SubBytes src) throws Exception {
+		int size = getTail(src, 1).get(0) & 0xff;
 		size++;
 		return removeTail(src, size);
 	}
@@ -211,7 +217,7 @@ public class Encryptor {
 		return SecurityTools.randSq(64);
 	}
 
-	private static byte[] removeRandPart(byte[] src) throws Exception {
+	private static SubBytes removeRandPart(SubBytes src) throws Exception {
 		return removeTail(src, 64);
 	}
 
@@ -225,9 +231,9 @@ public class Encryptor {
 				);
 	}
 
-	private static byte[] removeHash(byte[] src) throws Exception {
-		byte[] dest = removeTail(src, 64);
-		byte[] hash = SecurityTools.getSHA512(dest);
+	private static SubBytes removeHash(SubBytes src) throws Exception {
+		SubBytes dest = removeTail(src, 64);
+		SubBytes hash = new SubBytes(SecurityTools.getSHA512(dest));
 
 		if(ArrayTools.isSame(hash, getTail(src, 64)) == false) {
 			throw new Exception("ハッシュが一致しません。");
@@ -235,17 +241,17 @@ public class Encryptor {
 		return dest;
 	}
 
-	private static byte[] removeTail(byte[] src, int tailSize) throws Exception {
-		if(src.length < tailSize) {
-			throw new Exception("データが短すぎます。" + src.length + "_" + tailSize);
+	private static SubBytes removeTail(SubBytes src, int tailSize) throws Exception {
+		if(src.size() < tailSize) {
+			throw new Exception("データが短すぎます。" + src.size() + "_" + tailSize);
 		}
-		return ArrayTools.getBytes(src, 0, src.length - tailSize);
+		return new SubBytes(src, 0, src.size() - tailSize);
 	}
 
-	private static byte[] getTail(byte[] src, int tailSize) throws Exception {
-		if(src.length < tailSize) {
-			throw new Exception("データが短すぎます。" + src.length + "_" + tailSize);
+	private static SubBytes getTail(SubBytes src, int tailSize) throws Exception {
+		if(src.size() < tailSize) {
+			throw new Exception("データが短すぎます。" + src.size() + "_" + tailSize);
 		}
-		return ArrayTools.getBytes(src, src.length - tailSize, tailSize);
+		return new SubBytes(src, src.size() - tailSize, tailSize);
 	}
 }

@@ -216,6 +216,19 @@ public class ArrayTools {
 		return isSame(block1, 0, block2, 0, block1.length);
 	}
 
+	public static boolean isSame(SubBytes block1, SubBytes block2) {
+		if(block1 == null && block2 == null) {
+			return true;
+		}
+		if(block1 == null || block2 == null) {
+			return false;
+		}
+		if(block1.size() != block2.size()) {
+			return false;
+		}
+		return isSame(block1.getMaster(), block1.getStartPos(), block2.getMaster(), block2.getStartPos(), block1.size());
+	}
+
 	public static int[] toArray(List<Integer> src) {
 		int[] dest = new int[src.size()];
 

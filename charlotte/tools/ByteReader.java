@@ -27,8 +27,6 @@ public class ByteReader {
 		_endPos = rPos + size;
 	}
 
-	private static final byte DEF_CHR = 0x00;
-
 	public int remaining() {
 		return _endPos - _rPos;
 	}

@@ -55,6 +55,13 @@ public class SecurityTools {
 		return ret;
 	}
 
+	public static byte[] getSHA512(SubBytes block) throws Exception {
+		MessageDigest md = MessageDigest.getInstance("SHA-512");
+		md.update(block.getMaster(), block.getStartPos(), block.size());
+		byte[] ret = md.digest();
+		return ret;
+	}
+
 	private static Random _random = new SecureRandom();
 
 	public static int random(int modulo) {

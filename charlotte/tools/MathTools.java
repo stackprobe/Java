@@ -25,6 +25,10 @@ public class MathTools {
 		return arr[random(arr.length)];
 	}
 
+	public static char random(String src) {
+		return src.charAt(random(src.length()));
+	}
+
 	public static Color getRandColor() {
 		return new Color(
 				random(256),
