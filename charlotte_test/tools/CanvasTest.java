@@ -13,7 +13,7 @@ public class CanvasTest {
 		try {
 			test01();
 			test02();
-			test03();
+			//test03();
 
 			System.out.println("OK!");
 		}
@@ -32,12 +32,12 @@ public class CanvasTest {
 		canvas.drawCircle(150, 150, 100, Color.RED);
 		canvas.drawLine(150, 50, 150, 250, Color.RED);
 		canvas.drawLine(150, 150, 250, 150, Color.RED);
-		canvas.drawDouble(152, 152, 1, Color.BLACK, "-1234567890.999");
+		canvas.drawDouble(152, 152, 2, Color.BLACK, "-1234567890.999");
 
 		for(int c = 0; c < 3; c++) {
-			canvas.drawDouble(152, 160 + c * 6, 1, Color.BLUE, "" + Math.random());
+			canvas.drawDouble(152, 160 + c * 6, 2, Color.BLUE, "" + Math.random());
 		}
-		canvas.drawDouble(152, 178, 1, Color.BLUE, "0123456789abcdef.ABCDEF");
+		canvas.drawDouble(152, 178, 2, Color.BLUE, "0123456789abcdef.ABCDEF");
 
 		bmp.writeToFile("C:/temp/CanvasTest1a.png");
 
@@ -46,14 +46,14 @@ public class CanvasTest {
 		bmp = new Bmp(400, 200, Color.WHITE);
 		canvas = new Canvas(bmp);
 
-		canvas.drawDouble(1, 1, 1, Color.BLACK, StringTools.ALPHA);
-		canvas.drawDouble(1, 8, 1, Color.BLUE, StringTools.alpha);
+		canvas.drawDouble(1, 1, 2, Color.BLACK, StringTools.ALPHA);
+		canvas.drawDouble(1, 8, 2, Color.BLUE, StringTools.alpha);
 
-		canvas.drawDouble(1, 15, 2, Color.BLACK, StringTools.ALPHA);
-		canvas.drawDouble(1, 25, 2, Color.BLUE, StringTools.alpha);
+		canvas.drawDouble(1, 15, 4, Color.BLACK, StringTools.ALPHA);
+		canvas.drawDouble(1, 25, 4, Color.BLUE, StringTools.alpha);
 
-		canvas.drawDouble(1, 35, 3, Color.BLACK, StringTools.ALPHA);
-		canvas.drawDouble(1, 49, 3, Color.BLUE, StringTools.alpha);
+		canvas.drawDouble(1, 35, 6, Color.BLACK, StringTools.ALPHA);
+		canvas.drawDouble(1, 49, 6, Color.BLUE, StringTools.alpha);
 
 		bmp.writeToFile("C:/temp/CanvasTest1b.png");
 	}

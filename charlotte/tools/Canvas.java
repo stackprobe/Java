@@ -112,34 +112,27 @@ public class Canvas {
 		fillRect(0, 0, _bmp.getWidth(), _bmp.getHeight(), dot);
 	}
 
-	public void drawDouble(int l, int t, int hSpan, Color color, String value) {
-		drawDouble(l, t, hSpan, new Bmp.Dot(color), value);
+	public void drawDouble(int l, int t, int span, Color color, String value) {
+		drawDouble(l, t, span, new Bmp.Dot(color), value);
 	}
 
-	public void drawDouble(int l, int t, int hSpan, Bmp.Dot dot, String value) {
+	public void drawDouble(int l, int t, int span, Bmp.Dot dot, String value) {
 		for(char chr : value.toCharArray()) {
-			l += drawDoubleChar(l, t, hSpan, dot, chr) + 1;
+			l += drawDoubleChar(l, t, span, dot, chr) + 1;
 		}
 	}
 
-	private int drawDoubleChar(int l, int t, int hSpan, Bmp.Dot dot, char chr) {
-		int span = hSpan * 2;
-		int dSpan = span * 2;
+	private int drawDoubleChar(int l, int t, int span, Bmp.Dot dot, char chr) {
 		String drPtn = null;
+		int dSpan = span * 2;
 
 		chr = Character.toUpperCase(chr);
 
 		switch(chr) {
-		case '.':
-			_bmp.setDot(l, t + dSpan, dot);
-			return 1;
+		case '.': drPtn = "0000100"; break;
 		case '-': drPtn = "0001000"; break;
 		case '0': drPtn = "1110111"; break;
-		case '1':
-			drawLine(l, t, l + hSpan, t, dot);
-			drawLine(l + hSpan, t, l + hSpan, t + dSpan, dot);
-			drPtn = "0000100";
-			break;
+		case '1': drPtn = "0000011"; break;
 		case '2': drPtn = "0111110"; break;
 		case '3': drPtn = "0011111"; break;
 		case '4': drPtn = "1001011"; break;
@@ -155,69 +148,29 @@ public class Canvas {
 		case 'E': drPtn = "1111100"; break;
 		case 'F': drPtn = "1111000"; break;
 		case 'G': drPtn = "1110101"; break;
-		case 'H': drPtn = "1101011"; break;
-		case 'I':
-			drawLine(l + hSpan, t, l + hSpan, t + dSpan, dot);
-			drPtn = "0010100";
-			break;
+		case 'H': drPtn = "1101001"; break;
+		case 'I': drPtn = "0000001"; break;
 		case 'J': drPtn = "0100111"; break;
-		case 'K':
-			drawLine(l, t + span, l + hSpan, t + span, dot);
-			drawLine(l + hSpan, t + span, l + span, t + hSpan, dot);
-			drawLine(l + hSpan, t + span, l + span, t + span + hSpan, dot);
-			drawLine(l + span, t, l + span, t + hSpan, dot);
-			drawLine(l + span, t + span + hSpan, l + span, t + dSpan, dot);
-			drPtn = "1100000";
-			break;
+		case 'K': drPtn = "1111001"; break;
 		case 'L': drPtn = "1100100"; break;
-		case 'M':
-			drawLine(l, t, l, t + dSpan, dot);
-			drawLine(l + span, t, l + span, t + dSpan, dot);
-			drawLine(l + dSpan, t, l + dSpan, t + dSpan, dot);
-			drawLine(l, t, l + dSpan, t, dot);
-			return dSpan + 1;
-		case 'N': drPtn = "1110011"; break;
-		case 'O': drPtn = "1110111"; break;
+		case 'M': drPtn = "0110001"; break;
+		case 'N': drPtn = "0101001"; break;
+		case 'O': drPtn = "0101101"; break;
 		case 'P': drPtn = "1111010"; break;
 		case 'Q': drPtn = "1011011"; break;
 		case 'R': drPtn = "0101000"; break;
-		case 'S': drPtn = "1011101"; break;
-		case 'T':
-			drawLine(l + hSpan, t, l + hSpan, t + dSpan, dot);
-			drPtn = "0010000";
-			break;
-		case 'U': drPtn = "1100111"; break;
-		case 'V':
-			drawLine(l, t + span, l, t + span + hSpan, dot);
-			drawLine(l, t + span + hSpan, l + hSpan, t + dSpan, dot);
-			drawLine(l + span, t + span, l + span, t + span + hSpan, dot);
-			drawLine(l + span, t + span + hSpan, l + hSpan, t + dSpan, dot);
-			drPtn = "1000010";
-			break;
-		case 'W':
-			drawLine(l, t, l, t + dSpan, dot);
-			drawLine(l + span, t, l + span, t + dSpan, dot);
-			drawLine(l + dSpan, t, l + dSpan, t + dSpan, dot);
-			drawLine(l, t + dSpan, l + dSpan, t + dSpan, dot);
-			return dSpan + 1;
-		case 'X':
-			drawLine(l, t, l, t + hSpan, dot);
-			drawLine(l + span, t, l + span, t + hSpan, dot);
-			drawLine(l, t + hSpan, l + span, t + span + hSpan, dot);
-			drawLine(l, t + span + hSpan, l + span, t + hSpan, dot);
-			drawLine(l, t + span + hSpan, l, t + dSpan, dot);
-			drawLine(l + span, t + span + hSpan, l + span, t + dSpan, dot);
-			drPtn = "0000000";
-			break;
+		case 'S': drPtn = "1001101"; break;
+		case 'T': drPtn = "1101100"; break;
+		case 'U': drPtn = "0100101"; break;
+		case 'V': drPtn = "1100111"; break;
+		case 'W': drPtn = "1000110"; break;
+		case 'X': drPtn = "1101011"; break;
 		case 'Y': drPtn = "1001111"; break;
-		case 'Z':
-			drawLine(l + span, t, l + span, t + hSpan, dot);
-			drawLine(l, t + span + hSpan, l + span, t + hSpan, dot);
-			drawLine(l, t + span + hSpan, l, t + dSpan, dot);
-			drPtn = "0010100";
-			break;
+		case 'Z': drPtn = "0110110"; break;
+
 		default:
-			throw new RuntimeException("Unknown chr: " + chr);
+			drPtn = "0011100";
+			break;
 		}
 		if(drPtn.charAt(0) == '1') {
 			drawLine(l, t, l, t + span, dot);

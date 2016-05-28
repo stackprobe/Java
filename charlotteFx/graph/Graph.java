@@ -83,9 +83,9 @@ public class Graph {
 		{
 			double midPrice = (_lowValue + _hiValue) / 2.0;
 
-			canvas.drawDouble(1, 47, 1, Color.BLACK, "" + _hiValue);
-			canvas.drawDouble(1, 447, 1, Color.BLACK, "" + midPrice);
-			canvas.drawDouble(1, 847, 1, Color.BLACK, "" + _lowValue);
+			canvas.drawDouble(1, 47, 2, Color.BLACK, "" + _hiValue);
+			canvas.drawDouble(1, 447, 2, Color.BLACK, "" + midPrice);
+			canvas.drawDouble(1, 847, 2, Color.BLACK, "" + _lowValue);
 		}
 
 		{
@@ -94,10 +94,10 @@ public class Graph {
 			String dt2 = "" + DateTimeToSec.toDateTime(_startSec + _secStep * Y_SIZE / 2);
 			String dt3 = "" + DateTimeToSec.toDateTime(_startSec + _secStep * Y_SIZE * 3 / 4);
 
-			canvas.drawDouble(51, 893, 1, Color.BLACK, dt0);
-			canvas.drawDouble(351, 893, 1, Color.BLACK, dt1);
-			canvas.drawDouble(651, 893, 1, Color.BLACK, dt2);
-			canvas.drawDouble(951, 893, 1, Color.BLACK, dt3);
+			canvas.drawDouble(51, 893, 2, Color.BLACK, dt0);
+			canvas.drawDouble(351, 893, 2, Color.BLACK, dt1);
+			canvas.drawDouble(651, 893, 2, Color.BLACK, dt2);
+			canvas.drawDouble(951, 893, 2, Color.BLACK, dt3);
 		}
 
 		for(IChart chart : _charts) {
