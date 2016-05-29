@@ -66,6 +66,9 @@ public class StringTools {
 	public static final String alpha = "abcdefghijklmnopqrstuvwxyz";
 	public static final String HEXADECIMAL = "0123456789ABCDEF";
 	public static final String hexadecimal = "0123456789abcdef";
+	public static final String OCTODECIMAL = "01234567";
+	public static final String octodecimal = "01234567";
+	public static final String BINADECIMAL = "01";
 
 	public static List<String> numericTokenize(String str) {
 		return meaningTokenize(str, DIGIT);
@@ -156,6 +159,11 @@ public class StringTools {
 		return ret;
 	}
 
+	/**
+	 * バイト列 -> 16進文字列
+	 * @param block バイト列
+	 * @return 16進文字列
+	 */
 	public static String toHex(byte[] block) {
 		StringBuffer buff = new StringBuffer();
 
@@ -168,6 +176,11 @@ public class StringTools {
 
 	private static final StringIndexOf hexadecimal_i = new StringIndexOf(hexadecimal);
 
+	/**
+	 * 16進文字列 -> バイト列
+	 * @param str 16進文字列
+	 * @return バイト列
+	 */
 	public static byte[] hex(String str) {
 		byte[] ret = new byte[str.length() / 2];
 
@@ -480,12 +493,17 @@ public class StringTools {
 	public static String ASCII;
 	public static String ASCII_SPC;
 	public static String HAN_KATAKANA;
+	public static String PUNCT;
 
 	static {
 		try {
 			ASCII = new String(ArrayTools.byteSq(0x21, 0x7e), CHARSET_ASCII);
 			ASCII_SPC = new String(ArrayTools.byteSq(0x20, 0x7e), CHARSET_ASCII);
 			HAN_KATAKANA = new String(ArrayTools.byteSq(0xa1, 0xdf), CHARSET_SJIS);
+			PUNCT = new String(ArrayTools.byteSq(0x21, 0x2f), CHARSET_ASCII) +
+					new String(ArrayTools.byteSq(0x3a, 0x40), CHARSET_ASCII) +
+					new String(ArrayTools.byteSq(0x5b, 0x60), CHARSET_ASCII) +
+					new String(ArrayTools.byteSq(0x7b, 0x7e), CHARSET_ASCII);
 		}
 		catch(Throwable e) {
 			e.printStackTrace();

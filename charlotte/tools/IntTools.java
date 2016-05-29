@@ -216,4 +216,38 @@ public class IntTools {
 				((value <<  8) & 0x00ff0000) |
 				((value << 24) & 0xff000000);
 	}
+
+	public static int toInt(String str, String digits) {
+		int radix = digits.length();
+		int ret = 0;
+
+		str = str.toLowerCase();
+
+		for(char chr : str.toCharArray()) {
+			if(chr == '-') {
+				ret *= -1;
+			}
+			else {
+				int val = digits.indexOf(chr);
+
+				if(val != -1) {
+					ret *= radix;
+					ret += val;
+				}
+			}
+		}
+		return ret;
+	}
+
+	public static int hex(String str) {
+		return toInt(str, StringTools.hexadecimal);
+	}
+
+	public static int oct(String str) {
+		return toInt(str, StringTools.octodecimal);
+	}
+
+	public static int bin(String str) {
+		return toInt(str, StringTools.BINADECIMAL);
+	}
 }

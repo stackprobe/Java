@@ -123,8 +123,8 @@ public class Canvas {
 	}
 
 	private int drawDoubleChar(int l, int t, int span, Bmp.Dot dot, char chr) {
-		String drPtn = null;
 		int dSpan = span * 2;
+		String drPtn;
 
 		chr = Character.toUpperCase(chr);
 

@@ -55,6 +55,8 @@ public class CanvasTest {
 		canvas.drawDouble(1, 35, 6, Color.BLACK, StringTools.ALPHA);
 		canvas.drawDouble(1, 49, 6, Color.BLUE, StringTools.alpha);
 
+		canvas.drawDouble(1, 63, 2, Color.ORANGE, StringTools.PUNCT);
+
 		bmp.writeToFile("C:/temp/CanvasTest1b.png");
 	}
 
