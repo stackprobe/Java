@@ -80,7 +80,7 @@ public class CanvasTest {
 			canvas.drawCircle(x, y, r, Color.RED);
 		}
 		bmp.writeToFile("C:/temp/CanvasTest2a.png");
-		canvas.paste(150, 150, Color.GREEN);
+		canvas.fillSameColor(150, 150, Color.GREEN);
 		bmp.setDot(150, 150, new Bmp.Dot(Color.YELLOW));
 		bmp.writeToFile("C:/temp/CanvasTest2b.png");
 
@@ -90,7 +90,7 @@ public class CanvasTest {
 		canvas = new Canvas(bmp);
 
 		canvas.fillRect(50, 50, 200, 200, Color.ORANGE);
-		canvas.paste(150, 150, Color.ORANGE);
+		canvas.fillSameColor(150, 150, Color.ORANGE);
 
 		bmp.writeToFile("C:/temp/CanvasTest2c.png");
 	}
@@ -197,7 +197,7 @@ public class CanvasTest {
 
 	private static void test03_0(Canvas canvas, int wh, Color color) {
 		canvas.drawCircle(500, 500, wh / 2, color);
-		canvas.paste(500, 500, color);
+		canvas.fillSameColor(500, 500, color);
 	}
 
 	private static void test03_1(Canvas canvas) {
@@ -224,7 +224,7 @@ public class CanvasTest {
 
 	private static void test03_4(Canvas canvas, int minus, Color color) {
 		canvas.drawCircle(500, 765, 150 - minus, color);
-		canvas.paste(500, 765, color);
+		canvas.fillSameColor(500, 765, color);
 		canvas.fillRectCenter(500, 360, 280 - minus * 2, 490 - minus * 2, color);
 	}
 

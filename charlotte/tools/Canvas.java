@@ -196,27 +196,27 @@ public class Canvas {
 		return span + 1;
 	}
 
-	public void paste(int x, int y, Color color) {
-		paste(x, y, new Bmp.Dot(color));
+	public void fillSameColor(int x, int y, Color color) {
+		fillSameColor(x, y, new Bmp.Dot(color));
 	}
 
-	public void paste(int x, int y, Bmp.Dot dot) {
+	public void fillSameColor(int x, int y, Bmp.Dot dot) {
 		Bmp.Dot tDot = _bmp.getDot(x, y);
 
 		if(tDot.equals(dot)) {
 			return;
 		}
-		Paste p = new Paste(tDot, dot);
-		p.bloom(x, y);
-		p.burst();
+		FillSameColor fsc = new FillSameColor(tDot, dot);
+		fsc.bloom(x, y);
+		fsc.burst();
 	}
 
-	private class Paste {
+	private class FillSameColor {
 		private Bmp.Dot _tDot;
 		private Bmp.Dot _dDot;
 		private QueueData<int[]> seeds = new QueueData<int[]>();
 
-		public Paste(Bmp.Dot tDot, Bmp.Dot dDot) {
+		public FillSameColor(Bmp.Dot tDot, Bmp.Dot dDot) {
 			_tDot = tDot;
 			_dDot = dDot;
 		}
