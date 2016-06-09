@@ -101,7 +101,7 @@ public class FileTools {
 	public static final String _tmpDir = System.getProperty("java.io.tmpdir", "C:/temp/");
 
 	public static String combine(String path1, String path2) {
-		boolean networkPath = path1.startsWith("\\\\");
+		boolean networkPath = path1.startsWith("\\\\") || path1.startsWith("//");
 
 		String path = path1 + "/" + path2;
 
