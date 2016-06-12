@@ -107,10 +107,10 @@ public class XNode {
 			int clnPos = node._name.indexOf(':');
 
 			if(clnPos != -1) {
-				String namespace = node._name.substring(0, clnPos);
+				//String namespace = node._name.substring(0, clnPos);
 
 				node._name = node._name.substring(clnPos + 1);
-				node._children.add(new XNode(TAG_NAME_NAMESPACE, namespace));
+				//node._children.add(new XNode(TAG_NAME_NAMESPACE, namespace));
 			}
 		}
 
@@ -162,5 +162,35 @@ public class XNode {
 		else {
 			lines.add(indent + "<" + name + "/>");
 		}
+	}
+
+	private static final String PATH_DLMTRS = "/\\";
+
+	public List<XNode> getChildren(String path) {
+		List<XNode> ret = new ArrayList<XNode>();
+		collectChildren(StringTools.tokenize(path, PATH_DLMTRS, false, true), 0, ret);
+		return ret;
+	}
+
+	private void collectChildren(List<String> pathTokens, int ptIndex, List<XNode> dest) {
+		if(ptIndex < pathTokens.size()) {
+			for(XNode child : _children) {
+				if(child.getName().equals(pathTokens.get(ptIndex))) {
+					collectChildren(pathTokens, ptIndex, dest);
+				}
+			}
+		}
+		else {
+			dest.add(this);
+		}
+	}
+
+	public XNode getChild(String path) throws Exception {
+		List<XNode> ret = getChildren(path);
+
+		if(ret.size() == 0) {
+			throw new Exception("Tag [" + path + "] not found");
+		}
+		return ret.get(0);
 	}
 }

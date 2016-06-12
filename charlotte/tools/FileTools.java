@@ -302,11 +302,13 @@ public class FileTools {
 	}
 
 	public static boolean isSameFile(String file1, String file2) throws Exception {
+		InputStream is1 = null;
+		InputStream is2 = null;
 		BufferedInputStream bis1 = null;
 		BufferedInputStream bis2 = null;
 		try {
-			bis1 = new BufferedInputStream(new FileInputStream(file1));
-			bis2 = new BufferedInputStream(new FileInputStream(file2));
+			bis1 = new BufferedInputStream(is1 = new FileInputStream(file1));
+			bis2 = new BufferedInputStream(is2 = new FileInputStream(file2));
 
 			for(; ; ) {
 				int chr1 = bis1.read();
@@ -321,6 +323,8 @@ public class FileTools {
 			}
 		}
 		finally {
+			FileTools.close(is1);
+			FileTools.close(is2);
 			FileTools.close(bis1);
 			FileTools.close(bis2);
 		}
