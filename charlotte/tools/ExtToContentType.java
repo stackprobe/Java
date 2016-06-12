@@ -227,6 +227,10 @@ public class ExtToContentType {
 
 			"swf",  "application/x-shockwave-flash",
 			"webm", "video/webm",
+
+			// 2016.6.13 追加
+
+			"mp4", "video/mp4",
 	};
 
 	public static final String DEF_EXT = "bin";
