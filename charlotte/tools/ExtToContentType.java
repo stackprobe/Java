@@ -230,7 +230,10 @@ public class ExtToContentType {
 
 			// 2016.6.13 追加
 
+			"m4a", "audio/aac",
+			"m4v", "video/mp4",
 			"mp4", "video/mp4",
+			"ogv", "video/ogg",
 	};
 
 	public static final String DEF_EXT = "bin";
