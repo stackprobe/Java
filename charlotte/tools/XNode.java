@@ -1,5 +1,6 @@
 package charlotte.tools;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +55,7 @@ public class XNode {
 	}
 
 	public static XNode load(String file) throws Exception {
-		XNode root = load(DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file));
+		XNode root = load(DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File(file)));
 		root = root._children.get(0);
 		postLoad(root);
 		return root;
@@ -164,19 +165,30 @@ public class XNode {
 		}
 	}
 
-	private static final String PATH_DLMTRS = "/\\";
-
-	public List<XNode> getChildren(String path) {
+	public List<XNode> getChildren(String name) {
 		List<XNode> ret = new ArrayList<XNode>();
-		collectChildren(StringTools.tokenize(path, PATH_DLMTRS, false, true), 0, ret);
+
+		for(XNode child : _children) {
+			if(name.equals(child.getName())) {
+				ret.add(child);
+			}
+		}
 		return ret;
 	}
 
-	private void collectChildren(List<String> pathTokens, int ptIndex, List<XNode> dest) {
+	private static final String PATH_DLMTRS = "/\\";
+
+	public List<XNode> getNodes(String path) {
+		List<XNode> ret = new ArrayList<XNode>();
+		collectNodes(StringTools.tokenize(path, PATH_DLMTRS, false, true), 0, ret);
+		return ret;
+	}
+
+	private void collectNodes(List<String> pathTokens, int ptIndex, List<XNode> dest) {
 		if(ptIndex < pathTokens.size()) {
 			for(XNode child : _children) {
 				if(child.getName().equals(pathTokens.get(ptIndex))) {
-					collectChildren(pathTokens, ptIndex, dest);
+					child.collectNodes(pathTokens, ptIndex + 1, dest);
 				}
 			}
 		}
@@ -185,8 +197,8 @@ public class XNode {
 		}
 	}
 
-	public XNode getChild(String path) throws Exception {
-		List<XNode> ret = getChildren(path);
+	public XNode getNode(String path) throws Exception {
+		List<XNode> ret = getNodes(path);
 
 		if(ret.size() == 0) {
 			throw new Exception("Tag [" + path + "] not found");
