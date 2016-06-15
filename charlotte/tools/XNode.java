@@ -165,17 +165,6 @@ public class XNode {
 		}
 	}
 
-	public List<XNode> getChildren(String name) {
-		List<XNode> ret = new ArrayList<XNode>();
-
-		for(XNode child : _children) {
-			if(name.equals(child.getName())) {
-				ret.add(child);
-			}
-		}
-		return ret;
-	}
-
 	private static final String PATH_DLMTRS = "/\\";
 
 	public List<XNode> getNodes(String path) {

@@ -26,12 +26,23 @@ public class XStruct {
 		}
 		for(String name : this.branches.keySet()) {
 			XStruct branch = this.branches.get(name);
-			int count = root.getChildren(name).size();
+			int count = getCount(root.getChildren(), name);
 
 			branch.min = Math.min(branch.min, count);
 			branch.max = Math.max(branch.max, count);
 		}
 		this.values.add(root.getValue());
+	}
+
+	private int getCount(List<XNode> nodes, String name) {
+		int count = 0;
+
+		for(XNode node : nodes) {
+			if(node.getName().equals(name)) {
+				count++;
+			}
+		}
+		return count;
 	}
 
 	public List<String> toLines() {
