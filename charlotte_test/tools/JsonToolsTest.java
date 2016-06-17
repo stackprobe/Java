@@ -17,7 +17,9 @@ public class JsonToolsTest {
 	}
 
 	public static void test01() throws Exception {
-		test01_a("C:/tmp/JsonTest01.txt");
+		test01_a("C:/var/JsonTest01.txt");
+		test01_a("C:/var/JsonTest01u16.txt");
+		test01_a("C:/var/JsonTest01u32.txt");
 	}
 
 	private static void test01_a(String file) throws Exception {

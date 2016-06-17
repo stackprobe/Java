@@ -159,15 +159,25 @@ public class StringTools {
 		return ret;
 	}
 
+	public static String toHex(byte[] block) {
+		return toHex(block, 0);
+	}
+
+	public static String toHex(byte[] block, int startPos) {
+		return toHex(block, startPos, block.length - startPos);
+	}
+
 	/**
 	 * バイト列 -> 16進文字列
 	 * @param block バイト列
 	 * @return 16進文字列
 	 */
-	public static String toHex(byte[] block) {
+	public static String toHex(byte[] block, int startPos, int size) {
 		StringBuffer buff = new StringBuffer();
 
-		for(byte chr : block) {
+		for(int index = 0; index < size; index++) {
+			byte chr = block[startPos + index];
+
 			buff.append(hexadecimal.charAt((chr & 0xf0) >> 4));
 			buff.append(hexadecimal.charAt((chr & 0x0f) >> 0));
 		}
@@ -199,6 +209,8 @@ public class StringTools {
 	public static final String CHARSET_ASCII = "US-ASCII";
 	public static final String CHARSET_SJIS = "MS932";
 	public static final String CHARSET_UTF8 = "UTF-8";
+	public static final String CHARSET_UTF16 = "UTF-16"; // XXX これでいいのか?
+	public static final String CHARSET_UTF32 = "UTF-32"; // XXX これでいいのか?
 
 	public static boolean isEmpty(String str) {
 		return str == null || str.length() == 0;

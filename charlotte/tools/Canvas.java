@@ -149,11 +149,11 @@ public class Canvas {
 		case 'F': drPtn = "1111000"; break;
 		case 'G': drPtn = "1110101"; break;
 		case 'H': drPtn = "1101001"; break;
-		case 'I': drPtn = "0000001"; break;
+		case 'I': drPtn = "0110100"; break;
 		case 'J': drPtn = "0100111"; break;
 		case 'K': drPtn = "1111001"; break;
 		case 'L': drPtn = "1100100"; break;
-		case 'M': drPtn = "0110001"; break;
+		case 'M': drPtn = "0111001"; break;
 		case 'N': drPtn = "0101001"; break;
 		case 'O': drPtn = "0101101"; break;
 		case 'P': drPtn = "1111010"; break;
@@ -163,7 +163,7 @@ public class Canvas {
 		case 'T': drPtn = "1101100"; break;
 		case 'U': drPtn = "0100101"; break;
 		case 'V': drPtn = "1100111"; break;
-		case 'W': drPtn = "1000110"; break;
+		case 'W': drPtn = "0110101"; break;
 		case 'X': drPtn = "1101011"; break;
 		case 'Y': drPtn = "1001111"; break;
 		case 'Z': drPtn = "0110110"; break;

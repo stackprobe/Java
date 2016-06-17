@@ -94,7 +94,24 @@ public class JsonTools {
 	}
 
 	public static Object decode(byte[] src) throws Exception {
-		return decode(new String(src, StringTools.CHARSET_UTF8)); // TODO compatible other encodings
+		return decode(new String(src, getCharset(src)));
+	}
+
+	private static String getCharset(byte[] src) {
+		if(4 <= src.length) {
+			String x4 = StringTools.toHex(src, 0, 4);
+			if("0000feff".equals(x4) || "fffe0000".equals(x4)) {
+				return StringTools.CHARSET_UTF32;
+			}
+
+			String x2 = StringTools.toHex(src, 0, 2);
+			if("feff".equals(x2) || "fffe".equals(x2)) {
+				return StringTools.CHARSET_UTF16;
+			}
+
+			// TODO BOM が無い場合..
+		}
+		return StringTools.CHARSET_UTF8;
 	}
 
 	public static Object decode(String src) throws Exception {
