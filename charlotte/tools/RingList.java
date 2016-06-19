@@ -11,17 +11,17 @@ public class RingList<T> {
 		while(_list.size() < size) {
 			_list.add(null);
 		}
-		afterCtor();
+		postCtor();
 	}
 
 	public RingList(T[] list) {
 		for(T element : list) {
 			_list.add(element);
 		}
-		afterCtor();
+		postCtor();
 	}
 
-	private void afterCtor() {
+	private void postCtor() {
 		if(_list.size() < 1) {
 			throw new IllegalArgumentException();
 		}
