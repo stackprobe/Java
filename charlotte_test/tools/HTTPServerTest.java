@@ -2,6 +2,7 @@ package charlotte_test.tools;
 
 import javax.swing.JDialog;
 
+import charlotte.tools.ExtToContentType;
 import charlotte.tools.HTTPServer;
 import charlotte.tools.StringTools;
 
@@ -25,6 +26,17 @@ public class HTTPServerTest {
 					}
 					System.out.println("body_length: " + con.req.getBody().length);
 
+					{
+						ExtToContentType.Info info = ExtToContentType.contentTypeToInfo(
+								con.req.getHeaderFields().get("Content-Type")
+								);
+
+						if("txt".equals(info.ext)) {
+							System.out.println("body_charset: " + info.charset);
+							System.out.println("body_text: " + new String(con.req.getBody(), info.charset));
+						}
+					}
+
 					con.resHeaderFields.put("Content-Type", "text/html charset=UTF-8");
 					con.resBody =
 							"<html><body><h1>Drink HUB ALE!</h1></body></html>"
@@ -34,7 +46,7 @@ public class HTTPServerTest {
 				@Override
 				protected boolean interlude() throws Exception {
 					boolean ret = dlg.isVisible();
-					System.out.println("interrupt: " + ret);
+					//System.out.println("interrupt: " + ret);
 					return ret;
 				}
 			}

@@ -131,6 +131,7 @@ public class Canvas {
 		switch(chr) {
 		case '.': drPtn = "0000100"; break;
 		case '-': drPtn = "0001000"; break;
+		case '=': drPtn = "0001100"; break;
 		case '0': drPtn = "1110111"; break;
 		case '1': drPtn = "0000011"; break;
 		case '2': drPtn = "0111110"; break;

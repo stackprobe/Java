@@ -250,4 +250,20 @@ public class IntTools {
 	public static int bin(String str) {
 		return toInt(str, StringTools.BINADECIMAL);
 	}
+
+	public static String toString(int value, int radix) {
+		return Integer.toString(value, radix);
+	}
+
+	public static String toHex(int value) {
+		return toString(value, 16);
+	}
+
+	public static String toOct(int value) {
+		return toString(value, 8);
+	}
+
+	public static String toBin(int value) {
+		return toString(value, 2);
+	}
 }

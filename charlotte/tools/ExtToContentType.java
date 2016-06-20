@@ -262,11 +262,67 @@ public class ExtToContentType {
 	}
 
 	public static String getExt(String contentType) {
+		{
+			int index;
+
+			index = contentType.indexOf(';');
+			if(index != -1) {
+				contentType = contentType.substring(0, index);
+				contentType = contentType.trim();
+			}
+		}
+
 		String ret = map().keys().get(contentType);
 
 		if(ret == null) {
 			ret = DEF_EXT;
 		}
 		return ret;
+	}
+
+	public static Info extToInfo(String ext) {
+		Info info = new Info();
+
+		info.contentType = getContentType(ext);
+		info.ext = ext;
+
+		return info;
+	}
+
+	public static Info contentTypeToInfo(String contentType) {
+		Info info = new Info();
+
+		info.contentType = contentType;
+		info.ext = getExt(contentType);
+
+		{
+			int index;
+
+			index = contentType.indexOf(';');
+			if(index != -1) {
+				String prm = contentType.substring(index + 1);
+
+				index = prm.indexOf('=');
+				if(index != -1) {
+					String k = prm.substring(0, index);
+					String v = prm.substring(index + 1);
+
+					k = k.trim();
+					v = v.trim();
+
+					if(k.equalsIgnoreCase("charset")) {
+						info.charset = v;
+					}
+				}
+			}
+		}
+
+		return info;
+	}
+
+	public static class Info {
+		public String contentType = DEF_CONTENT_TYPE;
+		public String ext = DEF_EXT;
+		public String charset = StringTools.CHARSET_ASCII;
 	}
 }

@@ -12,6 +12,17 @@ import java.util.List;
 import java.util.Set;
 
 public class FileTools {
+	public static List<String> readAllLines(String file, String charset) throws Exception {
+		String text = readAllText(file, charset);
+		text = text.replace("\r", "");
+		StringTools.removeEndsWith(text, "\n");
+		return StringTools.tokenize(text, "\n");
+	}
+
+	public static String readAllText(String file, String charset) throws Exception {
+		return new String(readAllBytes(file), charset);
+	}
+
 	public static byte[] readAllBytes(String file) throws Exception {
 		return readAllBytes(new File(file));
 	}

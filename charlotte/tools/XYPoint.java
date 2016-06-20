@@ -39,17 +39,6 @@ public class XYPoint {
 		return add(p, origin);
 	}
 
-	public static XYPoint opposite(XYPoint p) {
-		return mul(p, -1.0);
-	}
-
-	public static XYPoint reciprocal(XYPoint p) {
-		return new XYPoint(
-				1.0 / p.x,
-				1.0 / p.y
-				);
-	}
-
 	public static XYPoint div(XYPoint a, double r) {
 		return new XYPoint(
 				a.x / r,
@@ -61,6 +50,27 @@ public class XYPoint {
 		p = reduce(p, origin);
 		p = div(p, r);
 		return add(p, origin);
+	}
+
+	/**
+	 * 加算逆元
+	 * @param p
+	 * @return
+	 */
+	public static XYPoint opposite(XYPoint p) {
+		return mul(p, -1.0);
+	}
+
+	/**
+	 * 乗算逆元
+	 * @param p
+	 * @return
+	 */
+	public static XYPoint reciprocal(XYPoint p) {
+		return new XYPoint(
+				1.0 / p.x,
+				1.0 / p.y
+				);
 	}
 
 	public static XYPoint getPoint(double angle) {
