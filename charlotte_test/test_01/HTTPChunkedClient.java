@@ -28,7 +28,7 @@ public class HTTPChunkedClient {
 				"localhost",
 				80,
 				"/",
-				FileTools.readAllText("C:/var/20141007_GBCTunnel_Log.txt", StringTools.CHARSET_SJIS).getBytes(StringTools.CHARSET_UTF8)
+				FileTools.readAllBytes("C:/var/20141007_GBCTunnel_Log.txt")
 				);
 	}
 
@@ -49,7 +49,7 @@ public class HTTPChunkedClient {
 
 			write(ws, "POST " + path + " HTTP/1.1\r\n");
 			write(ws, "Host " + domain + ":" + portNo + "\r\n");
-			write(ws, "Content-Type: text/plain; charset=UTF-8\r\n");
+			write(ws, "Content-Type: text/plain; charset=Shift_JIS\r\n");
 			write(ws, "Transfer-Encoding: chunked\r\n");
 			write(ws, "\r\n");
 
