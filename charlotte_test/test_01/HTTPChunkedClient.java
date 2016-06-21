@@ -58,11 +58,13 @@ public class HTTPChunkedClient {
 			while(rPos < body.length) {
 				int nextSize = MathTools.random(1, body.length - rPos);
 
+				System.out.println("nextSize: " + nextSize); // test
+
 				if(MathTools.random(2) == 0) {
-					write(ws, IntTools.toHex(nextSize) + "\r\n");
+					write(ws, chunkSz2String(nextSize) + "\r\n");
 				}
 				else {
-					write(ws, IntTools.toHex(nextSize) + "; dummy-chunked-extension; dummy-chunke-key = 'dummy-chunked-value'\r\n");
+					write(ws, chunkSz2String(nextSize) + "; dummy-chunked-extension; dummy-chunke-key = 'dummy-chunked-value'\r\n");
 				}
 				ws.write(ArrayTools.getBytes(body, rPos, nextSize));
 				write(ws, "\r\n");
@@ -87,6 +89,11 @@ public class HTTPChunkedClient {
 		finally {
 			FileTools.close(client);
 		}
+	}
+
+	private static String chunkSz2String(int size) {
+		return IntTools.toHex(size); // こっちが正解
+		//return "" + size;
 	}
 
 	private static void write(OutputStream ws, String str) throws Exception {
@@ -118,10 +125,10 @@ public class HTTPChunkedClient {
 				nextSizeMax = Math.min((int)(nextSizeMax * 1.1), IntTools.IMAX);
 
 				if(MathTools.random(2) == 0) {
-					write(ws, IntTools.toHex(nextSize) + "\r\n");
+					write(ws, chunkSz2String(nextSize) + "\r\n");
 				}
 				else {
-					write(ws, IntTools.toHex(nextSize) + "; dummy-chunked-extension; dummy-chunke-key = 'dummy-chunked-value'\r\n");
+					write(ws, chunkSz2String(nextSize) + "; dummy-chunked-extension; dummy-chunke-key = 'dummy-chunked-value'\r\n");
 				}
 				for(int c = 0; c < nextSize; c++) {
 					ws.write(nextDummyChar());
@@ -134,14 +141,13 @@ public class HTTPChunkedClient {
 		}
 	}
 
-	private static int _dummyChar = 0x20;
+	private static String _dummyChrs = StringTools.ASCII + "\r\n";
+	private static int _dummyChrIndex = -1;
 
 	private static int nextDummyChar() {
-		_dummyChar++;
+		_dummyChrIndex++;
+		_dummyChrIndex %= _dummyChrs.length();
 
-		if(_dummyChar == 0x7f) {
-			_dummyChar = 0x21;
-		}
-		return _dummyChar;
+		return _dummyChrs.charAt(_dummyChrIndex);
 	}
 }
