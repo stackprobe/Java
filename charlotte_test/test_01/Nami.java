@@ -9,7 +9,8 @@ public class Nami {
 	public static void main(String[] args) {
 		try {
 			//test01();
-			test02();
+			//test02();
+			doHako2();
 		}
 		catch(Throwable e) {
 			e.printStackTrace();
@@ -40,6 +41,37 @@ public class Nami {
 	}
 
 	/**
+	 * Hako2 Floor2
+	 * @throws Exception
+	 */
+	private static void doHako2() throws Exception {
+		{
+			Bmp bmp = Bmp.fromFile("C:/Dev/Game/Hako2/Resource/ぱくたそ/140726167640~1000.jpg");
+			bmp.expand(640, 480);
+			bmp.writeToFile("C:/temp/hako2.png");
+		}
+
+		doNami2(
+				"C:/temp/hako2.png",
+				"C:/Dev/Game/Hako2/Resource/ぱくたそ/floor2_nami/floor2_nami_", ".png",
+				16, 1, 1,
+				0.0, 0.013, 13.0,
+				0.0, 0.017, 11.0,
+				4, null
+				);
+		/*
+		doNami2(
+				"C:/temp/hako2.png",
+				"C:/Dev/Game/Hako2/Resource/ぱくたそ/floor2_nami/floor2_nami_", ".png",
+				16, 1, 1,
+				0.0, 0.003, 7.0,
+				0.0, 0.007, 7.0,
+				4, null
+				);
+				*/
+	}
+
+	/**
 	 *
 	 * @param rFile
 	 * @param wFilePrefix
@@ -65,6 +97,8 @@ public class Nami {
 			Bmp.Dot outerDot
 			) throws Exception {
 		for(int c = 0; c < komanum; c++) {
+			System.out.println("" + c);
+
 			doNami(rFile, wFilePrefix + StringTools.zPad(c, 3) + wFileSuffix,
 					xStartRot + c * (2.0 * Math.PI * xStartRotAddSign) / komanum, xRotAdd, xRate,
 					yStartRot + c * (2.0 * Math.PI * yStartRotAddSign) / komanum, yRotAdd, yRate,
