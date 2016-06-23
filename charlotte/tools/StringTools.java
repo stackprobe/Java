@@ -159,6 +159,19 @@ public class StringTools {
 		return ret;
 	}
 
+	public static int lastIndexOfChar(String str, String chrs) {
+		int ret = -1;
+
+		for(char chr : chrs.toCharArray()) {
+			int i = str.lastIndexOf(chr);
+
+			if(i != -1) {
+				ret = Math.max(ret, i);
+			}
+		}
+		return ret;
+	}
+
 	public static String toHex(byte[] block) {
 		return toHex(block, 0);
 	}

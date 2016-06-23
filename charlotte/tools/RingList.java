@@ -1,34 +1,18 @@
 package charlotte.tools;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class RingList<T> {
-	private List<T> _list = new ArrayList<T>();
+	private T[] _buff;
 	private int _head;
 
-	public RingList(int size) {
-		while(_list.size() < size) {
-			_list.add(null);
-		}
-		postCtor();
-	}
-
-	public RingList(T[] list) {
-		for(T element : list) {
-			_list.add(element);
-		}
-		postCtor();
-	}
-
-	private void postCtor() {
-		if(_list.size() < 1) {
+	public RingList(T[] bind_buff) {
+		if(bind_buff.length == 0) {
 			throw new IllegalArgumentException();
 		}
+		_buff = bind_buff;
 	}
 
 	public int size() {
-		return _list.size();
+		return _buff.length;
 	}
 
 	public T head() {
@@ -36,41 +20,41 @@ public class RingList<T> {
 	}
 
 	public T tail() {
-		return get(_list.size() - 1);
+		return get(_buff.length - 1);
 	}
 
 	public T get(int index) {
 		checkIndex(index);
-		return _list.get((_head + index) % _list.size());
+		return _buff[(_head + index) % _buff.length];
 	}
 
 	public void set(int index, T element) {
 		checkIndex(index);
-		_list.set((_head + index) % _list.size(), element);
+		_buff[(_head + index) % _buff.length] = element;
 	}
 
 	private void checkIndex(int index) {
-		if(index < 0 || _list.size() <= index) {
+		if(index < 0 || _buff.length <= index) {
 			throw new IndexOutOfBoundsException();
 		}
 	}
 
 	public T shift(T element) {
-		_head += _list.size() - 1;
-		_head %= _list.size();
+		_head += _buff.length - 1;
+		_head %= _buff.length;
 
-		T ret = _list.get(_head);
-		_list.set(_head, element);
+		T ret = _buff[_head];
+		_buff[_head] = element;
 
 		return ret;
 	}
 
 	public T add(T element) {
-		T ret = _list.get(_head);
-		_list.set(_head, element);
+		T ret = _buff[_head];
+		_buff[_head] = element;
 
 		_head++;
-		_head %= _list.size();
+		_head %= _buff.length;
 
 		return ret;
 	}

@@ -258,7 +258,7 @@ public class FileTools {
 	}
 
 	public static String getLocal(String path) {
-		int index = StringTools.lastIndexOf(path, new String[] { "/", "\\" });
+		int index = StringTools.lastIndexOfChar(path, "/\\");
 
 		if(index == -1) {
 			return path;
@@ -286,7 +286,7 @@ public class FileTools {
 			path = path.substring(0, index);
 		}
 
-		index = StringTools.lastIndexOf(path, new String[] { "/", "\\", "." });
+		index = StringTools.lastIndexOfChar(path, "/\\.");
 		if(index != -1 && path.charAt(index) == '.') {
 			path = path.substring(0, index);
 		}
@@ -412,10 +412,12 @@ public class FileTools {
 			wrf.add("COM" + c);
 			wrf.add("LPT" + c);
 		}
-		wrf.add("COM0"); // XXX
-		wrf.add("LPT0"); // XXX
-		wrf.add("CLOCK$"); // XXX
-		wrf.add("CONFIG$"); // XXX
+		// XXX グレーゾーン {
+		wrf.add("COM0");
+		wrf.add("LPT0");
+		wrf.add("CLOCK$");
+		wrf.add("CONFIG$");
+		// }
 
 		windowsReservedFiles = wrf;
 	}

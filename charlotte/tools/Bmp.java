@@ -290,7 +290,7 @@ public class Bmp {
 		return dest;
 	}
 
-	public static final int A_0_RGB = 127;
+	public static final int A_0_RGB = 108;
 	public static final Dot A_0_DOT = new Dot(0, A_0_RGB, A_0_RGB, A_0_RGB);
 
 	public static class Expand {

@@ -5,7 +5,7 @@ import charlotte.tools.RingList;
 public class Chart {
 	private String _currPair;
 	private static final int CACHED_DAYS = 50;
-	private RingList<ChartFile> _files = new RingList<ChartFile>(CACHED_DAYS);
+	private RingList<ChartFile> _files = new RingList<ChartFile>(new ChartFile[CACHED_DAYS]);
 
 	public Chart(String currPair) {
 		_currPair = currPair;

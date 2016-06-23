@@ -25,7 +25,7 @@ public class HTTPImgEchoServer {
 					String tmp = con.path.substring(1, con.path.indexOf('.'));
 					List<String> tmp2 = StringTools.tokenize(tmp, "/");
 
-					String file = "C:/tmp/CTL32_road/road/" + tmp2.get(0) + "/" + tmp2.get(2) + "/" + tmp2.get(1) + ".png";
+					String file = "C:/tmp/CTL32_road/road/" + tmp2.get(0) + "/" + tmp2.get(1) + "/" + tmp2.get(2) + ".png";
 
 					Bmp bmp;
 
