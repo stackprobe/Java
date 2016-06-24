@@ -15,6 +15,7 @@ public class Nami {
 		catch(Throwable e) {
 			e.printStackTrace();
 		}
+		System.exit(0);
 	}
 
 	private static void test01() throws Exception {
@@ -47,17 +48,23 @@ public class Nami {
 	private static void doHako2() throws Exception {
 		{
 			Bmp bmp = Bmp.fromFile("C:/Dev/Game/Hako2/Resource/ぱくたそ/140726167640~1000.jpg");
-			bmp.expand(640, 480);
+			bmp.expand(600, 400);
 			bmp.writeToFile("C:/temp/hako2.png");
 		}
+
+		/*
+		final int div = 1; // test
+		/*/
+		final int div = 16; // honban
+		//*/
 
 		doNami2(
 				"C:/temp/hako2.png",
 				"C:/Dev/Game/Hako2/Resource/ぱくたそ/floor2_nami/floor2_nami_", ".png",
-				16, 1, 1,
+				24, 1, 1,
 				0.0, 0.013, 13.0,
 				0.0, 0.017, 11.0,
-				4, null
+				div, null
 				);
 		/*
 		doNami2(
@@ -66,7 +73,7 @@ public class Nami {
 				16, 1, 1,
 				0.0, 0.003, 7.0,
 				0.0, 0.007, 7.0,
-				4, null
+				div, null
 				);
 				*/
 	}
@@ -142,8 +149,14 @@ public class Nami {
 						double dy = y + (sy + 0.5) / div;
 
 						double dPos = dx * xRotAdd + dy * yRotAdd;
-						double dDiffX = Math.sin(xStartRot + dPos) * xRate;
-						double dDiffY = Math.cos(yStartRot + dPos) * yRate;
+						double dDiffX1 = Math.sin(xStartRot + dPos) * xRate;
+						double dDiffY1 = Math.cos(yStartRot + dPos) * yRate;
+						double dDiffX2 = Math.sin(xStartRot + dx * xRotAdd) * xRate;
+						double dDiffY2 = Math.cos(yStartRot + dy * yRotAdd) * yRate;
+						final double RATE1 = 0.7;
+						final double RATE2 = 0.3;
+						double dDiffX = dDiffX1 * RATE1 + dDiffX2 * RATE2;
+						double dDiffY = dDiffY1 * RATE1 + dDiffY2 * RATE2;
 
 						dx += dDiffX;
 						dy += dDiffY;
