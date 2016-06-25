@@ -281,6 +281,8 @@ public class EraDate {
 	 * @param date YYYYMMDD
 	 */
 	public void setDate(int date) {
+		date = IntTools.toRange(date, 10101, 99991231);
+
 		EraInfo eraInfo = getEraInfo(date);
 
 		if(eraInfo != null && eraInfo.name != null) {
@@ -295,14 +297,23 @@ public class EraDate {
 	}
 
 	private static EraInfo getEraInfo(int date) {
-		for(int index = _eraInfos.length - 1; 0 <= index; index--) {
-			EraInfo eraInfo = _eraInfos[index];
+		if(date < _eraInfos[0].firstDate) {
+			return null;
+		}
+		int l = 0;
+		int r = _eraInfos.length;
 
-			if(eraInfo.firstDate <= date) {
-				return eraInfo;
+		while(l + 1 < r) {
+			int m = (l + r) / 2;
+
+			if(date < _eraInfos[m].firstDate) {
+				r = m;
+			}
+			else {
+				l = m;
 			}
 		}
-		return null;
+		return _eraInfos[l];
 	}
 
 	public String getEraName() {
@@ -322,6 +333,7 @@ public class EraDate {
 	}
 
 	public String getString(String format) {
+		int y = _date / 10000;
 		int m = (_date / 100) % 100;
 		int d = _date % 100;
 
@@ -338,6 +350,7 @@ public class EraDate {
 
 		str = str.replace("E", _eraName);
 		str = str.replace("N", strNen);
+		str = str.replace("Y", StringTools.zPad(y, 4));
 		str = str.replace("M", StringTools.zPad(m, 2));
 		str = str.replace("D", StringTools.zPad(d, 2));
 

@@ -44,6 +44,20 @@ public class Test01 {
 					System.out.println(y + "/" + m + "/" + d); // こうすれば西暦
 				}
 			}
+
+			{
+				String string = "ABC";
+
+				System.out.println("" + (string == null));
+				System.out.println("" + (string.equals(null)));
+			}
+
+			{
+				String string = null;
+
+				System.out.println("" + (string == null));
+				System.out.println("" + (string.equals(null)));
+			}
 		}
 		catch(Throwable e) {
 			e.printStackTrace();
