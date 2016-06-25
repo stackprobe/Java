@@ -303,7 +303,18 @@ public class EraDate {
 		int l = 0;
 		int r = _eraInfos.length;
 
-		while(l + 1 < r) {
+		{
+			int m = r - 4;
+
+			if(date < _eraInfos[m].firstDate) {
+				r = m;
+			}
+			else {
+				l = m;
+			}
+		}
+
+		do {
 			int m = (l + r) / 2;
 
 			if(date < _eraInfos[m].firstDate) {
@@ -313,6 +324,8 @@ public class EraDate {
 				l = m;
 			}
 		}
+		while(l + 1 < r);
+
 		return _eraInfos[l];
 	}
 
