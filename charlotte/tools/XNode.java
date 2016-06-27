@@ -98,7 +98,7 @@ public class XNode {
 				);
 	}
 
-	public static final String TAG_NAME_NAMESPACE = "_namespace";
+	//public static final String TAG_NAME_NAMESPACE = "_namespace";
 
 	private static void postLoad(XNode node) {
 		node._name = node._name.trim();
