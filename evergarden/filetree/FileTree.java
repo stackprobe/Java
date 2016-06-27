@@ -17,10 +17,10 @@ public class FileTree extends JTree {
 
 	public FileTree() {
 		_pm = new JPopupMenu();
-		_pm.add(createMenuItem("選択されているアイテムを開く", new ActionListener() {
+		_pm.add(createMenuItem("右クリックメニューのアイテム", new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("*"); // TODO
+				System.out.println("右クリックメニューのアイテムをクリックしました。");
 			}
 		}));
 		_pm.add(createMenuItem("ダミーアイテム1", null));
@@ -36,8 +36,9 @@ public class FileTree extends JTree {
 						leafAction();
 					}
 					break;
+
 				case MouseEvent.BUTTON3:
-					rClicked(e);
+					rightClicked(e);
 					break;
 				}
 			}
@@ -89,9 +90,34 @@ public class FileTree extends JTree {
 		return ret;
 	}
 
-	private void rClicked(MouseEvent e) {
-		// TODO 未選択なら選択
+	private void rightClicked(MouseEvent e) {
+		selectWhenUnselected(e);
 		_pm.show(e.getComponent(), e.getX(), e.getY());
+	}
+
+	private void selectWhenUnselected(MouseEvent e) {
+		int row = getRowForLocation(e.getX(), e.getY());
+
+		if(row != -1) {
+			TreePath tp = getPathForRow(row);
+
+			if(isSelected(tp) == false) {
+				setSelectionPath(tp);
+			}
+		}
+	}
+
+	private boolean isSelected(TreePath target) {
+		for(TreePath tp : getSelectionPaths()) {
+			if(FileTreeModel.compNode.compare(
+					(FileTreeModel.Node)tp.getLastPathComponent(),
+					(FileTreeModel.Node)target.getLastPathComponent()
+					) == 0
+					) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void leafAction() {
