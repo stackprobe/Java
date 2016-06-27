@@ -15,6 +15,7 @@ public class TestDialog extends JDialog {
 		catch(Throwable e) {
 			e.printStackTrace();
 		}
+		System.exit(0);
 	}
 
 	public TestDialog() {
@@ -38,6 +39,7 @@ public class TestDialog extends JDialog {
 		this.getContentPane().add(panel, BorderLayout.CENTER);
 		this.setSize(500, 400);
 		this.setMinimumSize(this.getSize());
+		this.setTitle("ちんこ");
 		this.setModal(true);
 		this.setVisible(true);
 	}

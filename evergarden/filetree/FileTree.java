@@ -108,7 +108,7 @@ public class FileTree extends JTree {
 	}
 
 	private boolean isSelected(TreePath target) {
-		for(TreePath tp : getSelectionPaths()) {
+		for(TreePath tp : getSelectedTreePaths()) {
 			if(FileTreeModel.compNode.compare(
 					(FileTreeModel.Node)tp.getLastPathComponent(),
 					(FileTreeModel.Node)target.getLastPathComponent()
@@ -121,11 +121,21 @@ public class FileTree extends JTree {
 	}
 
 	private void leafAction() {
-		for(TreePath tp : getSelectionPaths()) {
+		for(TreePath tp : getSelectedTreePaths()) {
 			if(getModel().isLeaf(tp.getLastPathComponent())) {
 				leafAction(tp.getLastPathComponent());
 			}
 		}
+	}
+
+	private TreePath[] getSelectedTreePaths() {
+		try {
+			return getSelectionPaths();
+		}
+		catch(Throwable e) {
+			// ignore 未選択のとき例外になるっぽい。
+		}
+		return new TreePath[0];
 	}
 
 	private void leafAction(Object node) {
