@@ -150,11 +150,7 @@ public class StringTools {
 		int ret = -1;
 
 		for(String ptn : ptns) {
-			int i = str.lastIndexOf(ptn);
-
-			if(i != -1) {
-				ret = Math.max(ret, i);
-			}
+			ret = Math.max(ret, str.lastIndexOf(ptn));
 		}
 		return ret;
 	}
@@ -163,11 +159,7 @@ public class StringTools {
 		int ret = -1;
 
 		for(char chr : chrs.toCharArray()) {
-			int i = str.lastIndexOf(chr);
-
-			if(i != -1) {
-				ret = Math.max(ret, i);
-			}
+			ret = Math.max(ret, str.lastIndexOf(chr));
 		}
 		return ret;
 	}

@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -257,6 +258,44 @@ public class FileTools {
 		return readToEnd(url.openStream());
 	}
 
+	public static String readLine(InputStream is) throws Exception {
+		return readLine(is, StringTools.CHARSET_UTF8);
+	}
+
+	public static String readLine(InputStream is, String charset) throws Exception {
+		ByteBuffer buff = new ByteBuffer();
+
+		for(; ; ) {
+			int chr = is.read();
+
+			// XXX charset == Utf16 とかアウト
+
+			// ? cr
+			if(chr == 0x0d) {
+				continue;
+			}
+			// ? lf
+			if(chr == 0x0a) {
+				break;
+			}
+			buff.add((byte)chr);
+		}
+		return new String(buff.getBytes(), charset);
+	}
+
+	public static void writeLine(OutputStream os, String line) throws Exception {
+		writeLine(os, line, StringTools.CHARSET_UTF8);
+	}
+
+	public static void writeLine(OutputStream os, String line, String charset) throws Exception {
+		os.write(line.getBytes(charset));
+
+		// XXX charset == Utf16 とかアウト
+
+		os.write(0x0d);
+		os.write(0x0a);
+	}
+
 	public static String getLocal(String path) {
 		int index = StringTools.lastIndexOfChar(path, "/\\");
 
@@ -286,8 +325,8 @@ public class FileTools {
 			path = path.substring(0, index);
 		}
 
-		index = StringTools.lastIndexOfChar(path, "/\\.");
-		if(index != -1 && path.charAt(index) == '.') {
+		index = path.lastIndexOf('.');
+		if(index != -1 && StringTools.lastIndexOfChar(path, "/\\") < index) {
 			path = path.substring(0, index);
 		}
 
