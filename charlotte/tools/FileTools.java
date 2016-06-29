@@ -151,6 +151,10 @@ public class FileTools {
 		new File(dir).mkdir();
 	}
 
+	public static void mkdirs(String dir) {
+		new File(dir).mkdirs();
+	}
+
 	public static void createFile(String file) throws Exception {
 		writeAllBytes(file, new byte[0]);
 	}
@@ -512,5 +516,9 @@ public class FileTools {
 			str = str.substring(0, str.length() - 1) + "$";
 		}
 		return str;
+	}
+
+	public static long getFileSize(String file) {
+		return new File(file).length();
 	}
 }

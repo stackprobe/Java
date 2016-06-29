@@ -39,7 +39,7 @@ public class TestDialog extends JDialog {
 		this.getContentPane().add(panel, BorderLayout.CENTER);
 		this.setSize(500, 400);
 		this.setMinimumSize(this.getSize());
-		this.setTitle("ちんこ");
+		this.setTitle("JTreeTest");
 		this.setModal(true);
 		this.setVisible(true);
 	}

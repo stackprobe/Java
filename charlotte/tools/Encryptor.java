@@ -197,11 +197,11 @@ public class Encryptor {
 		int size = src.length;
 		size %= 16;
 		size = 15 - size;
-		size |= SecurityTools.random(16) << 4;
+		size |= SecurityTools.cRandom(16) << 4;
 
 		BlockBuffer buff = new BlockBuffer();
 
-		buff.bindAdd(SecurityTools.randSq(size));
+		buff.bindAdd(SecurityTools.cRandSq(size));
 		buff.add((byte)size);
 
 		return buff.getBytes();
@@ -214,7 +214,7 @@ public class Encryptor {
 	}
 
 	private static byte[] getRandPart() {
-		return SecurityTools.randSq(64);
+		return SecurityTools.cRandSq(64);
 	}
 
 	private static SubBytes removeRandPart(SubBytes src) throws Exception {
