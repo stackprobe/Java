@@ -23,9 +23,14 @@ public class FileTree extends JTree {
 				System.out.println("右クリックメニューのアイテムをクリックしました。");
 			}
 		}));
+		_pm.addSeparator();
 		_pm.add(createMenuItem("ダミーアイテム1", null));
 		_pm.add(createMenuItem("ダミーアイテム2", null));
 		_pm.add(createMenuItem("ダミーアイテム3", null));
+		_pm.addSeparator();
+		_pm.add(createMenuItem("ダミーアイテムa", null));
+		_pm.add(createMenuItem("ダミーアイテムb", null));
+		_pm.add(createMenuItem("ダミーアイテムc", null));
 
 		addMouseListener(new MouseListener() {
 			@Override
@@ -130,10 +135,15 @@ public class FileTree extends JTree {
 
 	private TreePath[] getSelectedTreePaths() {
 		try {
-			return getSelectionPaths();
+			TreePath[] ret = getSelectionPaths();
+
+			if(ret == null) {
+				throw null;
+			}
+			return ret;
 		}
 		catch(Throwable e) {
-			// ignore 未選択のとき例外になるっぽい。
+			// ignore 未選択のとき例外になるっぽい。<- nullっぽい。
 		}
 		return new TreePath[0];
 	}
