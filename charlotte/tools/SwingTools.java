@@ -1,5 +1,9 @@
 package charlotte.tools;
 
+import java.awt.Component;
+
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 public class SwingTools {
@@ -36,6 +40,41 @@ public class SwingTools {
 		}
 		catch(Throwable e) {
 			e.printStackTrace();
+		}
+	}
+
+	public static int showSaveDialogConfirmOverwrite(JFileChooser fc, Component parent) throws Exception {
+		for(; ; ) {
+			int ret = fc.showSaveDialog(parent);
+
+			if(ret == JFileChooser.APPROVE_OPTION) {
+				String file = fc.getSelectedFile().getCanonicalPath();
+
+				if(FileTools.exists(file)) {
+					String[] selectValues = new String[] {
+							"上書きする",
+							"別の名前を指定する",
+							"キャンセル",
+							};
+					int ret2 = JOptionPane.showOptionDialog(
+							parent,
+							"入力されたファイル名は既に存在します。",
+							"上書き確認",
+							JOptionPane.YES_NO_OPTION,
+							JOptionPane.QUESTION_MESSAGE,
+							null,
+							selectValues,
+							selectValues[0]
+							);
+					if(ret2 == 1) {
+						continue;
+					}
+					if(ret2 == 2) {
+						ret = JFileChooser.CANCEL_OPTION;
+					}
+				}
+			}
+			return ret;
 		}
 	}
 }

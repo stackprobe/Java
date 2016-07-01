@@ -189,6 +189,17 @@ public class FileTools {
 		f.delete();
 	}
 
+	public static void rm(String path) {
+		File f = new File(path);
+
+		if(f.isDirectory()) {
+			for(String s : f.list()) {
+				remove(FileTools.combine(path, s));
+			}
+		}
+		del(f);
+	}
+
 	public static boolean isDirectory(String path) {
 		return new File(path).isDirectory();
 	}
@@ -309,6 +320,15 @@ public class FileTools {
 		return path.substring(index + 1);
 	}
 
+	public static String eraseLocal(String path) {
+		int index = StringTools.lastIndexOfChar(path, "/\\");
+
+		if(index == -1) {
+			return ".";
+		}
+		return path.substring(0, index);
+	}
+
 	public static String getExt(String path) {
 		path = getLocal(path);
 
@@ -318,6 +338,15 @@ public class FileTools {
 			return "";
 		}
 		return path.substring(index + 1);
+	}
+
+	public static String getDotExt(String path) {
+		String ext = getExt(path);
+
+		if(ext.length() == 0) {
+			return "";
+		}
+		return "." + ext;
 	}
 
 	public static String eraseExt(String path) {
@@ -334,6 +363,21 @@ public class FileTools {
 			path = path.substring(0, index);
 		}
 
+		return path;
+	}
+
+	public static String toCreatable(String path) {
+		if(FileTools.exists(path)) {
+			String prefix = FileTools.eraseExt(path) + "~";
+			String suffix = FileTools.getDotExt(path);
+			int c = 2;
+
+			do {
+				path = prefix + c + suffix;
+				c++;
+			}
+			while(FileTools.exists(path));
+		}
 		return path;
 	}
 
