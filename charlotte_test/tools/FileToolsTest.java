@@ -7,6 +7,7 @@ public class FileToolsTest {
 		try {
 			test01();
 			//test02();
+			test03();
 
 			System.out.println("OK!");
 		}
@@ -45,5 +46,17 @@ public class FileToolsTest {
 		for(String path : FileTools.lss("C:/Dev/CSharp")) {
 			System.out.println(path);
 		}
+	}
+
+	private static void test03() throws Exception {
+		test03_b("C:\\");
+		test03_b("C:\\etc");
+		test03_b("C:\\etc\\画像");
+		test03_b("S:\\");
+		test03_b("\\\\mimiko\\pub");
+	}
+
+	private static void test03_b(String dir) throws Exception {
+		System.out.println("[" + dir + "] -> " + FileTools.getDiskFree(dir));
 	}
 }

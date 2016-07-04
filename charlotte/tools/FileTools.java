@@ -16,7 +16,7 @@ public class FileTools {
 	public static List<String> readAllLines(String file, String charset) throws Exception {
 		String text = readAllText(file, charset);
 		text = text.replace("\r", "");
-		StringTools.removeEndsWith(text, "\n");
+		text = StringTools.removeEndsWith(text, "\n");
 		return StringTools.tokenize(text, "\n");
 	}
 
@@ -52,6 +52,10 @@ public class FileTools {
 			close(is);
 		}
 		return fileData;
+	}
+
+	public static void writeAllText(String file, String text, String charset) throws Exception {
+		writeAllBytes(file, text.getBytes(charset));
 	}
 
 	public static void writeAllBytes(String file, byte[] fileData) throws Exception {
@@ -131,7 +135,16 @@ public class FileTools {
 	}
 
 	public static void del(String path) {
-		del(new File(path));
+		try {
+			if(path == null) {
+				throw null;
+				//throw new NullPointerException();
+			}
+			new File(path).delete();
+		}
+		catch(Throwable e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static void del(File f) {
@@ -194,7 +207,7 @@ public class FileTools {
 
 		if(f.isDirectory()) {
 			for(String s : f.list()) {
-				remove(FileTools.combine(path, s));
+				rm(FileTools.combine(path, s));
 			}
 		}
 		del(f);
@@ -468,6 +481,10 @@ public class FileTools {
 		return dest;
 	}
 
+	public static int lsCount(String dir) {
+		return list(dir).length;
+	}
+
 	public static void copyDir(String rDir, String wDir) throws Exception {
 		if(exists(wDir) == false) {
 			mkdir(wDir);
@@ -564,5 +581,64 @@ public class FileTools {
 
 	public static long getFileSize(String file) {
 		return new File(file).length();
+	}
+
+	public static long getDiskFree(String dir) throws Exception {
+		return tailOfDirCmd(dir)[3];
+	}
+
+	public static long[] tailOfDirCmd(String dir) throws Exception {
+		String batFile = null;
+		String outFile = null;
+
+		try {
+			batFile = makeTempPath() + ".bat";
+			outFile = makeTempPath();
+			FileTools.writeAllText(batFile, "DIR \"" + dir + "\" > \"" + outFile + "\"", StringTools.CHARSET_SJIS);
+			Runtime.getRuntime().exec("CMD /C \"" + batFile + "\"").waitFor();
+			List<String> lines = readAllLines(outFile, StringTools.CHARSET_SJIS);
+
+			if(lines.size() < 2) {
+				throw new RuntimeException("DIR stdout format error");
+			}
+			String line1 = lines.get(lines.size() - 2);
+			String line2 = lines.get(lines.size() - 1);
+			List<String> tokens1 = StringTools.tokenize(line1, " ", false, true);
+			List<String> tokens2 = StringTools.tokenize(line2, " ", false, true);
+
+			if(tokens1.size() != 4) {
+				throw new RuntimeException("DIR stdout format error");
+			}
+			if(tokens2.size() != 4) {
+				throw new RuntimeException("DIR stdout format error");
+			}
+
+			if(tokens1.get(1).equals("個のファイル") == false) {
+				throw new RuntimeException("DIR stdout format error");
+			}
+			if(tokens1.get(3).equals("バイト") == false) {
+				throw new RuntimeException("DIR stdout format error");
+			}
+
+			if(tokens2.get(1).equals("個のディレクトリ") == false) {
+				throw new RuntimeException("DIR stdout format error");
+			}
+			if(tokens2.get(3).equals("バイトの空き領域") == false) {
+				throw new RuntimeException("DIR stdout format error");
+			}
+
+			return new long[] {
+					Long.parseLong(tokens1.get(0).replace(",", "")),
+					Long.parseLong(tokens1.get(2).replace(",", "")),
+					Long.parseLong(tokens2.get(0).replace(",", "")),
+					Long.parseLong(tokens2.get(2).replace(",", "")),
+			};
+		}
+		finally {
+			del(batFile);
+			batFile = null;
+			del(outFile);
+			outFile = null;
+		}
 	}
 }
