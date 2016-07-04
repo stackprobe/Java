@@ -136,10 +136,6 @@ public class FileTools {
 
 	public static void del(String path) {
 		try {
-			if(path == null) {
-				throw null;
-				//throw new NullPointerException();
-			}
 			new File(path).delete();
 		}
 		catch(Throwable e) {
@@ -588,6 +584,8 @@ public class FileTools {
 	}
 
 	public static long[] tailOfDirCmd(String dir) throws Exception {
+		dir = dir.replace('/', '\\');
+
 		String batFile = null;
 		String outFile = null;
 
