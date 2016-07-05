@@ -56,6 +56,11 @@ public class FileToolsTest {
 		test03_b("S:\\");
 		test03_b("//mimiko/pub");
 		test03_b("\\\\mimiko\\pub");
+		test03_b("H:/");
+		test03_b("H:\\");
+		test03_b("//no-exist-server/Projects");
+		test03_b("\\\\no-exist-server\\Projects");
+		test03_b("*invalid-path*");
 	}
 
 	private static void test03_b(String dir) throws Exception {

@@ -579,9 +579,17 @@ public class FileTools {
 		return new File(file).length();
 	}
 
+	//*
+	public static long getDiskFree(String dir) throws Exception {
+		dir = dir.replace('/', '\\');
+
+		return new File(dir).getFreeSpace();
+	}
+	/*/
 	public static long getDiskFree(String dir) throws Exception {
 		return tailOfDirCmd(dir)[3];
 	}
+	//*/
 
 	public static long[] tailOfDirCmd(String dir) throws Exception {
 		dir = dir.replace('/', '\\');
