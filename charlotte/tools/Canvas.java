@@ -124,74 +124,74 @@ public class Canvas {
 
 	private int drawDoubleChar(int l, int t, int span, Bmp.Dot dot, char chr) {
 		int dSpan = span * 2;
-		String drPtn;
+		int drPtn;
 
 		chr = Character.toUpperCase(chr);
 
 		switch(chr) {
-		case '.': drPtn = "0000100"; break;
-		case '-': drPtn = "0001000"; break;
-		case '=': drPtn = "0001100"; break;
-		case '0': drPtn = "1110111"; break;
-		case '1': drPtn = "0000011"; break;
-		case '2': drPtn = "0111110"; break;
-		case '3': drPtn = "0011111"; break;
-		case '4': drPtn = "1001011"; break;
-		case '5': drPtn = "1011101"; break;
-		case '6': drPtn = "1111101"; break;
-		case '7': drPtn = "1010011"; break;
-		case '8': drPtn = "1111111"; break;
-		case '9': drPtn = "1011111"; break;
-		case 'A': drPtn = "1111011"; break;
-		case 'B': drPtn = "1101101"; break;
-		case 'C': drPtn = "1110100"; break;
-		case 'D': drPtn = "0101111"; break;
-		case 'E': drPtn = "1111100"; break;
-		case 'F': drPtn = "1111000"; break;
-		case 'G': drPtn = "1110101"; break;
-		case 'H': drPtn = "1101001"; break;
-		case 'I': drPtn = "0110100"; break;
-		case 'J': drPtn = "0100111"; break;
-		case 'K': drPtn = "1111001"; break;
-		case 'L': drPtn = "1100100"; break;
-		case 'M': drPtn = "0111001"; break;
-		case 'N': drPtn = "0101001"; break;
-		case 'O': drPtn = "0101101"; break;
-		case 'P': drPtn = "1111010"; break;
-		case 'Q': drPtn = "1011011"; break;
-		case 'R': drPtn = "0101000"; break;
-		case 'S': drPtn = "1001101"; break;
-		case 'T': drPtn = "1101100"; break;
-		case 'U': drPtn = "0100101"; break;
-		case 'V': drPtn = "1100111"; break;
-		case 'W': drPtn = "0110101"; break;
-		case 'X': drPtn = "1101011"; break;
-		case 'Y': drPtn = "1001111"; break;
-		case 'Z': drPtn = "0110110"; break;
+		case '.': drPtn = 0x0000100; break;
+		case '-': drPtn = 0x0001000; break;
+		case '=': drPtn = 0x0001100; break;
+		case '0': drPtn = 0x1110111; break;
+		case '1': drPtn = 0x0000011; break;
+		case '2': drPtn = 0x0111110; break;
+		case '3': drPtn = 0x0011111; break;
+		case '4': drPtn = 0x1001011; break;
+		case '5': drPtn = 0x1011101; break;
+		case '6': drPtn = 0x1111101; break;
+		case '7': drPtn = 0x1010011; break;
+		case '8': drPtn = 0x1111111; break;
+		case '9': drPtn = 0x1011111; break;
+		case 'A': drPtn = 0x1111011; break;
+		case 'B': drPtn = 0x1101101; break;
+		case 'C': drPtn = 0x1110100; break;
+		case 'D': drPtn = 0x0101111; break;
+		case 'E': drPtn = 0x1111100; break;
+		case 'F': drPtn = 0x1111000; break;
+		case 'G': drPtn = 0x1110101; break;
+		case 'H': drPtn = 0x1101001; break;
+		case 'I': drPtn = 0x0110100; break;
+		case 'J': drPtn = 0x0100111; break;
+		case 'K': drPtn = 0x1111001; break;
+		case 'L': drPtn = 0x1100100; break;
+		case 'M': drPtn = 0x0111001; break;
+		case 'N': drPtn = 0x0101001; break;
+		case 'O': drPtn = 0x0101101; break;
+		case 'P': drPtn = 0x1111010; break;
+		case 'Q': drPtn = 0x1011011; break;
+		case 'R': drPtn = 0x0101000; break;
+		case 'S': drPtn = 0x1001101; break;
+		case 'T': drPtn = 0x1101100; break;
+		case 'U': drPtn = 0x0100101; break;
+		case 'V': drPtn = 0x1101010; break;
+		case 'W': drPtn = 0x0110101; break;
+		case 'X': drPtn = 0x1101011; break;
+		case 'Y': drPtn = 0x1001111; break;
+		case 'Z': drPtn = 0x0110110; break;
 
 		default:
-			drPtn = "0011100";
+			drPtn = 0x0011100;
 			break;
 		}
-		if(drPtn.charAt(0) == '1') {
+		if((drPtn & 0x1000000) != 0) {
 			drawLine(l, t, l, t + span, dot);
 		}
-		if(drPtn.charAt(1) == '1') {
+		if((drPtn & 0x100000) != 0) {
 			drawLine(l, t + span, l, t + dSpan, dot);
 		}
-		if(drPtn.charAt(2) == '1') {
+		if((drPtn & 0x10000) != 0) {
 			drawLine(l, t, l + span, t, dot);
 		}
-		if(drPtn.charAt(3) == '1') {
+		if((drPtn & 0x1000) != 0) {
 			drawLine(l, t + span, l + span, t + span, dot);
 		}
-		if(drPtn.charAt(4) == '1') {
+		if((drPtn & 0x100) != 0) {
 			drawLine(l, t + dSpan, l + span, t + dSpan, dot);
 		}
-		if(drPtn.charAt(5) == '1') {
+		if((drPtn & 0x10) != 0) {
 			drawLine(l + span, t, l + span, t + span, dot);
 		}
-		if(drPtn.charAt(6) == '1') {
+		if((drPtn & 0x1) != 0) {
 			drawLine(l + span, t + span, l + span, t + dSpan, dot);
 		}
 		return span + 1;
