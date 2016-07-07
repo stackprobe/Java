@@ -2,9 +2,10 @@ package charlotte_test.tools;
 
 import java.util.List;
 
+import charlotte.tools.CsvFileSorter;
 import charlotte.tools.DebugTools;
-import charlotte.tools.FileSorter;
 import charlotte.tools.StringTools;
+import charlotte.tools.TextFileSorter;
 
 public class FileSorterTest {
 	public static void main(String[] args) {
@@ -85,7 +86,7 @@ public class FileSorterTest {
 		Runtime.getRuntime().exec("C:/Factory/Tools/TextSort.exe C:/temp/2.txt C:/temp/3.txt").waitFor();
 
 		System.out.println("begin sort 2/2");
-		new FileSorter.TextFileSorter(StringTools.CHARSET_SJIS).mergeSort("C:/temp/1.txt");
+		new TextFileSorter(StringTools.CHARSET_SJIS).mergeSort("C:/temp/1.txt");
 
 		System.out.println("begin comp");
 		boolean ret = DebugTools.isSameFile(
@@ -122,7 +123,7 @@ public class FileSorterTest {
 				);
 
 		long startedTime = System.currentTimeMillis();
-		new FileSorter.TextFileSorter(StringTools.CHARSET_SJIS).mergeSort("C:/temp/1.txt");
+		new TextFileSorter(StringTools.CHARSET_SJIS).mergeSort("C:/temp/1.txt");
 		long endedTime = System.currentTimeMillis();
 
 		System.out.println("done: " + (endedTime - startedTime));
@@ -132,7 +133,7 @@ public class FileSorterTest {
 	}
 
 	private static void test03() throws Exception {
-		new FileSorter.CsvFileSorter(StringTools.CHARSET_SJIS) {
+		new CsvFileSorter(StringTools.CHARSET_SJIS) {
 			@Override
 			protected int comp(List<String> a, List<String> b) {
 				return comp(a, b, 1);

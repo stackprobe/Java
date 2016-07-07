@@ -59,4 +59,34 @@ public class WindowsTools {
 		}
 		return value;
 	}
+
+	/**
+	 * [注意](空の|存在しない)ディレクトリの場合、空のファイルになる -> readAllLines で読み込むと、"" の1行が読める。
+	 * [注意]存在するファイルの場合、ファイルのローカル名1行が出力される。
+	 * @param dir
+	 * @param outFile
+	 * @throws Exception
+	 */
+	public static void ls(String dir, String outFile) throws Exception {
+		dir = dir.replace('/', '\\');
+		FileTools.rm(outFile);
+
+		{
+			String batFile = null;
+
+			try {
+				batFile = FileTools.makeTempPath() + ".bat";
+				FileTools.writeAllText(batFile, "DIR \"" + dir + "\" /B > \"" + outFile + "\"", StringTools.CHARSET_SJIS);
+				Runtime.getRuntime().exec("CMD /C \"" + batFile + "\"").waitFor();
+			}
+			finally {
+				FileTools.del(batFile);
+				batFile = null;
+			}
+		}
+
+		if(FileTools.exists(outFile) == false) {
+			throw new Exception("DIR fault");
+		}
+	}
 }

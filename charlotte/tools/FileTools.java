@@ -6,7 +6,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -581,8 +583,6 @@ public class FileTools {
 
 	//*
 	public static long getDiskFree(String dir) throws Exception {
-		dir = dir.replace('/', '\\');
-
 		return new File(dir).getFreeSpace();
 	}
 	/*/
@@ -646,5 +646,34 @@ public class FileTools {
 			del(outFile);
 			outFile = null;
 		}
+	}
+
+	public static String readLine(InputStreamReader reader) throws Exception {
+		StringBuffer buff = new StringBuffer();
+
+		for(; ; ) {
+			int chr = reader.read();
+
+			if(chr == -1) {
+				if(buff.length() == 0) {
+					return null;
+				}
+				break;
+			}
+			if(chr == '\r') {
+				continue;
+			}
+			if(chr == '\n') {
+				break;
+			}
+			buff.append((char)chr);
+		}
+		return buff.toString();
+	}
+
+	public static void writeLine(OutputStreamWriter writer, String line) throws Exception {
+		writer.write(line);
+		writer.write(0x0d);
+		writer.write(0x0a);
 	}
 }
