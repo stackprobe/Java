@@ -21,7 +21,7 @@ public class ChartFile {
 
 	private void loadPrices() {
 		try {
-			String file = FileTools.combine("C:/tmp/Fx", DateToDay.toDate(_day) + "_" + _currPair + ".csv");
+			String file = FileTools.combine("C:/var/Fx", DateToDay.toDate(_day) + "_" + _currPair + ".csv");
 
 			if(FileTools.exists(file) == false) {
 				throw new Exception("File not found: " + file);
