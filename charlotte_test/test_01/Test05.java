@@ -4,6 +4,7 @@ public class Test05 {
 	public static void main(String[] args) {
 		try {
 			test01();
+			test02();
 
 			System.out.println("OK!");
 		}
@@ -31,5 +32,20 @@ public class Test05 {
 
 	private static void doStackOverflow(int prm) {
 		doStackOverflow(prm + 1);
+	}
+
+	private static void test02() {
+		Test_e eTest;
+
+		eTest = Test_e.Bloccoly;
+
+		System.out.println("" + eTest);
+	}
+
+	private static enum Test_e {
+		Broccoli,
+		Bloccoly,
+		Blockoly,
+		Blocklie,
 	}
 }
