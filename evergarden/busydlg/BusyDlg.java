@@ -51,7 +51,7 @@ public class BusyDlg implements Closeable {
 					int millis = 50;
 
 					do {
-						Runtime.getRuntime().exec("\"" + _file + "\" " + _dir.getIdent() + " 1 -1 \"\"").waitFor();
+						Runtime.getRuntime().exec("\"" + _file + "\" " + _dir.getIdent() + " 1 -1 a").waitFor();
 
 						if(millis < 200) {
 							millis++;
