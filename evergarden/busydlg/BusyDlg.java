@@ -3,6 +3,7 @@ package evergarden.busydlg;
 import java.io.Closeable;
 
 import charlotte.tools.FileTools;
+import charlotte.tools.StringTools;
 import charlotte.tools.SystemTools;
 import charlotte.tools.WorkDir;
 
@@ -11,7 +12,19 @@ public class BusyDlg implements Closeable {
 	private String _file;
 	private Thread _th;
 
-	public BusyDlg(final String message) {
+	public BusyDlg(final String message, final String title) {
+		if(StringTools.isEmpty(message)) {
+			throw new IllegalArgumentException();
+		}
+		if(StringTools.isEmpty(title)) {
+			throw new IllegalArgumentException();
+		}
+		if(StringTools.containsChar(message, StringTools.CONTROLCODE)) {
+			throw new IllegalArgumentException();
+		}
+		if(StringTools.containsChar(title, StringTools.CONTROLCODE)) {
+			throw new IllegalArgumentException();
+		}
 		try {
 			_dir = new WorkDir();
 			_file = _dir.makeSubPath("BusyDlg.exe");
@@ -26,7 +39,7 @@ public class BusyDlg implements Closeable {
 				public void run() {
 					try {
 						Runtime.getRuntime().exec(
-								"\"" + _file + "\" " + _dir.getIdent() + " 0 " + SystemTools.PID + " \"" + message + "\""
+								"\"" + _file + "\" " + _dir.getIdent() + " 0 " + SystemTools.PID + " \"" + message + "\" \"" + title + "\""
 								)
 								.waitFor();
 					}
@@ -51,7 +64,7 @@ public class BusyDlg implements Closeable {
 					int millis = 50;
 
 					do {
-						Runtime.getRuntime().exec("\"" + _file + "\" " + _dir.getIdent() + " 1 -1 a").waitFor();
+						Runtime.getRuntime().exec("\"" + _file + "\" " + _dir.getIdent() + " 1 -1 a a").waitFor();
 
 						if(millis < 200) {
 							millis++;

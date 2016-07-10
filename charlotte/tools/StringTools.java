@@ -511,6 +511,7 @@ public class StringTools {
 	public static String ASCII_SPC;
 	public static String HAN_KATAKANA;
 	public static String PUNCT;
+	public static String CONTROLCODE;
 
 	static {
 		try {
@@ -521,6 +522,7 @@ public class StringTools {
 					new String(ArrayTools.byteSq(0x3a, 0x40), CHARSET_ASCII) +
 					new String(ArrayTools.byteSq(0x5b, 0x60), CHARSET_ASCII) +
 					new String(ArrayTools.byteSq(0x7b, 0x7e), CHARSET_ASCII);
+			CONTROLCODE = new String(ArrayTools.byteSq(0x00, 0x1f), CHARSET_ASCII);
 		}
 		catch(Throwable e) {
 			e.printStackTrace();

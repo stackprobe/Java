@@ -22,12 +22,12 @@ public class Test01 {
 		try {
 			JOptionPane.showMessageDialog(
 					null,
-					"はじまるで。",
+					"開始します。",
 					"情報",
 					JOptionPane.INFORMATION_MESSAGE
 					);
 
-			bd = new BusyDlg("だいたい15秒くらい待つのやで...");
+			bd = new BusyDlg("裏で何か処理しています...", "お待ち下さい");
 
 			for(int c = 15; 0 < c; c--) {
 				System.out.println("あと " + c + " 秒...");
@@ -38,7 +38,7 @@ public class Test01 {
 
 			JOptionPane.showMessageDialog(
 					null,
-					"おわったで。",
+					"終了しました。",
 					"情報",
 					JOptionPane.INFORMATION_MESSAGE
 					);
