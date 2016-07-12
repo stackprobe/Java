@@ -7,7 +7,7 @@ import charlotte.tools.TimeData;
 public class EraDateTest {
 	public static void main(String[] args) {
 		try {
-			long te = TimeData.now().getT() + 200000000;
+			long te = TimeData.now().getTime() + 200000000;
 
 			for(long t = 0; t <= te; t += MathTools.random(50000000)) {
 				TimeData td = new TimeData(t);

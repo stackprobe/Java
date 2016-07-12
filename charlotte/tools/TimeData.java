@@ -12,12 +12,12 @@ public class TimeData {
 		_t = t;
 	}
 
-	public TimeData(int y, int m, int d, int h, int i, int s) {
-		_t = parseTime(y, m, d, h, i, s);
+	public TimeData(int y, int m, int d) {
+		_t = getTime(y, m, d, 0, 0, 0);
 	}
 
-	public TimeData(int y, int m, int d) {
-		_t = parseTime(y, m, d, 0, 0, 0);
+	public TimeData(int y, int m, int d, int h, int i, int s) {
+		_t = getTime(y, m, d, h, i, s);
 	}
 
 	public TimeData(Calendar cal) {
@@ -26,7 +26,7 @@ public class TimeData {
 
 	@SuppressWarnings("deprecation")
 	public TimeData(Date src) {
-		_t = parseTime(
+		_t = getTime(
 				src.getYear() + 1900,
 				src.getMonth() + 1,
 				src.getDate(),
@@ -36,23 +36,23 @@ public class TimeData {
 				);
 	}
 
-	public long getT() {
+	public long getTime() {
 		return _t;
 	}
 
-	public int[] getC() {
-		return timeParser(_t);
+	public int[] getTimeStamp() {
+		return getTimeStamp(_t);
 	}
 
 	/**
 	 *
 	 * @return 0-6 as Mon-Sun
 	 */
-	public int getWeekday() {
+	public int getWeekdayIndex() {
 		return (int)((_t / 86400) % 7);
 	}
 
-	private static final String[] _jWeekdays = new String[]{
+	private static final String[] _weekdays = new String[]{
 		"月",
 		"火",
 		"水",
@@ -62,33 +62,26 @@ public class TimeData {
 		"日",
 	};
 
-	public String getJWeekday() {
-		return _jWeekdays[getWeekday()];
+	public static String getWeekday(int index) {
+		return _weekdays[index];
+	}
+
+	public String getWeekday() {
+		return _weekdays[getWeekdayIndex()];
 	}
 
 	@Override
 	public String toString() {
 		try {
-			int[] c = timeParser(_t);
-
-			return String.format(
-					"%04d/%02d/%02d (%s曜日) %02d:%02d:%02d",
-					c[0],
-					c[1],
-					c[2],
-					getJWeekday(),
-					c[3],
-					c[4],
-					c[5]
-					);
+			return getString("Y/M/D (W) h:m:s");
 		}
 		catch(Throwable e) {
-			e.printStackTrace();
+			// ignore
 		}
 		return "" + _t;
 	}
 
-	private static long parseTime(int y, int m, int d, int h, int i, int s) {
+	public static long getTime(int y, int m, int d, int h, int i, int s) {
 		if(
 				y < 1 ||
 				m < 1 ||
@@ -97,7 +90,7 @@ public class TimeData {
 				i < 0 ||
 				s < 0
 				) {
-			return -1;
+			return 0;
 		}
 		m--;
 		long ly = (long)y + m / 12;
@@ -138,9 +131,9 @@ public class TimeData {
 		return t;
 	}
 
-	private static int[] timeParser(long t) {
+	public static int[] getTimeStamp(long t) {
 		if(t < 0) {
-			return new int[]{ 0, 0, 0, 0, 0, 0 };
+			return new int[]{ 1, 1, 1, 0, 0, 0 };
 		}
 		int s = (int)(t % 60);
 		t /= 60;
@@ -174,7 +167,7 @@ public class TimeData {
 		t %= 31;
 
 		if(Integer.MAX_VALUE <= ly) {
-			return new int[]{ Integer.MAX_VALUE, 99, 99, 99, 99, 99 };
+			return new int[]{ Integer.MAX_VALUE, 12, 31, 23, 59, 59 };
 		}
 		int y = (int)ly;
 		int d = (int)t + 1;
@@ -183,20 +176,20 @@ public class TimeData {
 	}
 
 	public static TimeData now() throws Exception {
-		return parseEpochTime((System.currentTimeMillis() + TimeZone.getDefault().getRawOffset()) / 1000);
+		return fromEpochTime((System.currentTimeMillis() + TimeZone.getDefault().getRawOffset()) / 1000);
 	}
 
-	public static TimeData nowUtc() throws Exception {
-		return parseEpochTime(System.currentTimeMillis() / 1000);
+	public static TimeData utc() throws Exception {
+		return fromEpochTime(System.currentTimeMillis() / 1000);
 	}
 
 	public static final TimeData EPOCH_TIME_ZERO = new TimeData(1970, 1, 1);
 
-	public static TimeData parseEpochTime(long sec) throws Exception {
-		return new TimeData(EPOCH_TIME_ZERO.getT() + sec);
+	public static TimeData fromEpochTime(long sec) throws Exception {
+		return new TimeData(EPOCH_TIME_ZERO.getTime() + sec);
 	}
 
-	public static TimeData parseISO8061(String str) throws Exception {
+	public static TimeData fromISO8061(String str) throws Exception {
 		str = StringTools.tokenize(str, "/").get(0); // ignore interval
 
 		List<String> tokens = StringTools.tokenize(str, "T");
@@ -256,10 +249,10 @@ public class TimeData {
 
 			TimeData td = new TimeData(y, 1, 4, 0, 0, 0);
 
-			td._t -= td.getWeekday() * 86400; // to W01-1
+			td._t -= td.getWeekdayIndex() * 86400; // to W01-1
 			td._t += (week * 7 + weekday) * 86400;
 
-			int[] c = td.getC();
+			int[] c = td.getTimeStamp();
 
 			y = c[0];
 			m = c[1];
@@ -330,58 +323,81 @@ public class TimeData {
 		return StringTools.replaceChar(str, StringTools.DIGIT, '9');
 	}
 
-	public static TimeData parse(String str) throws Exception {
-		{
-			List<String> tokens = StringTools.numericTokenize(str);
+	public static TimeData fromString(String str) throws Exception {
+		List<String> tokens = StringTools.numericTokenize(str);
 
-			if(tokens.size() == 6) {
-				return new TimeData(
-						Integer.parseInt(tokens.get(0)),
-						Integer.parseInt(tokens.get(1)),
-						Integer.parseInt(tokens.get(2)),
-						Integer.parseInt(tokens.get(3)),
-						Integer.parseInt(tokens.get(4)),
-						Integer.parseInt(tokens.get(5))
-						);
+		if(tokens.size() == 1) {
+			str = tokens.get(0);
+
+			if(str.length() == 8) {
+				return fromDateStamp(Integer.parseInt(str));
 			}
-			if(tokens.size() == 3) {
-				return new TimeData(
-						Integer.parseInt(tokens.get(0)),
-						Integer.parseInt(tokens.get(1)),
-						Integer.parseInt(tokens.get(2)),
-						0,
-						0,
-						0
-						);
+			if(11 <= str.length() && str.length() <= 14) {
+				return fromTimeStamp(Long.parseLong(str));
 			}
 		}
-
-		{
-			String format = getFormat(str);
-
-			if(format.equals("99999999999999")) {
-				return new TimeData(
-						Integer.parseInt(str.substring(0, 4)),
-						Integer.parseInt(str.substring(4, 6)),
-						Integer.parseInt(str.substring(6, 8)),
-						Integer.parseInt(str.substring(8, 10)),
-						Integer.parseInt(str.substring(10, 12)),
-						Integer.parseInt(str.substring(12, 14))
-						);
-			}
-			if(format.equals("99999999")) {
-				return new TimeData(
-						Integer.parseInt(str.substring(0, 4)),
-						Integer.parseInt(str.substring(4, 6)),
-						Integer.parseInt(str.substring(6, 8)),
-						0,
-						0,
-						0
-						);
-			}
+		else if(tokens.size() == 3) {
+			return new TimeData(
+					Integer.parseInt(tokens.get(0)),
+					Integer.parseInt(tokens.get(1)),
+					Integer.parseInt(tokens.get(2))
+					);
 		}
+		else if(tokens.size() == 6) {
+			return new TimeData(
+					Integer.parseInt(tokens.get(0)),
+					Integer.parseInt(tokens.get(1)),
+					Integer.parseInt(tokens.get(2)),
+					Integer.parseInt(tokens.get(3)),
+					Integer.parseInt(tokens.get(4)),
+					Integer.parseInt(tokens.get(5))
+					);
+		}
+		throw new Exception("Unknown time-data format: " + str);
+	}
 
-		throw new Exception("unknown date-time format: " + str);
+	public static TimeData fromTimeStamp(long timeStamp) {
+		return fromDateStamp(
+				(int)(timeStamp / 1000000L),
+				(int)(timeStamp % 1000000L)
+				);
+	}
+
+	public static TimeData fromDateStamp(int dateStamp) {
+		return fromDateStamp(dateStamp, 0);
+	}
+
+	public static TimeData fromTimeStamp(int[] timeStamp) {
+		return new TimeData(
+				timeStamp[0],
+				timeStamp[1],
+				timeStamp[2],
+				timeStamp[3],
+				timeStamp[4],
+				timeStamp[5]
+				);
+	}
+
+	public static TimeData fromDateStamp(int[] dateStamp) {
+		return new TimeData(
+				dateStamp[0],
+				dateStamp[1],
+				dateStamp[2]
+				);
+	}
+
+	public static TimeData fromDateStamp(int dateStamp, int dayTimeStamp) {
+		int d = dateStamp % 100;
+		dateStamp /= 100;
+		int m = dateStamp % 100;
+		int y = dateStamp / 100;
+
+		int s = dayTimeStamp % 100;
+		dayTimeStamp /= 100;
+		int i = dayTimeStamp % 100;
+		int h = dayTimeStamp / 100;
+
+		return new TimeData(y, m, d, h, i, s);
 	}
 
 	public String getString() {
@@ -389,23 +405,26 @@ public class TimeData {
 	}
 
 	public String getString(String format) {
-		String ret = format;
-		int[] c = getC();
+		int[] timeStamp = getTimeStamp();
 
-		if(9999 < c[0]) {
-			c[0] = 9999;
-			c[1] = 99;
-			c[2] = 99;
-			c[3] = 99;
-			c[4] = 99;
-			c[5] = 99;
+		if(9999 < timeStamp[0]) {
+			timeStamp[0] = 9999;
+			timeStamp[1] = 12;
+			timeStamp[2] = 31;
+			timeStamp[3] = 23;
+			timeStamp[4] = 59;
+			timeStamp[5] = 59;
 		}
-		ret = ret.replace("Y", StringTools.zPad(c[0], 4));
-		ret = ret.replace("M", StringTools.zPad(c[1], 2));
-		ret = ret.replace("D", StringTools.zPad(c[2], 2));
-		ret = ret.replace("h", StringTools.zPad(c[3], 2));
-		ret = ret.replace("m", StringTools.zPad(c[4], 2));
-		ret = ret.replace("s", StringTools.zPad(c[5], 2));
+		String weekday = TimeData.fromTimeStamp(timeStamp).getWeekday();
+		String ret = format;
+
+		ret = ret.replace("Y", StringTools.zPad(timeStamp[0], 4));
+		ret = ret.replace("M", StringTools.zPad(timeStamp[1], 2));
+		ret = ret.replace("D", StringTools.zPad(timeStamp[2], 2));
+		ret = ret.replace("h", StringTools.zPad(timeStamp[3], 2));
+		ret = ret.replace("m", StringTools.zPad(timeStamp[4], 2));
+		ret = ret.replace("s", StringTools.zPad(timeStamp[5], 2));
+		ret = ret.replace("W", weekday);
 
 		return ret;
 	}

@@ -29,7 +29,7 @@ public class XNodeTest {
 
 	private static void test01(XNode root) throws Exception {
 		if("dateAndTime".equals(root.getName())) {
-			System.out.println("dateAndTime: " + root.getValue() + " -> " + TimeData.parseISO8061(root.getValue()));
+			System.out.println("dateAndTime: " + root.getValue() + " -> " + TimeData.fromISO8061(root.getValue()));
 		}
 
 		// ----

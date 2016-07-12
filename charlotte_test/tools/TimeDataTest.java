@@ -7,7 +7,7 @@ public class TimeDataTest {
 		try {
 			System.out.println("now: " + TimeData.now());
 
-			System.out.println("2004-04-01T12:00:00+09:00: " + TimeData.parseISO8061("2004-04-01T12:00:00+09:00"));
+			System.out.println("2004-04-01T12:00:00+09:00: " + TimeData.fromISO8061("2004-04-01T12:00:00+09:00"));
 
 			test01("00010101000000");
 			test01("19990715131515");
@@ -21,7 +21,7 @@ public class TimeDataTest {
 	private static void test01(String src) throws Exception {
 		System.out.println("src: " + src);
 
-		TimeData td = TimeData.parse(src);
+		TimeData td = TimeData.fromString(src);
 		String ret = td.getString();
 
 		System.out.println("ret: " + ret);
