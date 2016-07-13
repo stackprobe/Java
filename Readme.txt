@@ -8,7 +8,7 @@ Javaで書いたコードの寄せ集めです。
 --------
 
 	Windows 7 Home Premium
-	Java 1.6.0_45
+	Java 1.8
 
 
 パッケージの説明
