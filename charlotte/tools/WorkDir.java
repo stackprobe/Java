@@ -3,15 +3,14 @@ package charlotte.tools;
 import java.io.Closeable;
 
 public class WorkDir implements Closeable {
-	private static final String COMMON_ID = "{70318661-78e8-4c62-8b31-e4666c8dca1d}";
 	private String _ident;
 	private String _dir;
 
 	public WorkDir() {
 		_ident = StringTools.getUUID();
-		_dir = FileTools.makeTempPath(COMMON_ID + "/" + _ident);
+		_dir = FileTools.makeTempPath(_ident);
 
-		FileTools.mkdirs(_dir);
+		FileTools.mkdirs(_dir); // XXX 排他
 	}
 
 	public String getIdent() {
