@@ -1,12 +1,12 @@
-package charlotteFx.graph2;
+package evergarden.fxchart.graph2;
 
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import charlotteFx.chart.Chart;
-import charlotteFx.chart.FxTime;
-import charlotteFx.chart.MovingAverage;
+import evergarden.fxchart.chart.Chart;
+import evergarden.fxchart.chart.FxTime;
+import evergarden.fxchart.chart.MovingAverage;
 
 public class Chart2 {
 	private Chart _chart;

@@ -1,10 +1,10 @@
 package charlotte.tools;
 
-public class RingList<T> {
+public class Chainring<T> {
 	private T[] _buff;
 	private int _head;
 
-	public RingList(T[] bind_buff) {
+	public Chainring(T[] bind_buff) {
 		if(bind_buff.length == 0) {
 			throw new IllegalArgumentException();
 		}

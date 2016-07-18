@@ -1,11 +1,11 @@
-package charlotteFx.chart;
+package evergarden.fxchart.chart;
 
-import charlotte.tools.RingList;
+import charlotte.tools.Chainring;
 
 public class Chart {
 	private String _currPair;
 	private static final int CACHED_DAYS = 50;
-	private RingList<ChartFile> _files = new RingList<ChartFile>(new ChartFile[CACHED_DAYS]);
+	private Chainring<ChartFile> _files = new Chainring<ChartFile>(new ChartFile[CACHED_DAYS]);
 
 	public Chart(String currPair) {
 		_currPair = currPair;

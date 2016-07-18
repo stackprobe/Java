@@ -7,12 +7,12 @@ import java.awt.LayoutManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AnchorLayout implements LayoutManager {
+public class AnchoredLayout implements LayoutManager {
 	private Container _parent;
 	private int _w;
 	private int _h;
 
-	public AnchorLayout(Container parent, int w, int h) {
+	public AnchoredLayout(Container parent, int w, int h) {
 		_parent = parent;
 		_w = w;
 		_h = h;

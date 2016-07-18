@@ -1,4 +1,4 @@
-package charlotteFx.chart;
+package evergarden.fxchart.chart;
 
 import java.util.Comparator;
 

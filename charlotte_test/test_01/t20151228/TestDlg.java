@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import charlotte.tools.FixPosLayout;
+import charlotte.tools.FixedLayout;
 import charlotte.tools.StringTools;
 
 public class TestDlg extends JDialog {
@@ -35,7 +35,7 @@ public class TestDlg extends JDialog {
 		JPanel panel = new JPanel();
 
 		{
-			FixPosLayout layout = new FixPosLayout(panel);
+			FixedLayout layout = new FixedLayout(panel);
 			panel.setLayout(layout);
 
 			final JTextField tf = new JTextField();

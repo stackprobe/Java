@@ -20,7 +20,7 @@ public class TestDialog extends JDialog {
 
 	public TestDialog() {
 		JPanel panel = new JPanel();
-		AnchorLayout layout = new AnchorLayout(panel, 1000, 1000);
+		AnchoredLayout layout = new AnchoredLayout(panel, 1000, 1000);
 		panel.setLayout(layout);
 
 		FileTreeModel fileTreeModel = new FileTreeModel("C:/");

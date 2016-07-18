@@ -1,4 +1,4 @@
-package charlotteFx.graph;
+package evergarden.fxchart.graph;
 
 import java.awt.Color;
 import java.util.ArrayList;

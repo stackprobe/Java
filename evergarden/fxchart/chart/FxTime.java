@@ -1,4 +1,4 @@
-package charlotteFx.chart;
+package evergarden.fxchart.chart;
 
 public class FxTime {
 	private static final int START_TIME = 0 * 86400 + 7 * 3600 +  0 * 60; // 月曜日(0日後) 07:00:00

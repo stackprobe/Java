@@ -1,4 +1,4 @@
-package charlotteFx.chart;
+package evergarden.fxchart.chart;
 
 public class ChartManager {
 	public static Chart AUDCHF = new Chart("AUDCHF");

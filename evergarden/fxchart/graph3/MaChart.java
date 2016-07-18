@@ -1,9 +1,9 @@
-package charlotteFx.graph3;
+package evergarden.fxchart.graph3;
 
 import java.awt.Color;
 
-import charlotteFx.chart.ChartManager;
-import charlotteFx.chart.MovingAverage;
+import evergarden.fxchart.chart.ChartManager;
+import evergarden.fxchart.chart.MovingAverage;
 
 public class MaChart extends IChart {
 	private MovingAverage _ma;

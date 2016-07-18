@@ -7,16 +7,16 @@ import java.awt.LayoutManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FixPosLayout implements LayoutManager {
+public class FixedLayout implements LayoutManager {
 	private Container _parent;
 	private int _w;
 	private int _h;
 
-	public FixPosLayout(Container parent) {
+	public FixedLayout(Container parent) {
 		_parent = parent;
 	}
 
-	public FixPosLayout(Container parent, int w, int h) {
+	public FixedLayout(Container parent, int w, int h) {
 		_parent = parent;
 		_w = w;
 		_h = h;
