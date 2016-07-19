@@ -189,6 +189,10 @@ public class TimeData {
 		return new TimeData(EPOCH_TIME_ZERO.getTime() + sec);
 	}
 
+	public long getEpochTime() {
+		return _t - EPOCH_TIME_ZERO._t;
+	}
+
 	public static TimeData fromISO8061(String str) throws Exception {
 		str = StringTools.tokenize(str, "/").get(0); // ignore interval
 

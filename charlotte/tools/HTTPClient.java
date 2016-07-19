@@ -15,8 +15,8 @@ public class HTTPClient {
 	private String _url = "http://localhost/";
 	private Map<String, String> _headerFields = new HashMap<String, String>();
 	private byte[] _body = null; // null == GET, not null == POST
-	private int _connectTimeoutMillis = 180000;//20000;
-	private int _readTimeoutMillis = 180000;//60000;
+	private int _connectTimeoutMillis = 20000;
+	private int _readTimeoutMillis = 60000;
 	private String _proxyDomain = null; // null -> no proxy
 	private int _proxyPortNo = 8080;
 	private boolean _head; // true -> HEAD, false -> GET or POST

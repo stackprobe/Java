@@ -15,7 +15,7 @@ public abstract class HTTPServer extends SockServer {
 		super(portNo);
 	}
 
-	private int _soTimeoutMillis = 180000;//60000; // 0 -> infinite
+	private int _soTimeoutMillis = 60000; // 0 -> infinite
 
 	public void setSoTimeoutMillis(int millis) {
 		_soTimeoutMillis = millis;
@@ -57,6 +57,7 @@ public abstract class HTTPServer extends SockServer {
 		private void sendPrep() {
 			resHeaderFields.put("Server", HTTPServer.class.getName());
 			resHeaderFields.put("Connection", "close");
+			resHeaderFields.remove("Transfer-Encoding"); // FIXME iruka...?
 
 			if(resBody != null) {
 				resHeaderFields.put("Content-Length", "" + resBody.length);
