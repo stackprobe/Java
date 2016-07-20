@@ -11,6 +11,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -54,6 +55,14 @@ public class FileTools {
 			close(is);
 		}
 		return fileData;
+	}
+
+	public static void writeAllLines(String file, String[] lines, String charset) throws Exception {
+		writeAllLines(file, Arrays.asList(lines), charset);
+	}
+
+	public static void writeAllLines(String file, List<String> lines, String charset) throws Exception {
+		writeAllText(file, StringTools.join("\r\n", lines) + "\r\n", charset);
 	}
 
 	public static void writeAllText(String file, String text, String charset) throws Exception {
@@ -397,6 +406,19 @@ public class FileTools {
 			path += "." + ext;
 		}
 		return path;
+	}
+
+	public static void moveFile(String rFile, String wFile) {
+		File rf = new File(rFile);
+		File wf = new File(wFile);
+
+		if(rf.exists() == false) throw null; // XXX
+		if(wf.exists()) throw null; // XXX
+
+		rf.renameTo(wf);
+
+		if(rf.exists()) throw null; // XXX
+		if(wf.exists() == false) throw null; // XXX
 	}
 
 	public static void copyFile(String rFile, String wFile) throws Exception {
