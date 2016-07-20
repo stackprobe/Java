@@ -10,7 +10,7 @@ public class WorkDir implements Closeable {
 		_ident = StringTools.getUUID();
 		_dir = FileTools.makeTempPath(_ident);
 
-		FileTools.mkdirs(_dir); // XXX 排他
+		FileTools.mkdir(_dir);
 	}
 
 	public String getIdent() {
