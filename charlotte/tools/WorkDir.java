@@ -9,7 +9,7 @@ public class WorkDir implements Closeable {
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
-				ret.close();
+				FileTools.close(ret);
 			}
 		});
 
