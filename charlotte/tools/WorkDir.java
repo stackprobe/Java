@@ -3,6 +3,19 @@ package charlotte.tools;
 import java.io.Closeable;
 
 public class WorkDir implements Closeable {
+	public static WorkDir create() {
+		final WorkDir ret = new WorkDir();
+
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				ret.close();
+			}
+		});
+
+		return ret;
+	}
+
 	private String _ident;
 	private String _dir;
 
