@@ -20,9 +20,14 @@ public class WorkDir implements Closeable {
 	private String _dir;
 
 	public WorkDir() {
-		_ident = StringTools.getUUID();
+		this(StringTools.getUUID());
+	}
+
+	public WorkDir(String ident) {
+		_ident = ident;
 		_dir = FileTools.makeTempPath(_ident);
 
+		FileTools.rm(_dir);
 		FileTools.mkdir(_dir);
 	}
 

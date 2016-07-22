@@ -132,7 +132,7 @@ public class CsvData {
 	}
 
 	public String getText() {
-		return StringTools.join("\n", getLines());
+		return StringTools.join("\r\n", getLines()) + "\r\n";
 	}
 
 	public void writeFile(String csvFile, String charset) throws Exception {

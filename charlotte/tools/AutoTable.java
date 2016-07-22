@@ -133,4 +133,21 @@ public class AutoTable<T> {
 			}
 		}
 	}
+
+	/**
+	 * clear()
+	 * -> newRow() -> addCell()...
+	 * -> newRow() -> addCell()...
+	 * -> newRow() -> addCell()...
+	 * ...
+	 * みたいな。
+	 *
+	 */
+	public void newRow() {
+		_rows.add(new ArrayList<T>());
+	}
+
+	public void addCell(T cell) {
+		set(_rows.get(_rows.size() - 1).size(), _rows.size() - 1, cell);
+	}
 }
