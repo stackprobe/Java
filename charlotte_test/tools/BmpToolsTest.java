@@ -27,13 +27,15 @@ public class BmpToolsTest {
 					(int)fontSize,
 					1000,
 					100,
-					50,
-					50,
+					-1,
+					-1,
 					1,
 					0
 					);
 
 			System.out.println(fontSize + ": " + bmp.getWidth() + ", " + bmp.getHeight());
+
+			bmp.writeToFile("C:/temp/1.png");
 		}
 	}
 }

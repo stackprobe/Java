@@ -495,6 +495,8 @@ public class Bmp {
 
 			Dot dot = (Dot)obj;
 
+			if(a == 0 && dot.a == 0) return true;
+
 			if(a != dot.a) return false;
 			if(r != dot.r) return false;
 			if(g != dot.g) return false;
@@ -568,15 +570,25 @@ public class Bmp {
 				}
 			}
 		}
+		l -= margin;
+		t -= margin;
+		r += margin;
+		b += margin;
+
+		trimCheckLW("TRIM_L: ", l, _w);
+		trimCheckLW("TRIM_T: ", t, _h);
+		trimCheckLW("TRIM_R: ", (_w - r), _w);
+		trimCheckLW("TRIM_B: ", (_h - b), _h);
+
 		int w = r - l + 1;
 		int h = b - t + 1;
 
-		l -= margin;
-		t -= margin;
-		w += margin * 2;
-		h += margin * 2;
-
 		return copy(l, t, w, h, outerDot);
+	}
+
+	private void trimCheckLW(String title, int l, int w) {
+		double rate = (double)l / w;
+		(rate < 0.1 ? System.err : System.out).println(title + l + " (" + rate + ") " + w);
 	}
 
 	public void swap(int x1, int y1, int x2, int y2) {

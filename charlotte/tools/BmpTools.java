@@ -9,13 +9,13 @@ import java.awt.image.BufferedImage;
 public class BmpTools {
 	public static Bmp getStringBmp(String str, Color backColor, Color textColor, String fontName, int fontStyle, int fontSize, int bi_w, int bi_h, int ds_l, int ds_t, int zoom, int margin) {
 		if(ds_l == -1) {
-			ds_l = bi_h / 5;
+			ds_l = fontSize + margin;
 		}
 		if(ds_t == -1) {
-			ds_t = (bi_h * 4) / 5;
+			ds_t = bi_h - fontSize - margin;
 		}
 
-		BufferedImage bi = new BufferedImage(bi_w, bi_h, BufferedImage.TYPE_3BYTE_BGR);
+		BufferedImage bi = new BufferedImage(bi_w, bi_h, BufferedImage.TYPE_4BYTE_ABGR);
 		Graphics2D g = bi.createGraphics();
 
 		g.setColor(backColor);
@@ -28,9 +28,7 @@ public class BmpTools {
 
 		Bmp bmp = Bmp.getBmp(bi);
 		bmp = bmp.expand(bmp.getWidth() / zoom, bmp.getHeight() / zoom);
-		System.out.println("bmpSize_1: " + bmp.getWidth() + ", " + bmp.getHeight()); // test
-		bmp = bmp.trim(new Bmp.Dot(255, backColor.getRed(), backColor.getGreen(), backColor.getBlue()), margin);
-		System.out.println("bmpSize_2: " + bmp.getWidth() + ", " + bmp.getHeight()); // test
+		bmp = bmp.trim(new Bmp.Dot(backColor), margin);
 		return bmp;
 	}
 }
