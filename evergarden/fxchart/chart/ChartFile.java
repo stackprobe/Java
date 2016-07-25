@@ -24,7 +24,11 @@ public class ChartFile {
 			String file = FileTools.combine("C:/var/Fx", DateToDay.toDate(_day) + "_" + _currPair + ".csv");
 
 			if(FileTools.exists(file) == false) {
-				throw new Exception("File not found: " + file);
+				file = Snapshot.getFile(DateToDay.toDate(_day) + "_" + _currPair + ".csv");
+
+				if(FileTools.exists(file) == false) {
+					throw new Exception("File not found: " + _currPair + " @ " + DateToDay.toDate(_day));
+				}
 			}
 			CsvData csv = new CsvData();
 			csv.readFile(file);
