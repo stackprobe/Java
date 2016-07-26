@@ -1,6 +1,7 @@
 package charlotte.tools;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class AutoTable<T> {
@@ -67,12 +68,6 @@ public class AutoTable<T> {
 		_h = 0;
 	}
 
-	private void capture(AutoTable<T> target) {
-		_rows = target._rows;
-		_w = target._w;
-		_h = target._h;
-	}
-
 	public void twist() {
 		AutoTable<T> dest = new AutoTable<T>();
 
@@ -82,6 +77,12 @@ public class AutoTable<T> {
 			}
 		}
 		capture(dest);
+	}
+
+	private void capture(AutoTable<T> target) {
+		_rows = target._rows;
+		_w = target._w;
+		_h = target._h;
 	}
 
 	public void mirror() {
@@ -97,31 +98,31 @@ public class AutoTable<T> {
 		ArrayTools.reverse(_rows);
 	}
 
-	public void rotate_ra1() {
+	public void rotate90() {
 		reverse();
 		twist();
 	}
 
-	public void rotate_ra2() {
+	public void rotate180() {
 		mirror();
 		reverse();
 	}
 
-	public void rotate_ra3() {
+	public void rotate270() {
 		twist();
 		reverse();
 	}
 
-	public void rotate_ccw_ra1() {
-		rotate_ra3();
+	public void rotateH90() {
+		rotate270();
 	}
 
-	public void rotate_ccw_ra2() {
-		rotate_ra2();
+	public void rotateH180() {
+		rotate180();
 	}
 
-	public void rotate_ccw_ra3() {
-		rotate_ra1();
+	public void rotateH270() {
+		rotate90();
 	}
 
 	public void padding(T pad) {
@@ -134,20 +135,109 @@ public class AutoTable<T> {
 		}
 	}
 
+	// ----
+
 	/**
 	 * clear()
 	 * -> newRow() -> addCell()...
 	 * -> newRow() -> addCell()...
 	 * -> newRow() -> addCell()...
 	 * ...
-	 * みたいな。
-	 *
 	 */
+
 	public void newRow() {
 		_rows.add(new ArrayList<T>());
 	}
 
 	public void addCell(T cell) {
 		set(_rows.get(_rows.size() - 1).size(), _rows.size() - 1, cell);
+	}
+
+	// ----
+
+	public void addRow(T[] row) {
+		addRow(Arrays.asList(row));
+	}
+
+	public void addRow(List<T> row) {
+		newRow();
+
+		for(T cell : row) {
+			addCell(cell);
+		}
+	}
+
+	public void addRows(T[][] rows) {
+		for(T[] row : rows) {
+			addRow(row);
+		}
+	}
+
+	public void addRows(List<List<T>> rows) {
+		for(List<T> row : rows) {
+			addRow(row);
+		}
+	}
+
+	public List<T> getRow(int y) {
+		List<T> ret = new ArrayList<T>();
+
+		for(int x = 0; x < _w; x++) {
+			ret.add(get(x, y));
+		}
+		return ret;
+	}
+
+	public List<List<T>> getRows() {
+		List<List<T>> ret = new ArrayList<List<T>>();
+
+		for(int y = 0; y < _h; y++) {
+			ret.add(getRow(y));
+		}
+		return ret;
+	}
+
+	public List<T> getColumn(int x) {
+		List<T> ret = new ArrayList<T>();
+
+		for(int y = 0; y < _h; y++) {
+			ret.add(get(x, y));
+		}
+		return ret;
+	}
+
+	public List<List<T>> getColumns() {
+		List<List<T>> ret = new ArrayList<List<T>>();
+
+		for(int x = 0; x < _w; x++) {
+			ret.add(getColumn(x));
+		}
+		return ret;
+	}
+
+	public static <T> AutoTable<T> create(T[][] rows) {
+		AutoTable<T> ret = new AutoTable<T>();
+		ret.addRows(rows);
+		return ret;
+	}
+
+	public static <T> AutoTable<T> create(T[][] rows, T pad) {
+		AutoTable<T> ret = new AutoTable<T>();
+		ret.addRows(rows);
+		ret.padding(pad);
+		return ret;
+	}
+
+	public static <T> AutoTable<T> create(List<List<T>> rows) {
+		AutoTable<T> ret = new AutoTable<T>();
+		ret.addRows(rows);
+		return ret;
+	}
+
+	public static <T> AutoTable<T> create(List<List<T>> rows, T pad) {
+		AutoTable<T> ret = new AutoTable<T>();
+		ret.addRows(rows);
+		ret.padding(pad);
+		return ret;
 	}
 }

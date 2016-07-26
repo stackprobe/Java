@@ -19,8 +19,12 @@ public class FileTools {
 	public static List<String> readAllLines(String file, String charset) throws Exception {
 		String text = readAllText(file, charset);
 		text = text.replace("\r", "");
-		text = StringTools.removeEndsWith(text, "\n");
-		return StringTools.tokenize(text, "\n");
+		List<String> lines = StringTools.tokenize(text, "\n");
+
+		if(1 <= lines.size() && lines.get(lines.size() - 1).length() == 0) {
+			lines.remove(lines.size() - 1);
+		}
+		return lines;
 	}
 
 	public static String readAllText(String file, String charset) throws Exception {

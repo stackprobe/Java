@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import charlotte.tools.ArrayTools;
+import charlotte.tools.IntTools;
 import charlotte.tools.MathTools;
 import charlotte.tools.SortedList;
 
@@ -20,14 +21,16 @@ public class SortedListTest {
 
 	private static void main2() throws Exception {
 		for(int c = 0; c < 10000; c++) {
+			test01(0, 10, MathTools.random(2000));
+			test01(0, 100, MathTools.random(2000));
 			test01(0, 1000, MathTools.random(2000));
 		}
 		System.out.println("OK!");
 	}
 
 	private static void test01(int minval, int maxval, int count) throws Exception {
-		SortedList<Integer> sl = new SortedList<Integer>(new IntComp());
-		P_SortedList<Integer> psl = new P_SortedList<Integer>(new IntComp());
+		SortedList<Integer> sl = new SortedList<Integer>(IntTools.comp);
+		P_SortedList<Integer> psl = new P_SortedList<Integer>(IntTools.comp);
 
 		for(int c = 0; c < count; c++) {
 			int value = MathTools.random(minval, maxval);
@@ -62,12 +65,12 @@ public class SortedListTest {
 			ArrayTools.sort(list, comp);
 
 			return new int[] {
-					getL(ferret),
-					getH(ferret)
+					getLowest(ferret),
+					getHighest(ferret)
 			};
 		}
 
-		private int getL(T ferret) {
+		private int getLowest(T ferret) {
 			int index;
 
 			for(index = 0;
@@ -79,7 +82,7 @@ public class SortedListTest {
 			return index - 1;
 		}
 
-		private int getH(T ferret) {
+		private int getHighest(T ferret) {
 			int index;
 
 			for(index = list.size() - 1;
@@ -89,13 +92,6 @@ public class SortedListTest {
 					) {
 			}
 			return index + 1;
-		}
-	}
-
-	private static class IntComp implements Comparator<Integer> {
-		@Override
-		public int compare(Integer a, Integer b) {
-			return a.intValue() - b.intValue();
 		}
 	}
 }

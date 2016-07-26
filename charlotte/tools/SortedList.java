@@ -122,12 +122,10 @@ public class SortedList<T> {
 			int ret = _comp.compare(get(m), ferret);
 
 			if(ret == 0) {
-				final Comparator<T> f_comp = _comp;
-
 				l = getBorder(l, m, ferret, new Comparator<T>() {
 					@Override
 					public int compare(T a, T b) {
-						return f_comp.compare(a, b) == 0 ? 1 : 0;
+						return _comp.compare(a, b) == 0 ? 1 : 0;
 					}
 				})[0];
 				r = getBorder(m, r, ferret, _comp)[1];

@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CsvData {
@@ -114,19 +115,31 @@ public class CsvData {
 		_text = null;
 	}
 
+	public String getLine(String[] row) {
+		return getLine(Arrays.asList(row));
+	}
+
+	public String getLine(List<String> row) {
+		List<String> cells = new ArrayList<String>();
+
+		for(String cell : row) {
+			if(StringTools.containsChar(cell, "\r\n\"" + _delimiter)) {
+				cell = "\"" + cell.replace("\"", "\"\"") + "\"";
+			}
+			cells.add(cell);
+		}
+		return StringTools.join("" + _delimiter, cells);
+	}
+
+	public String getLine(int rowidx) {
+		return getLine(_rows.get(rowidx));
+	}
+
 	public List<String> getLines() {
 		List<String> lines = new ArrayList<String>();
 
-		for(List<String> row : _rows) {
-			List<String> cells = new ArrayList<String>();
-
-			for(String cell : row) {
-				if(StringTools.containsChar(cell, "\r\n\"" + _delimiter)) {
-					cell = "\"" + cell.replace("\"", "\"\"") + "\"";
-				}
-				cells.add(cell);
-			}
-			lines.add(StringTools.join("" + _delimiter, cells));
+		for(int rowidx = 0; rowidx < _rows.size(); rowidx++) {
+			lines.add(getLine(rowidx));
 		}
 		return lines;
 	}
@@ -189,31 +202,12 @@ public class CsvData {
 	}
 
 	public AutoTable<String> getTable() {
-		AutoTable<String> table = new AutoTable<String>();
-
-		for(int rowidx = 0; rowidx < _rows.size(); rowidx++) {
-			for(int colidx = 0; colidx < _rows.get(rowidx).size(); colidx++) {
-				table.set(colidx, rowidx, _rows.get(rowidx).get(colidx));
-			}
-		}
-		return table;
+		return AutoTable.<String>create(_rows);
 	}
 
 	public void setTable(AutoTable<String> table) {
-		_rows.clear();
-
-		for(int rowidx = 0; rowidx < table.getHeight(); rowidx++) {
-			_rows.add(new ArrayList<String>());
-
-			for(int colidx = 0; colidx < table.getWidth(); colidx++) {
-				String cell = table.get(colidx, rowidx);
-
-				if(cell == null) {
-					cell = "";
-				}
-				_rows.get(rowidx).add(cell);
-			}
-		}
+		table.padding(""); // 2bs
+		_rows = table.getRows();
 	}
 
 	public static class Stream {
@@ -392,6 +386,8 @@ public class CsvData {
 				_w = null;
 			}
 		}
+
+		// - - -
 
 		private List<String> _row = new ArrayList<String>();
 
