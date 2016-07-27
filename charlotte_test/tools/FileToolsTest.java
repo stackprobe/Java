@@ -65,24 +65,23 @@ public class FileToolsTest {
 	}
 
 	private static void test03_b(String dir) throws Exception {
-		System.out.println("[" + dir + "] -> " + FileTools.getDiskFree(dir) + ", " + test03_b_cmdDir_getDiskFree(dir) + ", vsn=" + test03_b_cmdDir_getVolumeSericalNumer(dir));
+		System.out.println("[" + dir + "] -> " + FileTools.getDiskFree(dir));
+		test03_b2(dir, false);
+//		test03_b2(dir, true); // C:/配下全検索とか..
 	}
 
-	private static String test03_b_cmdDir_getDiskFree(String dir) {
-		try {
-			return "" +FileTools.cmdDir_getDiskFree(dir);
-		}
-		catch(Throwable e) {
-			return e.getMessage();
-		}
-	}
+	private static void test03_b2(String dir, boolean subDirFlag) throws Exception {
+		FileTools.CmdDirHeadTail ret = FileTools.cmdDir_getHeadTail(dir, subDirFlag);
 
-	private static String test03_b_cmdDir_getVolumeSericalNumer(String dir) {
-		try {
-			return FileTools.cmdDir_getVolumeSericalNumber(dir);
-		}
-		catch(Throwable e) {
-			return e.getMessage();
-		}
+		System.out.println("{");
+		System.out.println("subDirFlag: " + subDirFlag);
+		System.out.println("driveChr: " + ret.driveChr);
+		System.out.println("volumeLabel: " + ret.volumeLabel);
+		System.out.println("vsn: " + ret.vsn);
+		System.out.println("fileCount: " + ret.fileCount);
+		System.out.println("totalFileSize: " + ret.totalFileSize);
+		System.out.println("dirCount: " + ret.dirCount);
+		System.out.println("diskFree: " + ret.diskFree);
+		System.out.println("}");
 	}
 }

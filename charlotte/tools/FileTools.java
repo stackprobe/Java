@@ -607,154 +607,110 @@ public class FileTools {
 		return new File(dir).getFreeSpace();
 	}
 
-	public static long cmdDir_getDiskFree(String dir) throws Exception {
-		return cmdDir_info(dir, false, false).diskFree;
-	}
-
-	public static String cmdDir_getVolumeSericalNumber(String dir) throws Exception {
-		return cmdDir_info(dir, false, false).volmeSericalNumber;
-	}
-
-	public static long cmdDir_getFileCount(String dir, boolean subDirFlag) throws Exception {
-		return cmdDir_info(dir, true, subDirFlag).fileCount;
-	}
-
-	public static long cmdDir_getTotalFileSize(String dir, boolean subDirFlag) throws Exception {
-		return cmdDir_info(dir, false, subDirFlag).totalFileSize;
-	}
-
-	public static long cmdDir_getDirCount(String dir, boolean subDirFlag) throws Exception {
-		return cmdDir_info(dir, false, subDirFlag).dirCount;
-	}
-
-	public static class CmdDirInfo {
-		public String volmeSericalNumber;
+	public static class CmdDirHeadTail {
+		public char driveChr;
+		public String volumeLabel;
+		public String vsn;
 		public long fileCount;
 		public long totalFileSize;
 		public long dirCount;
 		public long diskFree;
 	}
 
-	public static CmdDirInfo cmdDir_info(String dir, boolean fileFlag, boolean subDirFlag) throws Exception {
+	public static CmdDirHeadTail cmdDir_getHeadTail(String dir, boolean subDirFlag) throws Exception {
+		CmdDirHeadTail ret = cmdDir_getHeadTail(dir, subDirFlag, true);
+		CmdDirHeadTail ret2 = cmdDir_getHeadTail(dir, subDirFlag, false);
+
+		ret.dirCount = ret2.dirCount;
+		ret.diskFree = ret2.diskFree;
+
+		return ret;
+	}
+
+	public static CmdDirHeadTail cmdDir_getHeadTail(String dir, boolean subDirFlag, boolean fileFlag) throws Exception {
+		CmdDirHeadTail ret = new CmdDirHeadTail();
+
 		dir = dir.replace('/', '\\');
 
 		String batFile = null;
 		String outFile = null;
-		String tmpFile = null;
-
+		String outFile2 = null;
 		try {
 			batFile = makeTempPath() + ".bat";
 			outFile = makeTempPath();
-			tmpFile = makeTempPath();
-			FileTools.writeAllText(
+			outFile2 = makeTempPath();
+
+			writeAllLines(
 					batFile,
-					"SET DIRCMD=\r\n" +
-					"DIR \"" + dir + "\" /A" + (fileFlag ? "-" : "") + "D " + (subDirFlag ? "/S " : "") + "> \"" + outFile + "\"",
+					new String[] {
+							"SET DIRCMD=",
+							"DIR \"" + dir + "\" /A" + (fileFlag ? "-" : "") + "D " + (subDirFlag ? "/S " : "") + "> \"" + outFile + "\"",
+					},
 					StringTools.CHARSET_SJIS
 					);
 			Runtime.getRuntime().exec("CMD /C \"" + batFile + "\"").waitFor();
-			writeHead(outFile, tmpFile, 1000L);
 
-			CmdDirInfo ret = new CmdDirInfo();
+			if(FileTools.getFileSize(outFile) != 0L) {
+				writeHead(outFile, outFile2, 1000L);
+				toTail(outFile, 1000L);
 
-			{
-				List<String> lines = readAllLines(outFile, StringTools.CHARSET_SJIS);
+				{
+					List<String> lines = readAllLines(outFile2, StringTools.CHARSET_SJIS);
+					String line1 = lines.get(0);
+					String line2 = lines.get(1);
+					List<String> tokens1 = StringTools.tokenize(line1, " ", false, true);
+					List<String> tokens2 = StringTools.tokenize(line2, " ", false, true);
 
-				if(lines.size() < 2) {
-					throw new Exception("DIR stdout format error.1.1.1");
-				}
-				//String line1 = lines.get(0);
-				String line2 = lines.get(1);
-				//List<String> tokens1 = StringTools.tokenize(line1, " ", false, true);
-				List<String> tokens2 = StringTools.tokenize(line2, " ", false, true);
+					ret.driveChr = tokens1.get(1).charAt(0);
 
-				if(tokens2.size() != 4) {
-					throw new Exception("DIR stdout format error.1.2.1");
-				}
+					{
+						int labelha = line1.indexOf("ラベルは");
 
-				if(tokens2.get(0).equals("ボリューム") == false) {
-					throw new Exception("DIR stdout format error.1.3.1");
-				}
-				if(tokens2.get(1).equals("シリアル番号は") == false) {
-					throw new Exception("DIR stdout format error.1.3.2");
-				}
-				if(tokens2.get(3).equals("です") == false) {
-					throw new Exception("DIR stdout format error.1.3.3");
+						if(labelha != -1) {
+							ret.volumeLabel = line1.substring(labelha + 5, line1.length() - 3);
+						}
+					}
+
+					ret.vsn = tokens2.get(2).replace("-", "").toLowerCase();
 				}
 
-				String vsn = tokens2.get(2);
-				vsn = StringTools.remove(vsn, 4);
-				vsn = vsn.toLowerCase();
-				String vsnFmt = vsn;
-				vsnFmt = StringTools.replaceChar(vsnFmt, StringTools.hexadecimal, '9');
+				{
+					List<String> lines = readAllLines(outFile, StringTools.CHARSET_SJIS);
+					String line2 = lines.get(lines.size() - 1);
 
-				if("99999999".equals(vsnFmt) == false) {
-					throw new Exception("DIR stdout format error.1.4.1");
+					if(line2.length() != 0) {
+						String line1 = lines.get(lines.size() - 2);
+						List<String> tokens1 = StringTools.tokenize(line1, " ", false, true);
+						List<String> tokens2 = StringTools.tokenize(line2, " ", false, true);
+
+						String t1 = tokens1.get(0);
+						String t2 = tokens1.get(2);
+						String t3 = tokens2.get(0);
+						String t4 = tokens2.get(2);
+
+						t1 = t1.replace(",", "");
+						t2 = t2.replace(",", "");
+						t3 = t3.replace(",", "");
+						t4 = t4.replace(",", "");
+
+						long v1 = Long.parseLong(t1);
+						long v2 = Long.parseLong(t2);
+						long v3 = Long.parseLong(t3);
+						long v4 = Long.parseLong(t4);
+
+						ret.fileCount = v1;
+						ret.totalFileSize = v2;
+						ret.dirCount = v3;
+						ret.diskFree = v4;
+					}
 				}
-
-				ret.volmeSericalNumber = vsn;
 			}
-
-			toTail(outFile, 1000L); // XXX サイズ適当
-
-			{
-				List<String> lines = readAllLines(outFile, StringTools.CHARSET_SJIS);
-
-				if(lines.size() < 2) {
-					throw new Exception("DIR stdout format error.2.1.1");
-				}
-				String line1 = lines.get(lines.size() - 2);
-				String line2 = lines.get(lines.size() - 1);
-				List<String> tokens1 = StringTools.tokenize(line1, " ", false, true);
-				List<String> tokens2 = StringTools.tokenize(line2, " ", false, true);
-
-				if(tokens1.size() != 4) {
-					throw new Exception("DIR stdout format error.2.2.1");
-				}
-				if(tokens2.size() != 4) {
-					throw new Exception("DIR stdout format error.2.2.2");
-				}
-
-				if(tokens1.get(1).equals("個のファイル") == false) {
-					throw new Exception("DIR stdout format error.2.3.1");
-				}
-				if(tokens1.get(3).equals("バイト") == false) {
-					throw new Exception("DIR stdout format error.2.3.2");
-				}
-
-				if(tokens2.get(1).equals("個のディレクトリ") == false) {
-					throw new Exception("DIR stdout format error.2.3.3");
-				}
-				if(tokens2.get(3).equals("バイトの空き領域") == false) {
-					throw new Exception("DIR stdout format error.2.3.4");
-				}
-
-				String token1 = tokens1.get(0);
-				String token2 = tokens1.get(2);
-				String token3 = tokens2.get(0);
-				String token4 = tokens2.get(2);
-
-				token1 = token1.replace(",", "");
-				token2 = token2.replace(",", "");
-				token3 = token3.replace(",", "");
-				token4 = token4.replace(",", "");
-
-				ret.fileCount = Long.parseLong(token1);
-				ret.totalFileSize =Long.parseLong(token2);
-				ret.dirCount =Long.parseLong(token3);
-				ret.diskFree =Long.parseLong(token4);
-			}
-
-			return ret;
 		}
 		finally {
 			del(batFile);
-			batFile = null;
 			del(outFile);
-			outFile = null;
-			del(tmpFile);
-			tmpFile = null;
 		}
+		return ret;
 	}
 
 	public static String readLine(InputStreamReader reader) throws Exception {
