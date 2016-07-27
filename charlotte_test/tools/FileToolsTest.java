@@ -61,9 +61,28 @@ public class FileToolsTest {
 		test03_b("//no-exist-server/Projects");
 		test03_b("\\\\no-exist-server\\Projects");
 		test03_b("*invalid-path*");
+		test03_b("D:/");
 	}
 
 	private static void test03_b(String dir) throws Exception {
-		System.out.println("[" + dir + "] -> " + FileTools.getDiskFree(dir));
+		System.out.println("[" + dir + "] -> " + FileTools.getDiskFree(dir) + ", " + test03_b_cmdDir_getDiskFree(dir) + ", vsn=" + test03_b_cmdDir_getVolumeSericalNumer(dir));
+	}
+
+	private static String test03_b_cmdDir_getDiskFree(String dir) {
+		try {
+			return "" +FileTools.cmdDir_getDiskFree(dir);
+		}
+		catch(Throwable e) {
+			return e.getMessage();
+		}
+	}
+
+	private static String test03_b_cmdDir_getVolumeSericalNumer(String dir) {
+		try {
+			return FileTools.cmdDir_getVolumeSericalNumber(dir);
+		}
+		catch(Throwable e) {
+			return e.getMessage();
+		}
 	}
 }

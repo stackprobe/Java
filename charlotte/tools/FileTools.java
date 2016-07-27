@@ -154,7 +154,7 @@ public class FileTools {
 			new File(path).delete();
 		}
 		catch(Throwable e) {
-			e.printStackTrace();
+			// ignore e
 		}
 	}
 
@@ -163,7 +163,7 @@ public class FileTools {
 			f.delete();
 		}
 		catch(Throwable e) {
-			e.printStackTrace();
+			// ignore e
 		}
 	}
 
@@ -328,11 +328,7 @@ public class FileTools {
 
 	public static void writeLine(OutputStream os, String line, String charset) throws Exception {
 		os.write(line.getBytes(charset));
-
-		// XXX charset == Utf16 とかアウト
-
-		os.write(0x0d);
-		os.write(0x0a);
+		os.write("\r\n".getBytes(charset));
 	}
 
 	public static String getLocal(String path) {
@@ -607,70 +603,157 @@ public class FileTools {
 		return new File(file).length();
 	}
 
-	//*
-	public static long getDiskFree(String dir) throws Exception {
+	public static long getDiskFree(String dir) {
 		return new File(dir).getFreeSpace();
 	}
-	/*/
-	public static long getDiskFree(String dir) throws Exception {
-		return tailOfDirCmd(dir)[3];
-	}
-	//*/
 
-	public static long[] tailOfDirCmd(String dir) throws Exception {
+	public static long cmdDir_getDiskFree(String dir) throws Exception {
+		return cmdDir_info(dir, false, false).diskFree;
+	}
+
+	public static String cmdDir_getVolumeSericalNumber(String dir) throws Exception {
+		return cmdDir_info(dir, false, false).volmeSericalNumber;
+	}
+
+	public static long cmdDir_getFileCount(String dir, boolean subDirFlag) throws Exception {
+		return cmdDir_info(dir, true, subDirFlag).fileCount;
+	}
+
+	public static long cmdDir_getTotalFileSize(String dir, boolean subDirFlag) throws Exception {
+		return cmdDir_info(dir, false, subDirFlag).totalFileSize;
+	}
+
+	public static long cmdDir_getDirCount(String dir, boolean subDirFlag) throws Exception {
+		return cmdDir_info(dir, false, subDirFlag).dirCount;
+	}
+
+	public static class CmdDirInfo {
+		public String volmeSericalNumber;
+		public long fileCount;
+		public long totalFileSize;
+		public long dirCount;
+		public long diskFree;
+	}
+
+	public static CmdDirInfo cmdDir_info(String dir, boolean fileFlag, boolean subDirFlag) throws Exception {
 		dir = dir.replace('/', '\\');
 
 		String batFile = null;
 		String outFile = null;
+		String tmpFile = null;
 
 		try {
 			batFile = makeTempPath() + ".bat";
 			outFile = makeTempPath();
-			FileTools.writeAllText(batFile, "DIR \"" + dir + "\" > \"" + outFile + "\"", StringTools.CHARSET_SJIS);
+			tmpFile = makeTempPath();
+			FileTools.writeAllText(
+					batFile,
+					"SET DIRCMD=\r\n" +
+					"DIR \"" + dir + "\" /A" + (fileFlag ? "-" : "") + "D " + (subDirFlag ? "/S " : "") + "> \"" + outFile + "\"",
+					StringTools.CHARSET_SJIS
+					);
 			Runtime.getRuntime().exec("CMD /C \"" + batFile + "\"").waitFor();
-			List<String> lines = readAllLines(outFile, StringTools.CHARSET_SJIS);
+			writeHead(outFile, tmpFile, 1000L);
 
-			if(lines.size() < 2) {
-				throw new RuntimeException("DIR stdout format error");
-			}
-			String line1 = lines.get(lines.size() - 2);
-			String line2 = lines.get(lines.size() - 1);
-			List<String> tokens1 = StringTools.tokenize(line1, " ", false, true);
-			List<String> tokens2 = StringTools.tokenize(line2, " ", false, true);
+			CmdDirInfo ret = new CmdDirInfo();
 
-			if(tokens1.size() != 4) {
-				throw new RuntimeException("DIR stdout format error");
-			}
-			if(tokens2.size() != 4) {
-				throw new RuntimeException("DIR stdout format error");
+			{
+				List<String> lines = readAllLines(outFile, StringTools.CHARSET_SJIS);
+
+				if(lines.size() < 2) {
+					throw new Exception("DIR stdout format error.1.1.1");
+				}
+				//String line1 = lines.get(0);
+				String line2 = lines.get(1);
+				//List<String> tokens1 = StringTools.tokenize(line1, " ", false, true);
+				List<String> tokens2 = StringTools.tokenize(line2, " ", false, true);
+
+				if(tokens2.size() != 4) {
+					throw new Exception("DIR stdout format error.1.2.1");
+				}
+
+				if(tokens2.get(0).equals("ボリューム") == false) {
+					throw new Exception("DIR stdout format error.1.3.1");
+				}
+				if(tokens2.get(1).equals("シリアル番号は") == false) {
+					throw new Exception("DIR stdout format error.1.3.2");
+				}
+				if(tokens2.get(3).equals("です") == false) {
+					throw new Exception("DIR stdout format error.1.3.3");
+				}
+
+				String vsn = tokens2.get(2);
+				vsn = StringTools.remove(vsn, 4);
+				vsn = vsn.toLowerCase();
+				String vsnFmt = vsn;
+				vsnFmt = StringTools.replaceChar(vsnFmt, StringTools.hexadecimal, '9');
+
+				if("99999999".equals(vsnFmt) == false) {
+					throw new Exception("DIR stdout format error.1.4.1");
+				}
+
+				ret.volmeSericalNumber = vsn;
 			}
 
-			if(tokens1.get(1).equals("個のファイル") == false) {
-				throw new RuntimeException("DIR stdout format error");
-			}
-			if(tokens1.get(3).equals("バイト") == false) {
-				throw new RuntimeException("DIR stdout format error");
+			toTail(outFile, 1000L); // XXX サイズ適当
+
+			{
+				List<String> lines = readAllLines(outFile, StringTools.CHARSET_SJIS);
+
+				if(lines.size() < 2) {
+					throw new Exception("DIR stdout format error.2.1.1");
+				}
+				String line1 = lines.get(lines.size() - 2);
+				String line2 = lines.get(lines.size() - 1);
+				List<String> tokens1 = StringTools.tokenize(line1, " ", false, true);
+				List<String> tokens2 = StringTools.tokenize(line2, " ", false, true);
+
+				if(tokens1.size() != 4) {
+					throw new Exception("DIR stdout format error.2.2.1");
+				}
+				if(tokens2.size() != 4) {
+					throw new Exception("DIR stdout format error.2.2.2");
+				}
+
+				if(tokens1.get(1).equals("個のファイル") == false) {
+					throw new Exception("DIR stdout format error.2.3.1");
+				}
+				if(tokens1.get(3).equals("バイト") == false) {
+					throw new Exception("DIR stdout format error.2.3.2");
+				}
+
+				if(tokens2.get(1).equals("個のディレクトリ") == false) {
+					throw new Exception("DIR stdout format error.2.3.3");
+				}
+				if(tokens2.get(3).equals("バイトの空き領域") == false) {
+					throw new Exception("DIR stdout format error.2.3.4");
+				}
+
+				String token1 = tokens1.get(0);
+				String token2 = tokens1.get(2);
+				String token3 = tokens2.get(0);
+				String token4 = tokens2.get(2);
+
+				token1 = token1.replace(",", "");
+				token2 = token2.replace(",", "");
+				token3 = token3.replace(",", "");
+				token4 = token4.replace(",", "");
+
+				ret.fileCount = Long.parseLong(token1);
+				ret.totalFileSize =Long.parseLong(token2);
+				ret.dirCount =Long.parseLong(token3);
+				ret.diskFree =Long.parseLong(token4);
 			}
 
-			if(tokens2.get(1).equals("個のディレクトリ") == false) {
-				throw new RuntimeException("DIR stdout format error");
-			}
-			if(tokens2.get(3).equals("バイトの空き領域") == false) {
-				throw new RuntimeException("DIR stdout format error");
-			}
-
-			return new long[] {
-					Long.parseLong(tokens1.get(0).replace(",", "")),
-					Long.parseLong(tokens1.get(2).replace(",", "")),
-					Long.parseLong(tokens2.get(0).replace(",", "")),
-					Long.parseLong(tokens2.get(2).replace(",", "")),
-			};
+			return ret;
 		}
 		finally {
 			del(batFile);
 			batFile = null;
 			del(outFile);
 			outFile = null;
+			del(tmpFile);
+			tmpFile = null;
 		}
 	}
 
@@ -701,5 +784,68 @@ public class FileTools {
 		writer.write(line);
 		writer.write(0x0d);
 		writer.write(0x0a);
+	}
+
+	public static void toTail(String rwFile, long tailSize) throws Exception {
+		String midFile = makeTempPath();
+		try {
+			writeTail(rwFile, midFile, tailSize);
+			copyFile(midFile, rwFile);
+		}
+		finally {
+			del(midFile);
+		}
+	}
+
+	private static void writeHead(String rFile, String wFile, long headSize) throws Exception {
+		long size = getFileSize(rFile);
+
+		if(headSize < size) {
+			writePart(rFile, wFile, 0, headSize);
+		}
+		else {
+			copyFile(rFile, wFile);
+		}
+	}
+
+	private static void writeTail(String rFile, String wFile, long tailSize) throws Exception {
+		long size = getFileSize(rFile);
+
+		if(tailSize < size) {
+			writePart(rFile, wFile, size - tailSize, tailSize);
+		}
+		else {
+			copyFile(rFile, wFile);
+		}
+	}
+
+	private static void writePart(String rFile, String wFile, long startPos, long size) throws Exception {
+		writePart(rFile, wFile, startPos, size, 1000000); // 1 MB
+	}
+
+	private static void writePart(String rFile, String wFile, long startPos, long size, int buffSize) throws Exception {
+		byte[] buff = new byte[buffSize];
+
+		FileInputStream fis = null;
+		FileOutputStream fos = null;
+		try {
+			fis = new FileInputStream(rFile);
+			fis.skip(startPos);
+			fos = new FileOutputStream(wFile);
+
+			for(long count = 0; count < size; ) {
+				int readSize = (int)Math.min((long)buff.length, size - count);
+
+				if(fis.read(buff, 0, readSize) != readSize) {
+					throw new Exception("read error");
+				}
+				fos.write(buff, 0, readSize);
+				count += readSize;
+			}
+		}
+		finally {
+			FileTools.close(fis);
+			FileTools.close(fos);
+		}
 	}
 }
