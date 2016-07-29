@@ -1,6 +1,7 @@
 package charlotte.tools;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -35,5 +36,23 @@ public class MathTools {
 				random(256),
 				random(256)
 				);
+	}
+
+	public static <T> List<T> randomSubList(List<T> src) {
+		return randomSubList(src, MathTools.random(0, src.size()));
+	}
+
+	public static <T> List<T> randomSubList(List<T> src, int count) {
+		List<T> dest = new ArrayList<T>();
+
+		src = ArrayTools.copy(src);
+
+		while(dest.size() < count) {
+			int index = random(src.size());
+
+			dest.add(src.get(index));
+			ArrayTools.fastRemove(src, index);
+		}
+		return dest;
 	}
 }

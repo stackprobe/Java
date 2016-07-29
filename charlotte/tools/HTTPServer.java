@@ -180,15 +180,43 @@ public abstract class HTTPServer extends SockServer {
 	}
 
 	public static String encodeUrl(String str, String charset) throws Exception {
-		StringBuffer buff = new StringBuffer();
+		ByteBuffer buff = new ByteBuffer();
 
 		for(byte chr : str.getBytes(charset)) {
-			int val = chr & 0xff;
+			if(isUnencodeChar(chr)) {
+				buff.add(chr);
+			}
+			else {
+				int val = chr & 0xff;
 
-			buff.append('%');
-			buff.append(StringTools.hexadecimal.charAt(val / 16));
-			buff.append(StringTools.hexadecimal.charAt(val % 16));
+				buff.add((byte)0x25);
+				buff.add(getAsciiHexChar(val / 16));
+				buff.add(getAsciiHexChar(val % 16));
+			}
 		}
-		return buff.toString();
+		return new String(buff.getBytes(), StringTools.CHARSET_ASCII);
+	}
+
+	private static byte[] UNENCODE_CHRS = null;
+
+	private static boolean isUnencodeChar(byte chr) throws Exception {
+		if(UNENCODE_CHRS == null) {
+			UNENCODE_CHRS = (StringTools.DIGIT + StringTools.ALPHA + StringTools.alpha + ".:/?&=").getBytes(StringTools.CHARSET_ASCII);
+		}
+		for(byte unencodeChr : UNENCODE_CHRS) {
+			if(unencodeChr == chr) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private static byte[] ASCII_HEX_CHRS = null;
+
+	private static byte getAsciiHexChar(int value) throws Exception {
+		if(ASCII_HEX_CHRS == null) {
+			ASCII_HEX_CHRS = StringTools.HEXADECIMAL.getBytes(StringTools.CHARSET_ASCII);
+		}
+		return ASCII_HEX_CHRS[value];
 	}
 }

@@ -59,7 +59,12 @@ public class ObjectMap {
 	}
 
 	public String getString(String key) {
-		return (String)get(key);
+		Object value = get(key);
+
+		if(value instanceof JsonValue) {
+			return value.toString();
+		}
+		return (String)value;
 	}
 
 	public ObjectList getList(String key) {

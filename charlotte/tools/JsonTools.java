@@ -23,8 +23,9 @@ public class JsonTools {
 					if(secondOrLater) {
 						_buff.append(",");
 					}
+					_buff.append("\"");
 					_buff.append(key);
-					_buff.append(":");
+					_buff.append("\":");
 					add(value);
 
 					secondOrLater = true;

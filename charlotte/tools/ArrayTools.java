@@ -229,6 +229,34 @@ public class ArrayTools {
 		return isSame(block1.getMaster(), block1.getStartPos(), block2.getMaster(), block2.getStartPos(), block1.size());
 	}
 
+	public static <T> boolean isSame(List<T> list1, List<T> list2, Comparator<T> comp) {
+		if(list1 == null && list2 == null) {
+			return true;
+		}
+		if(list1 == null || list2 == null) {
+			return false;
+		}
+		if(list1.size() != list2.size()) {
+			return false;
+		}
+		for(int index = 0; index < list1.size(); index++) {
+			if(isSame(list1.get(index), list2.get(index), comp) == false) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private static <T> boolean isSame(T a, T b, Comparator<T> comp) {
+		if(a == null && b == null) {
+			return true;
+		}
+		if(a == null || b == null) {
+			return false;
+		}
+		return comp.compare(a, b) == 0;
+	}
+
 	public static int[] toArray(List<Integer> src) {
 		int[] dest = new int[src.size()];
 
