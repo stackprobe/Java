@@ -132,15 +132,17 @@ public class FileTools {
 	public static final String _tmpDir = System.getProperty("java.io.tmpdir", "C:/temp/");
 
 	public static String combine(String path1, String path2) {
-		boolean networkPath = path1.startsWith("\\\\") || path1.startsWith("//");
+		return norm(path1 + "/" + path2);
+	}
 
-		String path = path1 + "/" + path2;
-
+	public static String norm(String path) {
 		path = path.replace('\\', '/');
-		path = StringTools.replace(path, "//", "/", 10);
+		boolean networkPath = path.startsWith("//");
+		path = StringTools.replace(path, "//", "/", 20);
 
 		if(networkPath) {
-			path = "\\" + path.replace('/', '\\');
+			path = "/" + path;
+			path = path.replace('/', '\\');
 		}
 		return path;
 	}
