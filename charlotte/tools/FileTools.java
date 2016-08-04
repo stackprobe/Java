@@ -5,6 +5,7 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -191,7 +192,12 @@ public class FileTools {
 	 * @return dir 直下のディレクトリとファイルのローカル名の一覧
 	 */
 	public static String[] list(String dir) {
-		return new File(dir).list();
+		String[] ret = new File(dir).list();
+
+		if(ret == null) {
+			throw new RuntimeException("フォルダにアクセス出来ません。: " + dir);
+		}
+		return ret;
 	}
 
 	public static boolean isEmptyDir(String dir) {
@@ -216,14 +222,19 @@ public class FileTools {
 	}
 
 	public static void rm(String path) {
-		File f = new File(path);
+		try {
+			File f = new File(path);
 
-		if(f.isDirectory()) {
-			for(String s : f.list()) {
-				rm(FileTools.combine(path, s));
+			if(f.isDirectory()) {
+				for(String s : f.list()) {
+					rm(FileTools.combine(path, s));
+				}
 			}
+			del(f);
 		}
-		del(f);
+		catch(Throwable e) {
+			// ignore e
+		}
 	}
 
 	public static boolean isDirectory(String path) {
@@ -410,17 +421,53 @@ public class FileTools {
 		return path;
 	}
 
-	public static void moveFile(String rFile, String wFile) {
+	public static void mv(String rPath, String wPath) throws Exception {
+		rm(wPath);
+		mkdirs(wPath);
+		delete(wPath);
+
+		if(isDirectory(rPath)) {
+			moveDir(rPath, wPath);
+		}
+		else {
+			moveFile(rPath, wPath);
+		}
+	}
+
+	public static void moveDir(String rDir, String wDir) throws Exception {
+		mkdir(wDir);
+
+		for(String lPath : list(rDir)) {
+			String rPath = combine(rDir, lPath);
+			String wPath = combine(wDir, lPath);
+
+			if(isDirectory(rPath)) {
+				moveDir(rPath, wPath);
+			}
+			else {
+				moveFile(rPath, wPath);
+			}
+		}
+		delete(rDir);
+	}
+
+	public static void moveFile(String rFile, String wFile) throws Exception {
 		File rf = new File(rFile);
 		File wf = new File(wFile);
 
-		if(rf.exists() == false) throw null; // XXX
-		if(wf.exists()) throw null; // XXX
+		if(rf.exists() == false)
+			throw new IOException("移動前_移動元のファイルが存在しません。: " + rFile);
+
+		if(wf.exists())
+			throw new IOException("移動前_移動先のファイルが存在します。: " + wFile);
 
 		rf.renameTo(wf);
 
-		if(rf.exists()) throw null; // XXX
-		if(wf.exists() == false) throw null; // XXX
+		if(wf.exists() == false)
+			throw new IOException("移動後_移動先のファイルが存在しません。: " + wFile);
+
+		if(rf.exists())
+			throw new IOException("移動後_移動元のファイルが存在します。: " + rFile);
 	}
 
 	public static void copyFile(String rFile, String wFile) throws Exception {

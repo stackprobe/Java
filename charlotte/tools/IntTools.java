@@ -113,7 +113,7 @@ public class IntTools {
 
 	public static int toInt(String str, int defval) {
 		try {
-			return Integer.parseInt(str, defval);
+			return Integer.parseInt(str);
 		}
 		catch(Throwable e) {
 			// ignore
