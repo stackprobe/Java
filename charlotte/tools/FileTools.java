@@ -362,7 +362,7 @@ public class FileTools {
 		return path.substring(0, index);
 	}
 
-	public static String getExt(String path) {
+	private static String getExt(String path, int plus) {
 		path = getLocal(path);
 
 		int index = path.lastIndexOf('.');
@@ -370,16 +370,15 @@ public class FileTools {
 		if(index == -1) {
 			return "";
 		}
-		return path.substring(index + 1);
+		return path.substring(index + plus);
 	}
 
-	public static String getDotExt(String path) {
-		String ext = getExt(path);
+	public static String getExt(String path) {
+		return getExt(path, 1);
+	}
 
-		if(ext.length() == 0) {
-			return "";
-		}
-		return "." + ext;
+	public static String getExtWithDot(String path) {
+		return getExt(path, 0);
 	}
 
 	public static String eraseExt(String path) {
@@ -402,7 +401,7 @@ public class FileTools {
 	public static String toCreatable(String path) {
 		if(FileTools.exists(path)) {
 			String prefix = FileTools.eraseExt(path) + "~";
-			String suffix = FileTools.getDotExt(path);
+			String suffix = FileTools.getExtWithDot(path);
 			int c = 2;
 
 			do {

@@ -35,4 +35,10 @@ public class QueueData<T> {
 		public U element;
 		public LinkNode<U> next;
 	}
+
+	public void clear() {
+		_top = new LinkNode<T>();
+		_last = _top;
+		_count = 0;
+	}
 }
