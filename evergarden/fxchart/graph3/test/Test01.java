@@ -13,7 +13,7 @@ public class Test01 {
 	public static void main(String[] args) {
 		try {
 			{
-				long sec = DateTimeToSec.getSec();
+				long sec = DateTimeToSec.Now.getSec();
 				sec /= 86400L;
 				sec *= 86400L;
 				sec--;
@@ -35,7 +35,7 @@ public class Test01 {
 		long endFxTime;
 
 		{
-			long sec = DateTimeToSec.getSec();
+			long sec = DateTimeToSec.Now.getSec();
 			sec /= 86400L;
 			sec *= 86400L;
 			endFxTime = FxTime.secToFxTime(sec);
@@ -54,7 +54,7 @@ public class Test01 {
 		long endFxTime;
 
 		{
-			long sec = DateTimeToSec.getSec();
+			long sec = DateTimeToSec.Now.getSec();
 			sec /= 86400L;
 			sec *= 86400L;
 			endFxTime = FxTime.secToFxTime(sec);
@@ -74,7 +74,7 @@ public class Test01 {
 		long endFxTime;
 
 		{
-			long sec = DateTimeToSec.getSec();
+			long sec = DateTimeToSec.Now.getSec();
 			sec /= 86400L;
 			sec *= 86400L;
 			endFxTime = FxTime.secToFxTime(sec);
@@ -110,7 +110,7 @@ public class Test01 {
 	}
 
 	private static void test04() throws Exception {
-		long sec = DateTimeToSec.getSec();
+		long sec = DateTimeToSec.Now.getSec();
 		sec /= 86400L;
 		sec *= 86400L;
 		long fxTime = FxTime.secToFxTime(sec);

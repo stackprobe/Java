@@ -14,7 +14,7 @@ public class MovingAverage {
 		}
 		_chart = chart;
 		_bound = bound;
-		reload(DateTimeToSec.getSec());
+		reload(DateTimeToSec.Now.getSec());
 	}
 
 	private void reload(long fxTime) {

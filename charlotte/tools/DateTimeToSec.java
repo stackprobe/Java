@@ -55,11 +55,13 @@ public class DateTimeToSec {
 		return dateTime;
 	}
 
-	public static long getSec() {
-		return (System.currentTimeMillis() + TimeZone.getDefault().getRawOffset()) / 1000 + 62135596800L;
-	}
+	public static class Now {
+		public static long getSec() {
+			return (System.currentTimeMillis() + TimeZone.getDefault().getRawOffset()) / 1000 + 62135596800L;
+		}
 
-	public static long getDateTime() {
-		return toDateTime(getSec());
+		public static long getDateTime() {
+			return toDateTime(getSec());
+		}
 	}
 }

@@ -5,7 +5,7 @@ import charlotte.tools.DateTimeToSec;
 public class DateTimeToSecTest {
 	public static void main(String[] args) {
 		try {
-			System.out.println("today=" + DateTimeToSec.getDateTime());
+			System.out.println("today=" + DateTimeToSec.Now.getDateTime());
 			System.out.println("19000101000000=" + DateTimeToSec.toSec(19000101000000L));
 			System.out.println("22000101000000=" + DateTimeToSec.toSec(22000101000000L));
 
@@ -23,15 +23,15 @@ public class DateTimeToSecTest {
 			}
 			*/
 
-			System.out.println("6h_ago=" + DateTimeToSec.toDateTime(DateTimeToSec.getSec() - 3600 * 6));
-			System.out.println("12h_ago=" + DateTimeToSec.toDateTime(DateTimeToSec.getSec() - 3600 * 12));
-			System.out.println("18h_ago=" + DateTimeToSec.toDateTime(DateTimeToSec.getSec() - 3600 * 18));
-			System.out.println("24h_ago=" + DateTimeToSec.toDateTime(DateTimeToSec.getSec() - 3600 * 24));
+			System.out.println("6h_ago=" + DateTimeToSec.toDateTime(DateTimeToSec.Now.getSec() - 3600 * 6));
+			System.out.println("12h_ago=" + DateTimeToSec.toDateTime(DateTimeToSec.Now.getSec() - 3600 * 12));
+			System.out.println("18h_ago=" + DateTimeToSec.toDateTime(DateTimeToSec.Now.getSec() - 3600 * 18));
+			System.out.println("24h_ago=" + DateTimeToSec.toDateTime(DateTimeToSec.Now.getSec() - 3600 * 24));
 
-			System.out.println("6h_later=" + DateTimeToSec.toDateTime(DateTimeToSec.getSec() + 3600 * 6));
-			System.out.println("12h_later=" + DateTimeToSec.toDateTime(DateTimeToSec.getSec() + 3600 * 12));
-			System.out.println("18h_later=" + DateTimeToSec.toDateTime(DateTimeToSec.getSec() + 3600 * 18));
-			System.out.println("24h_later=" + DateTimeToSec.toDateTime(DateTimeToSec.getSec() + 3600 * 24));
+			System.out.println("6h_later=" + DateTimeToSec.toDateTime(DateTimeToSec.Now.getSec() + 3600 * 6));
+			System.out.println("12h_later=" + DateTimeToSec.toDateTime(DateTimeToSec.Now.getSec() + 3600 * 12));
+			System.out.println("18h_later=" + DateTimeToSec.toDateTime(DateTimeToSec.Now.getSec() + 3600 * 18));
+			System.out.println("24h_later=" + DateTimeToSec.toDateTime(DateTimeToSec.Now.getSec() + 3600 * 24));
 
 			System.out.println("10000101000000=" + DateTimeToSec.toSec(10000101000000L));
 			System.out.println("99991231235959=" + DateTimeToSec.toSec(99991231235959L));

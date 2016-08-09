@@ -85,11 +85,13 @@ public class DateToDay {
 		return y * 10000 + m * 100 + d;
 	}
 
-	public static int getDay() {
-		return (int)((System.currentTimeMillis() + TimeZone.getDefault().getRawOffset()) / 86400000) + 719162;
-	}
+	public static class Today {
+		public static int getDay() {
+			return (int)((System.currentTimeMillis() + TimeZone.getDefault().getRawOffset()) / 86400000) + 719162;
+		}
 
-	public static int getDate() {
-		return toDate(getDay());
+		public static int getDate() {
+			return toDate(getDay());
+		}
 	}
 }

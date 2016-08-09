@@ -5,7 +5,7 @@ import charlotte.tools.DateToDay;
 public class DateToDayTest {
 	public static void main(String[] args) {
 		try {
-			System.out.println("today=" + DateToDay.getDate());
+			System.out.println("today=" + DateToDay.Today.getDate());
 			System.out.println("19000101=" + DateToDay.toDay(19000101));
 			System.out.println("22000101=" + DateToDay.toDay(22000101));
 

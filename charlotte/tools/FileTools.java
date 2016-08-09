@@ -1,6 +1,7 @@
 package charlotte.tools;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -316,12 +317,41 @@ public class FileTools {
 
 	public static String readLine(InputStream is, String charset) throws Exception {
 		ByteBuffer buff = new ByteBuffer();
+		boolean added = false;
 
 		for(; ; ) {
 			int chr = is.read();
 
-			// XXX charset == Utf16 とかアウト
+			if(chr == -1) {
+				if(added == false) {
+					return null;
+				}
+				break;
+			}
+			// ? cr
+			if(chr == 0x0d) {
+				continue;
+			}
+			// ? lf
+			if(chr == 0x0a) {
+				break;
+			}
+			buff.add((byte)chr);
+			added = true;
+		}
+		return new String(buff.getBytes(), charset);
+		/*
+		int chr = is.read();
 
+		if(chr == -1) {
+			return null;
+		}
+		ByteBuffer buff = new ByteBuffer();
+
+		for(; ; chr = is.read()) {
+			if(chr == -1) {
+				break;
+			}
 			// ? cr
 			if(chr == 0x0d) {
 				continue;
@@ -333,6 +363,7 @@ public class FileTools {
 			buff.add((byte)chr);
 		}
 		return new String(buff.getBytes(), charset);
+		*/
 	}
 
 	public static void writeLine(OutputStream os, String line) throws Exception {
@@ -655,39 +686,32 @@ public class FileTools {
 		return new File(dir).getFreeSpace();
 	}
 
-	public static String readLine(InputStreamReader reader) throws Exception {
-		StringBuffer buff = new StringBuffer();
-
-		for(; ; ) {
-			int chr = reader.read();
-
-			if(chr == -1) {
-				if(buff.length() == 0) {
-					return null;
-				}
-				break;
-			}
-			if(chr == '\r') {
-				continue;
-			}
-			if(chr == '\n') {
-				break;
-			}
-			buff.append((char)chr);
+	public static void toHead(String rwFile, long headSize) throws Exception {
+		String midFile = makeTempPath();
+		try {
+			writeHead(rwFile, midFile, headSize);
+			copyFile(midFile, rwFile);
 		}
-		return buff.toString();
-	}
-
-	public static void writeLine(OutputStreamWriter writer, String line) throws Exception {
-		writer.write(line);
-		writer.write(0x0d);
-		writer.write(0x0a);
+		finally {
+			del(midFile);
+		}
 	}
 
 	public static void toTail(String rwFile, long tailSize) throws Exception {
 		String midFile = makeTempPath();
 		try {
 			writeTail(rwFile, midFile, tailSize);
+			copyFile(midFile, rwFile);
+		}
+		finally {
+			del(midFile);
+		}
+	}
+
+	public static void toPart(String rwFile, long startPos, long size) throws Exception {
+		String midFile = makeTempPath();
+		try {
+			writePart(rwFile, midFile, startPos, size);
 			copyFile(midFile, rwFile);
 		}
 		finally {
@@ -745,5 +769,99 @@ public class FileTools {
 			FileTools.close(fis);
 			FileTools.close(fos);
 		}
+	}
+
+	public static InputStreamReader readOpenTextFile(String file, String charset) throws IOException {
+		FileInputStream fis = null;
+		BufferedInputStream bis = null;
+		InputStreamReader isr = null;
+		try {
+			fis = new FileInputStream(file);
+			bis = new BufferedInputStream(fis);
+			isr = new InputStreamReader(bis, charset);
+
+			return isr;
+		}
+		catch(Throwable e) {
+			close(fis);
+			close(bis);
+			close(isr);
+
+			throw new IOException(e);
+		}
+	}
+
+	public static OutputStreamWriter writeOpenTextFile(String file, String charset) throws IOException {
+		return writeOpenTextFile(file, charset, false);
+	}
+
+	public static OutputStreamWriter writeOpenTextFile(String file, String charset, boolean append) throws IOException {
+		FileOutputStream fos = null;
+		BufferedOutputStream bos = null;
+		OutputStreamWriter osw = null;
+		try {
+			fos = new FileOutputStream(file, append);
+			bos = new BufferedOutputStream(fos);
+			osw = new OutputStreamWriter(bos, charset);
+
+			return osw;
+		}
+		catch(Throwable e) {
+			close(fos);
+			close(bos);
+			close(osw);
+
+			throw new IOException(e);
+		}
+	}
+
+	public static String readLine(InputStreamReader reader) throws Exception {
+		StringBuffer buff = new StringBuffer();
+
+		for(; ; ) {
+			int chr = reader.read();
+
+			if(chr == -1) {
+				if(buff.length() == 0) {
+					return null;
+				}
+				break;
+			}
+			if(chr == '\r') {
+				continue;
+			}
+			if(chr == '\n') {
+				break;
+			}
+			buff.append((char)chr);
+		}
+		return buff.toString();
+		/*
+		int chr = reader.read();
+
+		if(chr == -1) {
+			return null;
+		}
+		StringBuffer buff = new StringBuffer();
+
+		for(; ; chr = reader.read()) {
+			if(chr == -1) {
+				break;
+			}
+			if(chr == '\r') {
+				continue;
+			}
+			if(chr == '\n') {
+				break;
+			}
+			buff.append((char)chr);
+		}
+		return buff.toString();
+		*/
+	}
+
+	public static void writeLine(OutputStreamWriter writer, String line) throws Exception {
+		writer.write(line);
+		writer.write("\r\n");
 	}
 }
