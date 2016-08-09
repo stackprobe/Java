@@ -6,19 +6,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class HugeFileQueue implements Closeable {
-	private String _charset;
 	private String _file;
 	private FileOutputStream _writer;
 	private FileInputStream _reader;
 	private long _size = 0L;
 
 	public HugeFileQueue() {
-		this(StringTools.CHARSET_UTF8);
-	}
-
-	public HugeFileQueue(String charset) {
 		try {
-			_charset = charset;
 			_file = FileTools.makeTempPath();
 			_writer = new FileOutputStream(_file);
 			_reader = new FileInputStream(_file);
@@ -30,7 +24,7 @@ public class HugeFileQueue implements Closeable {
 
 	public void add(String str) {
 		try {
-			add(str.getBytes(_charset));
+			add(str.getBytes(StringTools.CHARSET_UTF8));
 		}
 		catch(Exception e) {
 			throw new RuntimeException(e);
@@ -66,7 +60,7 @@ public class HugeFileQueue implements Closeable {
 			if(block == null) {
 				return null;
 			}
-			return new String(block, _charset);
+			return new String(block, StringTools.CHARSET_UTF8);
 		}
 		catch(Exception e) {
 			throw new RuntimeException(e);

@@ -8,12 +8,8 @@ public class HugeQueue implements Closeable {
 	private HugeFileQueue _reader;
 
 	public HugeQueue() {
-		this(StringTools.CHARSET_UTF8);
-	}
-
-	public HugeQueue(String charset) {
-		_writer = new HugeFileQueue(charset);
-		_reader = new HugeFileQueue(charset);
+		_writer = new HugeFileQueue();
+		_reader = new HugeFileQueue();
 	}
 
 	public void add(String str) {
