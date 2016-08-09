@@ -4,12 +4,12 @@ import java.io.Closeable;
 import java.io.IOException;
 
 public class HugeQueue implements Closeable {
-	private HugeFileQueue _writer;
-	private HugeFileQueue _reader;
+	private HugeQueueSw _writer;
+	private HugeQueueSw _reader;
 
 	public HugeQueue() {
-		_writer = new HugeFileQueue();
-		_reader = new HugeFileQueue();
+		_writer = new HugeQueueSw();
+		_reader = new HugeQueueSw();
 	}
 
 	public void add(String str) {
@@ -22,10 +22,11 @@ public class HugeQueue implements Closeable {
 
 	private void beforePoll() {
 		if(_reader.size() == 0L && _writer.size() != 0L) {
-			HugeFileQueue swap = _reader;
-			_reader = _writer;
-			_writer = swap;
-			_writer.clear();
+			HugeQueueSw swap = _writer;
+			_writer = _reader;
+			_reader = swap;
+			_writer.reset();
+			_reader.switchToRead();
 		}
 	}
 
@@ -44,8 +45,8 @@ public class HugeQueue implements Closeable {
 	}
 
 	public void clear() {
-		_writer.clear();
-		_reader.clear();
+		_writer.reset();
+		_reader.reset();
 	}
 
 	@Override
