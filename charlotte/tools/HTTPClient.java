@@ -20,6 +20,7 @@ public class HTTPClient {
 	private String _proxyDomain = null; // null -> no proxy
 	private int _proxyPortNo = 8080;
 	private boolean _head; // true -> HEAD, false -> GET or POST
+	private String _resBodyFile = null;
 
 	public HTTPClient() {
 	}
@@ -44,6 +45,10 @@ public class HTTPClient {
 
 	public void setBody(byte[] body) {
 		_body = body;
+	}
+
+	public void setResBodyFile(String file) {
+		_resBodyFile = file;
 	}
 
 	public void setConnectTimeoutMillis(int millis) {
@@ -146,7 +151,13 @@ public class HTTPClient {
 
 				try {
 					is = con.getInputStream();
-					_resBody = FileTools.readToEnd(is);
+
+					if(_resBodyFile == null) {
+						_resBody = FileTools.readToEnd(is);
+					}
+					else {
+						FileTools.writeToEnd(is, _resBodyFile);
+					}
 				}
 				finally {
 					FileTools.close(is);

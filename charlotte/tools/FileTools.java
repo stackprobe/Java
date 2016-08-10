@@ -311,6 +311,32 @@ public class FileTools {
 		return readToEnd(url.openStream());
 	}
 
+	public static void writeToEnd(InputStream reader, String wFile) throws Exception {
+		writeToEnd(reader, wFile, false);
+	}
+
+	public static void writeToEnd(InputStream reader, String wFile, boolean append) throws Exception {
+		OutputStream writer = null;
+		try {
+			writer = new FileOutputStream(wFile, append);
+			writeToEnd(reader, writer);
+		}
+		finally {
+			FileTools.close(writer);
+		}
+	}
+
+	private static void writeToEnd(InputStream reader, OutputStream writer) throws Exception {
+		for(; ; ) {
+			int chr = reader.read();
+
+			if(chr == -1) {
+				break;
+			}
+			writer.write(chr);
+		}
+	}
+
 	public static String readLine(InputStream is) throws Exception {
 		return readLine(is, StringTools.CHARSET_UTF8);
 	}

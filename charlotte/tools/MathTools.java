@@ -55,4 +55,20 @@ public class MathTools {
 		}
 		return dest;
 	}
+
+	public static int root(long value) {
+		if(value < 0) {
+			throw new IllegalArgumentException();
+		}
+		int ret = 0;
+
+		for(int bit = 1 << 31; bit != 0; bit >>= 1) {
+			int t = ret | bit;
+
+			if((long)t * t <= value) {
+				ret = t;
+			}
+		}
+		return ret;
+	}
 }
