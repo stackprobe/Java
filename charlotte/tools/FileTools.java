@@ -326,14 +326,27 @@ public class FileTools {
 		}
 	}
 
-	private static void writeToEnd(InputStream reader, OutputStream writer) throws Exception {
-		for(; ; ) {
-			int chr = reader.read();
+	public static void writeToEnd(String rFile, OutputStream writer) throws Exception {
+		InputStream reader = null;
+		try {
+			reader = new FileInputStream(rFile);
+			writeToEnd(reader, writer);
+		}
+		finally {
+			FileTools.close(reader);
+		}
+	}
 
-			if(chr == -1) {
+	private static void writeToEnd(InputStream reader, OutputStream writer) throws Exception {
+		byte[] buff = new byte[10000000]; // 10 MB
+
+		for(; ; ) {
+			int readSize = reader.read(buff);
+
+			if(readSize <= 0) {
 				break;
 			}
-			writer.write(chr);
+			writer.write(buff, 0, readSize);
 		}
 	}
 
