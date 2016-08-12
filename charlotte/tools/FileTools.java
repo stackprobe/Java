@@ -49,13 +49,6 @@ public class FileTools {
 
 		try {
 			is.read(fileData);
-
-			// old
-			/*
-			for(int i = 0; i < fileSize; i++) {
-				fileData[i] = (byte)is.read();
-			}
-			*/
 		}
 		finally {
 			close(is);
@@ -84,13 +77,6 @@ public class FileTools {
 
 		try {
 			os.write(fileData);
-
-			// old
-			/*
-			for(int i = 0; i < fileData.length; i++) {
-				os.write((int)fileData[i]);
-			}
-			*/
 		}
 		finally {
 			close(os);
@@ -379,30 +365,6 @@ public class FileTools {
 			added = true;
 		}
 		return new String(buff.getBytes(), charset);
-		/*
-		int chr = is.read();
-
-		if(chr == -1) {
-			return null;
-		}
-		ByteBuffer buff = new ByteBuffer();
-
-		for(; ; chr = is.read()) {
-			if(chr == -1) {
-				break;
-			}
-			// ? cr
-			if(chr == 0x0d) {
-				continue;
-			}
-			// ? lf
-			if(chr == 0x0a) {
-				break;
-			}
-			buff.add((byte)chr);
-		}
-		return new String(buff.getBytes(), charset);
-		*/
 	}
 
 	public static void writeLine(OutputStream os, String line) throws Exception {
@@ -875,28 +837,6 @@ public class FileTools {
 			buff.append((char)chr);
 		}
 		return buff.toString();
-		/*
-		int chr = reader.read();
-
-		if(chr == -1) {
-			return null;
-		}
-		StringBuffer buff = new StringBuffer();
-
-		for(; ; chr = reader.read()) {
-			if(chr == -1) {
-				break;
-			}
-			if(chr == '\r') {
-				continue;
-			}
-			if(chr == '\n') {
-				break;
-			}
-			buff.append((char)chr);
-		}
-		return buff.toString();
-		*/
 	}
 
 	public static void writeLine(OutputStreamWriter writer, String line) throws Exception {
