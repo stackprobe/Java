@@ -1,9 +1,24 @@
 package charlotte.tools;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class QueueData<T> {
 	private LinkNode<T> _top;
 	private LinkNode<T> _last;
 	private int _count;
+
+	public QueueData(T[] entries) {
+		this(Arrays.asList(entries));
+	}
+
+	public QueueData(List<T> entries) {
+		this();
+
+		for(T entry : entries) {
+			add(entry);
+		}
+	}
 
 	public QueueData() {
 		_top = new LinkNode<T>();

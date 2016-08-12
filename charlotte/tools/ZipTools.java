@@ -87,6 +87,39 @@ public class ZipTools {
 	}
 
 	private static void pk(String rDir, ZipOutputStream zWriter, String wBasePath) throws Exception {
+		Stack<QueueData<String>> parents = new Stack<QueueData<String>>();
+		QueueData<String> lPaths = new QueueData<String>(FileTools.list(rDir));
+
+		for(; ; ) {
+			while(lPaths.size() != 0) {
+				String lPath = lPaths.poll();
+				String rPath = FileTools.combine(rDir, lPath);
+				String wPath = FileTools.combine(wBasePath, lPath);
+
+				if(FileTools.isDirectory(rPath)) {
+					zWriter.putNextEntry(new ZipEntry(wPath + "/"));
+					zWriter.closeEntry();
+
+					parents.add(lPaths);
+
+					lPaths = new QueueData<String>(FileTools.list(rPath));
+					rDir = rPath;
+					wBasePath = wPath;
+				}
+				else {
+					zWriter.putNextEntry(new ZipEntry(wPath));
+					FileTools.writeToEnd(rPath, zWriter);
+					zWriter.closeEntry();
+				}
+			}
+			if(parents.size() == 0) {
+				break;
+			}
+			lPaths = parents.pop();
+			rDir = FileTools.eraseLocal(rDir);
+			wBasePath = FileTools.eraseLocal(wBasePath);
+		}
+		/*
 		Stack<PkInfo> parents = new Stack<PkInfo>();
 		PkInfo i = new PkInfo();
 
@@ -126,6 +159,7 @@ public class ZipTools {
 			}
 			i = parents.pop();
 		}
+		*/
 		/*
 		for(String lPath : FileTools.list(rDir)) {
 			String rPath = FileTools.combine(rDir, lPath);
@@ -148,10 +182,12 @@ public class ZipTools {
 		*/
 	}
 
+	/*
 	private static class PkInfo {
 		public String rDir;
 		public String wBasePath;
 		public String[] lPaths;
 		public int index;
 	}
+	*/
 }
