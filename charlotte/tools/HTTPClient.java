@@ -20,7 +20,7 @@ public class HTTPClient {
 	private String _proxyDomain = null; // null -> no proxy
 	private int _proxyPortNo = 8080;
 	private boolean _head; // true -> HEAD, false -> GET or POST
-	private String _resBodyFile = null;
+	private String _resBodyFile = null; // null != _resBody にセットする代わりに _resBodyFile に書き出す。
 
 	public HTTPClient() {
 	}
