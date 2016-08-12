@@ -4,15 +4,15 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Stack;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 public class ZipTools {
 	public static void extract(String zipFile, String wDir) throws Exception {
-		InputStream reader = null;
+		InputStream reader = new FileInputStream(zipFile);
 		try {
-			reader = new FileInputStream(zipFile);
 			extract(reader, wDir);
 		}
 		finally {
@@ -24,9 +24,8 @@ public class ZipTools {
 		FileTools.rm(wDir);
 		FileTools.mkdirs(wDir);
 
-		ZipInputStream zReader = null;
+		ZipInputStream zReader = new ZipInputStream(reader);
 		try {
-			zReader = new ZipInputStream(reader);
 
 			for(; ; ) {
 				ZipEntry entry = zReader.getNextEntry();
@@ -64,9 +63,8 @@ public class ZipTools {
 	}
 
 	public static void pack(String rDir, String zipFile, String wBasePath) throws Exception {
-		OutputStream writer = null;
+		OutputStream writer = new FileOutputStream(zipFile);
 		try {
-			writer = new FileOutputStream(zipFile);
 			pack(rDir, writer, wBasePath);
 		}
 		finally {
@@ -74,10 +72,13 @@ public class ZipTools {
 		}
 	}
 
+	public static void pack(String rDir, OutputStream writer) throws Exception {
+		pack(rDir, writer, "");
+	}
+
 	public static void pack(String rDir, OutputStream writer, String wBasePath) throws Exception {
-		ZipOutputStream zWriter = null;
+		ZipOutputStream zWriter = new ZipOutputStream(writer);
 		try {
-			zWriter = new ZipOutputStream(writer);
 			pk(rDir, zWriter, wBasePath);
 		}
 		finally {
@@ -86,6 +87,46 @@ public class ZipTools {
 	}
 
 	private static void pk(String rDir, ZipOutputStream zWriter, String wBasePath) throws Exception {
+		Stack<PkInfo> parents = new Stack<PkInfo>();
+		PkInfo i = new PkInfo();
+
+		i.rDir = rDir;
+		i.wBasePath = wBasePath;
+		i.lPaths = FileTools.list(rDir);
+		i.index = 0;
+
+		for(; ; ) {
+			while(i.index < i.lPaths.length) {
+				String lPath = i.lPaths[i.index];
+				String rPath = FileTools.combine(i.rDir, lPath);
+				String wPath = FileTools.combine(i.wBasePath, lPath);
+
+				i.index++;
+
+				if(FileTools.isDirectory(rPath)) {
+					zWriter.putNextEntry(new ZipEntry(wPath + "/"));
+					zWriter.closeEntry();
+
+					parents.add(i);
+
+					i = new PkInfo();
+					i.rDir = rPath;
+					i.wBasePath = wPath;
+					i.lPaths = FileTools.list(rPath);
+					i.index = 0;
+				}
+				else {
+					zWriter.putNextEntry(new ZipEntry(wPath));
+					FileTools.writeToEnd(rPath, zWriter);
+					zWriter.closeEntry();
+				}
+			}
+			if(parents.size() == 0) {
+				break;
+			}
+			i = parents.pop();
+		}
+		/*
 		for(String lPath : FileTools.list(rDir)) {
 			String rPath = FileTools.combine(rDir, lPath);
 			String wPath = FileTools.combine(wBasePath, lPath);
@@ -96,7 +137,7 @@ public class ZipTools {
 				zWriter.putNextEntry(new ZipEntry(wPath + "/"));
 				zWriter.closeEntry();
 
-				pk(rPath, zWriter, FileTools.combine(wBasePath, lPath));
+				pk(rPath, zWriter, wPath);
 			}
 			else {
 				zWriter.putNextEntry(new ZipEntry(wPath));
@@ -104,5 +145,13 @@ public class ZipTools {
 				zWriter.closeEntry();
 			}
 		}
+		*/
+	}
+
+	private static class PkInfo {
+		public String rDir;
+		public String wBasePath;
+		public String[] lPaths;
+		public int index;
 	}
 }
