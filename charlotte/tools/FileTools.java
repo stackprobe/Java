@@ -302,29 +302,27 @@ public class FileTools {
 	}
 
 	public static void writeToEnd(InputStream reader, String wFile, boolean append) throws Exception {
-		OutputStream writer = null;
+		OutputStream writer = new FileOutputStream(wFile, append);
 		try {
-			writer = new FileOutputStream(wFile, append);
 			writeToEnd(reader, writer);
 		}
 		finally {
-			FileTools.close(writer);
+			close(writer);
 		}
 	}
 
 	public static void writeToEnd(String rFile, OutputStream writer) throws Exception {
-		InputStream reader = null;
+		InputStream reader = new FileInputStream(rFile);
 		try {
-			reader = new FileInputStream(rFile);
 			writeToEnd(reader, writer);
 		}
 		finally {
-			FileTools.close(reader);
+			close(reader);
 		}
 	}
 
 	private static void writeToEnd(InputStream reader, OutputStream writer) throws Exception {
-		byte[] buff = new byte[10000000]; // 10 MB
+		byte[] buff = new byte[1000000]; // 1 MB
 
 		for(; ; ) {
 			int readSize = reader.read(buff);
