@@ -302,8 +302,9 @@ public class FileTools {
 	}
 
 	public static void writeToEnd(InputStream reader, String wFile, boolean append) throws Exception {
-		OutputStream writer = new FileOutputStream(wFile, append);
+		OutputStream writer = null;
 		try {
+			writer = new FileOutputStream(wFile, append);
 			writeToEnd(reader, writer);
 		}
 		finally {
@@ -312,8 +313,9 @@ public class FileTools {
 	}
 
 	public static void writeToEnd(String rFile, OutputStream writer) throws Exception {
-		InputStream reader = new FileInputStream(rFile);
+		InputStream reader = null;
 		try {
+			reader = new FileInputStream(rFile);
 			writeToEnd(reader, writer);
 		}
 		finally {
