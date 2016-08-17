@@ -25,4 +25,19 @@ public class SystemTools {
 		String ret = sw.toString();
 		return ret;
 	}
+
+	public static void execOnBatch(String commandLine) throws Exception {
+		execOnBatch(new String[] { commandLine });
+	}
+
+	public static void execOnBatch(String[] commandLines) throws Exception {
+		String batFile = FileTools.makeTempPath() + ".bat";
+		try {
+			FileTools.writeAllLines(batFile, commandLines, StringTools.CHARSET_SJIS);
+			Runtime.getRuntime().exec("CMD /C \"" + batFile + "\"").waitFor();
+		}
+		finally {
+			FileTools.del(batFile);
+		}
+	}
 }
