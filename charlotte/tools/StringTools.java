@@ -557,6 +557,10 @@ public class StringTools {
 		return flag ? S_TRUE : S_FALSE;
 	}
 
+	public static boolean toFlag(String str) {
+		return StringTools.containsIgnoreCase(str, S_TRUE);
+	}
+
 	public static int indexOfIgnoreCase(String str, String ptn, int fromIndex) {
 		for(int index = fromIndex; index + ptn.length() <= str.length(); index++) {
 			String mid = str.substring(index, index + ptn.length());

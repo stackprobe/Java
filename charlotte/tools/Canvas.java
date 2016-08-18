@@ -170,7 +170,7 @@ public class Canvas {
 		case 'Z': drPtn = 0x0110110; break;
 
 		default:
-			drPtn = 0x0011100;
+			drPtn = 0x0111010;
 			break;
 		}
 		if((drPtn & 0x1000000) != 0) {
