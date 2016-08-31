@@ -29,7 +29,7 @@ public class WinAPITools {
 			String file2 = FileTools.makeTempPath(tmpId + "_WinAPITools.exe_");
 			byte[] fileData = FileTools.readToEnd(WinAPITools.class.getResource("res/WinAPITools.exe_"));
 			String fileHash = SecurityTools.getSHA512_128String(fileData);
-			String file3 = FileTools.makeTempPath(WIN_API_TOOLS_FILE_ID + "/" + fileHash + "/WinAPITools.exe");
+			String file3 = FileTools.makeTempPath(WIN_API_TOOLS_FILE_ID + "/" + fileHash + "/WinAPITools_" + su(WIN_API_TOOLS_FILE_ID) + ".exe");
 			FileTools.writeAllBytes(file1, fileData);
 			FileTools.writeAllBytes(file2, fileData);
 
@@ -75,6 +75,13 @@ public class WinAPITools {
 		catch(Throwable e) {
 			e.printStackTrace();
 		}
+	}
+
+	private static String su(String src) {
+		return src
+				.replace("{", "")
+				.replace("-", "")
+				.replace("}", "");
 	}
 
 	private void go(String args) {
