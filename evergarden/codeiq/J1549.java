@@ -1,4 +1,4 @@
-package codeiq;
+package evergarden.codeiq;
 
 public class J1549 {
 	public static void main(String[] args) {

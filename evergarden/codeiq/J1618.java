@@ -1,4 +1,4 @@
-package codeiq;
+package evergarden.codeiq;
 
 import java.util.ArrayList;
 import java.util.Comparator;

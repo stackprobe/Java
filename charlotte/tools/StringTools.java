@@ -214,8 +214,10 @@ public class StringTools {
 	public static final String CHARSET_ASCII = "US-ASCII";
 	public static final String CHARSET_SJIS = "MS932";
 	public static final String CHARSET_UTF8 = "UTF-8";
-	public static final String CHARSET_UTF16 = "UTF-16"; // XXX これでいいのか?
-	public static final String CHARSET_UTF32 = "UTF-32"; // XXX これでいいのか?
+	public static final String CHARSET_UTF16 = "UTF-16";
+	public static final String CHARSET_UTF16BE = "UnicodeBigUnmarked";
+	public static final String CHARSET_UTF16LE = "UnicodeLittleUnmarked";
+	public static final String CHARSET_UTF32 = "UTF-32";
 
 	public static boolean isEmpty(String str) {
 		return str == null || str.length() == 0;

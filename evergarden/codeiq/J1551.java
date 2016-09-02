@@ -1,4 +1,4 @@
-package codeiq;
+package evergarden.codeiq;
 
 import charlotte.tools.IntTools;
 import charlotte.tools.StringTools;
