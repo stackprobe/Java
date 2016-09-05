@@ -25,7 +25,6 @@ public class ZipTools {
 
 		ZipInputStream zReader = new ZipInputStream(reader);
 		try {
-
 			for(; ; ) {
 				ZipEntry entry = zReader.getNextEntry();
 

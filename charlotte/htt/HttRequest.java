@@ -88,6 +88,9 @@ public class HttRequest {
 		return FileTools.readAllBytes(_bodyPartFile);
 	}
 
+	/**
+	 * @deprecated will be deleted
+	 */
 	public void pulse() {
 		try {
 			_pipeline.pulse();
