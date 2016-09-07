@@ -2,7 +2,6 @@ package charlotte.htt;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +10,7 @@ import charlotte.flowertact.Fortewave;
 import charlotte.satellite.MutexObject;
 import charlotte.satellite.WinAPITools;
 import charlotte.tools.FileTools;
+import charlotte.tools.MapTools;
 import charlotte.tools.ObjectList;
 import charlotte.tools.StringTools;
 
@@ -57,9 +57,12 @@ public class HttServer {
 							ol.add(res.getReasonPhrase().getBytes(StringTools.CHARSET_ASCII));
 
 							{
-								Map<String, String> headerFields = new HashMap<String, String>();
+								Map<String, String> headerFields = MapTools.<String>createIgnoreCase();
 
 								res.writeHeaderFields(headerFields);
+
+								headerFields.remove("Content-Length");
+								headerFields.remove("Connection");
 
 								List<String> lines = new ArrayList<String>();
 
