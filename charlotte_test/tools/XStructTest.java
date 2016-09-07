@@ -53,5 +53,10 @@ public class XStructTest {
 				"C:/temp/ksz_kkg.xml",
 				StringTools.join("\n", xs.toXmlLines()).getBytes(StringTools.CHARSET_UTF8)
 				);
+
+		FileTools.writeAllBytes(
+				"C:/temp/ksz_kkg_path.txt",
+				StringTools.join("\n", xs.toPathLines()).getBytes(StringTools.CHARSET_SJIS)
+				);
 	}
 }

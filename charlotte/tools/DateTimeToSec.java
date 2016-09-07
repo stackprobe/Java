@@ -64,4 +64,12 @@ public class DateTimeToSec {
 			return toDateTime(getSec());
 		}
 	}
+
+	public static boolean isFairSec(long sec) {
+		return toSec(toDateTime(sec)) == sec;
+	}
+
+	public static boolean isFairDateTime(long dateTime) {
+		return toDateTime(toSec(dateTime)) == dateTime;
+	}
 }

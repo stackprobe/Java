@@ -94,4 +94,12 @@ public class DateToDay {
 			return toDate(getDay());
 		}
 	}
+
+	public static boolean isFairDay(int day) {
+		return toDay(toDate(day)) == day;
+	}
+
+	public static boolean isFairDate(int date) {
+		return toDate(toDay(date)) == date;
+	}
 }

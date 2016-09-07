@@ -107,7 +107,19 @@ public class StringTools {
 		str = replaceChar(str, DIGIT, '9');
 		str = replaceChar(str, ALPHA, 'A');
 		str = replaceChar(str, alpha, 'a');
-		//str = replaceChar(str, ":/", '-'); // 廃止
+
+		return str;
+	}
+
+	public static boolean hexFormatIs(String format, String ptn) {
+		return format.equals(toHexFormat(ptn));
+	}
+
+	public static String toHexFormat(String str) {
+		str = replaceChar(str, HEXADECIMAL, 'f');
+		str = replaceChar(str, hexadecimal, 'f');
+		str = replaceChar(str, ALPHA, 'A');
+		str = replaceChar(str, alpha, 'a');
 
 		return str;
 	}

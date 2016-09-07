@@ -116,4 +116,21 @@ public class XStruct {
 
 		dest.add("</" + name + ">");
 	}
+
+	public List<String> toPathLines() {
+		List<String> ret = new ArrayList<String>();
+		toPathLines(null, ret);
+		return ret;
+	}
+
+	private void toPathLines(String parentPath, List<String> ret) {
+		for(String brName : this.branches.keySet()) {
+			XStruct br = this.branches.get(brName);
+			String path = parentPath == null ? brName : parentPath + "/" + brName;
+
+			ret.add(path);
+
+			br.toPathLines(path, ret);
+		}
+	}
 }
