@@ -4,7 +4,7 @@ import charlotte.htt.HttRequest;
 import charlotte.htt.HttResponse;
 import charlotte.htt.HttService;
 
-public abstract class HttAltria implements HttService {
+public abstract class HttArtoria implements HttService {
 	@Override
 	public boolean interlude() throws Exception {
 		return false;
@@ -15,5 +15,5 @@ public abstract class HttAltria implements HttService {
 		return null;
 	}
 
-	protected abstract Package getRootPackage(HttSaberRequest req);
+	protected abstract Package getRoot(HttSaberRequest req);
 }

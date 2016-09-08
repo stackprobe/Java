@@ -306,8 +306,8 @@ public class DebugTools {
 		BufferedInputStream fis1 = null;
 		BufferedInputStream fis2 = null;
 		try {
-			fis1 = new BufferedInputStream(new FileInputStream(file1));
-			fis2 = new BufferedInputStream(new FileInputStream(file2));
+			fis1 = FileTools.readOpenBinFile(file1);
+			fis2 = FileTools.readOpenBinFile(file2);
 
 			for(; ; ) {
 				int chr1 = fis1.read();

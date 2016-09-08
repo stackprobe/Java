@@ -786,7 +786,7 @@ public class FileTools {
 		catch(Throwable e) {
 			close(fis);
 			close(bis);
-			close(isr);
+			//close(isr);
 
 			throw new IOException(e);
 		}
@@ -810,7 +810,45 @@ public class FileTools {
 		catch(Throwable e) {
 			close(fos);
 			close(bos);
-			close(osw);
+			//close(osw);
+
+			throw new IOException(e);
+		}
+	}
+
+	public static BufferedInputStream readOpenBinFile(String file) throws IOException {
+		FileInputStream fis = null;
+		BufferedInputStream bis = null;
+		try {
+			fis = new FileInputStream(file);
+			bis = new BufferedInputStream(fis);
+
+			return bis;
+		}
+		catch(Throwable e) {
+			close(fis);
+			//close(bis);
+
+			throw new IOException(e);
+		}
+	}
+
+	public static BufferedOutputStream writeOpenBinFile(String file) throws IOException {
+		return writeOpenBinFile(file, false);
+	}
+
+	public static BufferedOutputStream writeOpenBinFile(String file, boolean append) throws IOException {
+		FileOutputStream fos = null;
+		BufferedOutputStream bos = null;
+		try {
+			fos = new FileOutputStream(file, append);
+			bos = new BufferedOutputStream(fos);
+
+			return bos;
+		}
+		catch(Throwable e) {
+			close(fos);
+			//close(bos);
 
 			throw new IOException(e);
 		}

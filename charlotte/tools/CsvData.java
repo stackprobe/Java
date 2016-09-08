@@ -1,9 +1,5 @@
 package charlotte.tools;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
@@ -242,7 +238,7 @@ public class CsvData {
 		private InputStreamReader _r = null;
 
 		public void readOpen() throws Exception {
-			_r = new InputStreamReader(new BufferedInputStream(new FileInputStream(_file)), _charset);
+			_r = FileTools.readOpenTextFile(_file, _charset);
 		}
 
 		public int nextChar() throws Exception {
@@ -332,7 +328,7 @@ public class CsvData {
 		private OutputStreamWriter _w = null;
 
 		public void writeOpen() throws Exception {
-			_w = new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(_file)), _charset);
+			_w = FileTools.writeOpenTextFile(_file, _charset);
 		}
 
 		public void writeCell(String cell) throws Exception {
