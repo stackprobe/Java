@@ -61,6 +61,7 @@ public class HttServer {
 
 								res.writeHeaderFields(headerFields);
 
+								headerFields.remove("Transfer-Encoding");
 								headerFields.remove("Content-Length");
 								headerFields.remove("Connection");
 

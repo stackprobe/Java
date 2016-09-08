@@ -3,11 +3,11 @@ package charlotte.htt;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 
 import charlotte.flowertact.Fortewave;
 import charlotte.tools.FileTools;
+import charlotte.tools.MapTools;
 import charlotte.tools.ObjectList;
 import charlotte.tools.StringTools;
 
@@ -32,7 +32,7 @@ public class HttRequest {
 		{
 			int count = Integer.parseInt(new String((byte[])rawData.get(c++), StringTools.CHARSET_ASCII));
 
-			_headerFields = new HashMap<String, String>();
+			_headerFields = MapTools.<String>createIgnoreCase();
 
 			for(int index = 0; index < count; index++) {
 				String key = new String((byte[])rawData.get(c++), StringTools.CHARSET_ASCII);
