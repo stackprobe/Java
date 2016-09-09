@@ -101,8 +101,8 @@ public class XNode {
 	//public static final String TAG_NAME_NAMESPACE = "_namespace";
 
 	private static void postLoad(XNode node) {
-		node._name = node._name.trim();
-		node._value = node._value.trim();
+		node._name = trimValue(node._name);
+		node._value = trimValue(node._value);
 
 		{
 			int clnPos = node._name.indexOf(':');
@@ -118,6 +118,14 @@ public class XNode {
 		for(XNode child : node._children) {
 			postLoad(child);
 		}
+	}
+
+	private static String trimValue(String value) {
+		value = value.replace("　", StringTools.S_ESCAPE); // XXX
+		value = value.trim();
+		value = value.replace(StringTools.S_ESCAPE, "　"); // XXX
+
+		return value;
 	}
 
 	private static final String SAVE_INDENT = "\t";
@@ -190,8 +198,37 @@ public class XNode {
 		List<XNode> ret = getNodes(path);
 
 		if(ret.size() == 0) {
-			throw new Exception("Tag [" + path + "] not found");
+			System.out.println("パス " + path + " のタグが見つかりません。");
+			return null;
 		}
 		return ret.get(0);
+	}
+
+	public XNode getNode(String path, int index) throws Exception {
+		List<XNode> ret = getNodes(path);
+
+		if(ret.size() <= index) {
+			System.out.println("パス " + path + " の " + (index + 1) + " 番目のタグが見つかりません。");
+			return null;
+		}
+		return ret.get(index);
+	}
+
+	public String getNodeValue(String path) throws Exception {
+		XNode node = getNode(path);
+
+		if(node == null) {
+			return null;
+		}
+		return node.getValue();
+	}
+
+	public String getNodeValue(String path, int index) throws Exception {
+		XNode node = getNode(path, index);
+
+		if(node == null) {
+			return null;
+		}
+		return node.getValue();
 	}
 }

@@ -133,4 +133,38 @@ public class XStruct {
 			br.toPathLines(path, ret);
 		}
 	}
+
+	public List<String> toPathValueLines() {
+		List<String> ret = new ArrayList<String>();
+		toPathValueLines(null, ret);
+		return ret;
+	}
+
+	private void toPathValueLines(String parentPath, List<String> ret) {
+		for(String brName : this.branches.keySet()) {
+			XStruct br = this.branches.get(brName);
+			String path = parentPath == null ? brName : parentPath + "/" + brName;
+
+			ret.add(path + " " + br.min + ":" + br.max);
+
+			{
+				List<String> values4Prn = br.getValues4Print();
+
+				if(1 <= values4Prn.size()) {
+					ret.add("{");
+					int c = 0;
+					for(String value : values4Prn) {
+						if(10 < ++c) {
+							ret.add("\t...");
+							break;
+						}
+						ret.add("\t" + value);
+					}
+					ret.add("}");
+				}
+			}
+
+			br.toPathValueLines(path, ret);
+		}
+	}
 }
