@@ -6,9 +6,15 @@ import charlotte.htt.HttService;
 import charlotte.tools.MapTools;
 
 public abstract class HttArtoria implements HttService {
+	private boolean _ended = false;
+
+	public void end() {
+		_ended = true;
+	}
+
 	@Override
 	public boolean interlude() throws Exception {
-		return false;
+		return _ended == false;
 	}
 
 	@Override
@@ -30,7 +36,7 @@ public abstract class HttArtoria implements HttService {
 		return req;
 	}
 
-	public HttSaberRequest createRequest(HttRequest hr) throws Exception {
+	public HttSaberRequest createRequest(HttRequest hr) {
 		HttSaberRequest req = new HttSaberRequest();
 
 		req.setMethod(hr.getMethod());

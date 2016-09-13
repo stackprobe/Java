@@ -3,6 +3,7 @@ package charlotte.tools;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.management.ManagementFactory;
+import java.net.InetAddress;
 
 public class SystemTools {
 	public static final int PID = Integer.parseInt(
@@ -39,5 +40,25 @@ public class SystemTools {
 		finally {
 			FileTools.del(batFile);
 		}
+	}
+
+	public static String getHostName() throws Exception {
+		String ret = InetAddress.getLocalHost().getHostName();
+
+		if(StringTools.isEmpty(ret)) {
+			ret = getHostIP();
+		}
+		return ret;
+	}
+
+	public static String getHostIP() throws Exception {
+		return toString_ip(InetAddress.getLocalHost().getAddress());
+	}
+
+	public static String toString_ip(byte[] ip) {
+		return (ip[0] & 0xff) + "." +
+				(ip[1] & 0xff) + "." +
+				(ip[2] & 0xff) + "." +
+				(ip[3] & 0xff);
 	}
 }

@@ -545,6 +545,9 @@ public class StringTools {
 
 	public static final String ZEN_HIRAGANA = "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん";
 	public static final String ZEN_KATAKANA = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
+	public static final String ZEN_DIGIT = "０１２３４５６７８９";
+	public static final String ZEN_ALPHA = "ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ";
+	public static final String zen_alpha = "ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ";
 
 	public static String getRandString(int minlen, int maxlen) {
 		return getRandString(minlen, maxlen, ASCII + ZEN_HIRAGANA + ZEN_KATAKANA);
@@ -672,5 +675,26 @@ public class StringTools {
 			buff.append(str.charAt(index));
 		}
 		return buff.toString();
+	}
+
+	public static String trim(String str) {
+		return trim(str, CONTROLCODE + "　");
+	}
+
+	public static String trim(String str, String spcChrs) {
+		int l;
+		int r;
+
+		for(l = 0; l < str.length(); l++) {
+			if(contains(spcChrs, str.charAt(l)) == false) {
+				break;
+			}
+		}
+		for(r = str.length(); l < r; r--) {
+			if(contains(spcChrs, str.charAt(r - 1)) == false) {
+				break;
+			}
+		}
+		return str.substring(l, r);
 	}
 }

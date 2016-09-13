@@ -76,20 +76,30 @@ public class HttRequest {
 		return new File(_headerPartFile);
 	}
 
-	public byte[] getHeaderPart() throws Exception {
-		return FileTools.readAllBytes(_headerPartFile);
+	public byte[] getHeaderPart() {
+		try {
+			return FileTools.readAllBytes(_headerPartFile);
+		}
+		catch(Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public File getBodyPartFile() {
 		return new File(_bodyPartFile);
 	}
 
-	public byte[] getBodyPart() throws Exception {
-		return FileTools.readAllBytes(_bodyPartFile);
+	public byte[] getBodyPart() {
+		try {
+			return FileTools.readAllBytes(_bodyPartFile);
+		}
+		catch(Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
-	 * @deprecated will be deleted
+	 * @deprecated
 	 */
 	public void pulse() {
 		try {

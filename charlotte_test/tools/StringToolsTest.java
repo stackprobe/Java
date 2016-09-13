@@ -27,6 +27,11 @@ public class StringToolsTest {
 					) {
 				throw new Exception();
 			}
+
+			System.out.println("[" + StringTools.trim("　　　") + "]");
+			System.out.println("[" + StringTools.trim("　　　$t　　　") + "]");
+			System.out.println("[" + StringTools.trim("　　　\t　　　") + "]");
+			System.out.println("[" + StringTools.trim("　\t　\t　$$　\t　\t　") + "]");
 		}
 		catch(Throwable e) {
 			e.printStackTrace();

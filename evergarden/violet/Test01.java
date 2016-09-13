@@ -5,11 +5,13 @@ import java.util.Date;
 import java.util.Locale;
 
 import charlotte.satellite.WinAPITools;
+import charlotte.tools.SystemTools;
 
 public class Test01 {
 	public static void main(String[] args) {
 		try {
 			System.out.println("TMP: " + WinAPITools.i().getEnv("TMP", "error"));
+			System.out.println("tmp: " + System.getProperty("java.io.tmpdir"));
 
 			System.out.println(System.getProperty("java.version"));
 
@@ -56,8 +58,11 @@ public class Test01 {
 				String string = null;
 
 				System.out.println("" + (string == null));
-				System.out.println("" + (string.equals(null)));
+				//System.out.println("" + (string.equals(null))); // NullPointerException
 			}
+
+			System.out.println(SystemTools.getHostName());
+			System.out.println(SystemTools.getHostIP());
 		}
 		catch(Throwable e) {
 			e.printStackTrace();

@@ -64,8 +64,7 @@ public class Test01 implements HttService {
 		addTr("Url", req.getUrl().toString());
 		addTr("HTTP_Version", req.getHTTPVersion());
 
-		for(String headerKey : req.getHeaderFields().keySet())
-		{
+		for(String headerKey : req.getHeaderFields().keySet()) {
 			addTr("Header_" + headerKey, req.getHeaderFields().get(headerKey));
 		}
 		addTr("Body", toAsciiString(req.getBodyPart()));
