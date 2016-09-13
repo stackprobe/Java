@@ -39,6 +39,14 @@ public class TabletStore {
 		}
 	}
 
+	public void mustGet() {
+		mustGet(1);
+	}
+
+	public void mustGet(int count) {
+		while(get(count) == false);
+	}
+
 	public boolean get() {
 		return get(1);
 	}

@@ -7,6 +7,35 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 public class SwingTools {
+	public static void invoke(final RunnableEx runner) throws Exception {
+		final TabletStore ts = new TabletStore();
+
+		invokeLater(new RunnableEx() {
+			@Override
+			public void run() throws Exception {
+				runner.getRunnable().run();
+				ts.add();
+			}
+		});
+
+		ts.mustGet();
+		runner.bury();
+	}
+
+	public static void invokeLater(RunnableEx runner) throws Exception {
+		invokeLaterDeep(runner, 0, 0);
+	}
+
+	public static void invokeLaterDeep(RunnableEx runner) throws Exception {
+		invokeLaterDeep(runner.getRunnable());
+		runner.bury();
+	}
+
+	public static void invokeLaterDeep(RunnableEx runner, int deep, long millis) throws Exception {
+		invokeLaterDeep(runner.getRunnable(), deep, millis);
+		runner.bury();
+	}
+
 	public static void invokeLaterDeep(Runnable runner) {
 		invokeLaterDeep(runner, 100, 1L);
 	}
