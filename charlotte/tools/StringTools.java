@@ -697,4 +697,15 @@ public class StringTools {
 		}
 		return str.substring(l, r);
 	}
+
+	public static int getCount(String str, char target) {
+		int count = 0;
+
+		for(char chr : str.toCharArray()) {
+			if(chr == target) {
+				count++;
+			}
+		}
+		return count;
+	}
 }

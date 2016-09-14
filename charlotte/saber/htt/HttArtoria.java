@@ -1,11 +1,25 @@
 package charlotte.saber.htt;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import charlotte.htt.HttRequest;
 import charlotte.htt.HttResponse;
 import charlotte.htt.HttService;
 import charlotte.tools.MapTools;
 
 public abstract class HttArtoria implements HttService {
+	private static HttArtoria _self;
+
+	public static HttArtoria getInstance() {
+		return _self;
+	}
+
+	public HttArtoria() {
+		_self = this;
+	}
+
 	private boolean _ended = false;
 
 	public void end() {
@@ -59,5 +73,13 @@ public abstract class HttArtoria implements HttService {
 		res.setBody(null);
 
 		return res;
+	}
+
+	public static class Entry {
+		public String packageString;
+		public String path;
+		public Map<String, Entry> children = MapTools.<Entry>createIgnoreCase();
+		public List<HttSaberAlter> alters = new ArrayList<HttSaberAlter>();
+		public HttSaber saber;
 	}
 }

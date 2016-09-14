@@ -10,7 +10,8 @@ public class ReflecToolsTest {
 		try {
 			//test00();
 			//test01();
-			test02();
+			//test02();
+			test03();
 		}
 		catch(Throwable e) {
 			e.printStackTrace();
@@ -81,6 +82,8 @@ public class ReflecToolsTest {
 		System.out.println("td: " + td);
 	}
 
+	// ----
+
 	private static void test02() throws Exception {
 		ReflecTools.invokeDeclaredCtor(
 				Test02Class.class,
@@ -132,5 +135,13 @@ public class ReflecToolsTest {
 		public Test02Class_04(double[][] d) {
 			System.out.println("Test02Class_04(double[][] d) executed! d[0][0] = " + d[0][0]);
 		}
+	}
+
+	// ----
+
+	private static void test03() throws Exception {
+		System.out.println(ReflecTools.getBinDir(ReflecToolsTest.class));
+		System.out.println(ReflecTools.getDir(ReflecToolsTest.class, ReflecToolsTest.class.getPackage()));
+		System.out.println(ReflecTools.getFile(ReflecToolsTest.class, ReflecToolsTest.class));
 	}
 }

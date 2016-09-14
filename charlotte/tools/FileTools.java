@@ -124,6 +124,12 @@ public class FileTools {
 	}
 
 	public static String norm(String path) {
+		if(path.startsWith("file:/")) {
+			path = path.substring(6);
+		}
+		if(StringTools.toFormat(path).toLowerCase().startsWith("/a:")) {
+			path = path.substring(1);
+		}
 		path = path.replace('\\', '/');
 		boolean networkPath = path.startsWith("//");
 		path = StringTools.replace(path, "//", "/", 20);

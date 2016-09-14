@@ -30,7 +30,7 @@ public class TabletStore {
 			throw new IllegalArgumentException();
 		}
 		synchronized(SYNCROOT) {
-			_count += count; // XXX
+			_count += count;
 
 			if(_oneTime4Add != null) {
 				_oneTime4Add.add();
@@ -52,9 +52,9 @@ public class TabletStore {
 	}
 
 	public boolean get(int count) {
-		//return get(count, 2000);
+		return get(count, 2000);
 		//return get(count, 30000);
-		return get(count, 60000);
+		//return get(count, 60000);
 		//return get(count, Long.MAX_VALUE);
 	}
 

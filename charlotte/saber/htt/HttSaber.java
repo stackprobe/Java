@@ -1,5 +1,7 @@
 package charlotte.saber.htt;
 
-public interface HttSaber {
+import java.io.Closeable;
+
+public interface HttSaber extends Closeable {
 	public HttSaberResponse doRequest(HttSaberRequest req) throws Exception;
 }

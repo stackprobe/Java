@@ -3,6 +3,7 @@ package charlotte.tools;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -209,5 +210,32 @@ public class ReflecTools {
 				return false;
 			}
 		}
+	}
+
+	public static String getDir(Class<?> critClassObj, Package p) throws Exception {
+		return FileTools.combine(getBinDir(critClassObj), p.getName().replace('.', '/'));
+	}
+
+	public static String getFile(Class<?> critClassObj, Class<?> classObj) throws Exception {
+		return FileTools.combine(getBinDir(critClassObj), classObj.getName().replace('.', '/')) + ".class";
+	}
+
+	public static String getBinDir(Class<?> critClassObj) throws Exception {
+		String className = critClassObj.getSimpleName();
+		URL url = critClassObj.getResource(className + ".class");
+		String path = url.getPath();
+
+		path = FileTools.norm(path);
+
+		if(FileTools.exists(path) == false) {
+			throw new RuntimeException(".jar化されたクラスのパスは取得出来ません。[" + path + "]");
+		}
+		String classPath = critClassObj.getName();
+		int deep = StringTools.getCount(classPath, '.') + 1;
+
+		for(int index = 0; index < deep; index++) {
+			path = FileTools.eraseLocal(path);
+		}
+		return path;
 	}
 }
