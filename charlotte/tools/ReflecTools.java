@@ -198,8 +198,14 @@ public class ReflecTools {
 	}
 
 	public static boolean instanceOf(Object instance, String expectClassName) {
-		Class<?> classObj = instance.getClass();
+		return typeOf(instance.getClass(), expectClassName);
+	}
 
+	public static boolean typeOf(Class<?> classObj, Class<?> expectClassObj) {
+		return typeOf(classObj, expectClassObj.getName());
+	}
+
+	public static boolean typeOf(Class<?> classObj, String expectClassName) {
 		for(; ; ) {
 			if(classObj.getName().equals(expectClassName)) {
 				return true;
@@ -212,15 +218,15 @@ public class ReflecTools {
 		}
 	}
 
-	public static String getDir(Class<?> critClassObj, Package p) throws Exception {
+	public static String getDir(Class<?> critClassObj, Package p) {
 		return FileTools.combine(getBinDir(critClassObj), p.getName().replace('.', '/'));
 	}
 
-	public static String getFile(Class<?> critClassObj, Class<?> classObj) throws Exception {
+	public static String getFile(Class<?> critClassObj, Class<?> classObj) {
 		return FileTools.combine(getBinDir(critClassObj), classObj.getName().replace('.', '/')) + ".class";
 	}
 
-	public static String getBinDir(Class<?> critClassObj) throws Exception {
+	public static String getBinDir(Class<?> critClassObj) {
 		String className = critClassObj.getSimpleName();
 		URL url = critClassObj.getResource(className + ".class");
 		String path = url.getPath();

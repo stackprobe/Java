@@ -22,18 +22,18 @@ public class SwingTools {
 		runner.bury();
 	}
 
-	public static void invokeLater(RunnableEx runner) throws Exception {
+	public static void invokeLater(RunnableEx runner) {
 		invokeLaterDeep(runner, 0, 0);
 	}
 
-	public static void invokeLaterDeep(RunnableEx runner) throws Exception {
+	public static void invokeLaterDeep(RunnableEx runner) {
 		invokeLaterDeep(runner.getRunnable());
-		runner.bury();
+		//runner.bury(); // 拾えません。
 	}
 
-	public static void invokeLaterDeep(RunnableEx runner, int deep, long millis) throws Exception {
+	public static void invokeLaterDeep(RunnableEx runner, int deep, long millis) {
 		invokeLaterDeep(runner.getRunnable(), deep, millis);
-		runner.bury();
+		//runner.bury(); // 拾えません。
 	}
 
 	public static void invokeLaterDeep(Runnable runner) {
