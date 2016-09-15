@@ -5,11 +5,13 @@ import java.awt.Font;
 
 import charlotte.tools.Bmp;
 import charlotte.tools.BmpTools;
+import charlotte.tools.StringTools;
 
 public class BmpToolsTest {
 	public static void main(String[] args) {
 		try {
-			main2();
+			//main2();
+			main3();
 		}
 		catch(Throwable e) {
 			e.printStackTrace();
@@ -37,5 +39,25 @@ public class BmpToolsTest {
 
 			bmp.writeToFile("C:/temp/1.png");
 		}
+	}
+
+	private static void main3() throws Exception {
+		BmpTools.AsciiStringBmp asBmp = new BmpTools.AsciiStringBmp(
+				new Color(0, true),
+				Color.BLACK,
+				"メイリオ",
+				Font.BOLD,
+				120,
+				300,
+				300,
+				-1,
+				-1,
+				4,
+				2
+				);
+
+		Bmp bmp = asBmp.getStringBmp(StringTools.ASCII_SPC);
+
+		bmp.writeToFile("C:/temp/2.png");
 	}
 }

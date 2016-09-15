@@ -16,6 +16,8 @@ import charlotte.tools.FileTools;
 import charlotte.tools.MapTools;
 import charlotte.tools.ReflecTools;
 import charlotte.tools.StringTools;
+import charlotte.tools.ValueBox;
+import charlotte.tools.ValueSetter;
 
 public abstract class HttArtoria implements HttService, Closeable {
 	private static HttArtoria _self;
@@ -49,11 +51,23 @@ public abstract class HttArtoria implements HttService, Closeable {
 		}
 		Entry entry = getEntry(p);
 		String urlPath = urlToUrlPath(hr.getUrlString());
-		List<Entry> entries = urlPathToEntries(urlPath, entry);
+		ValueBox<HttSaber404> saber404Box = new ValueBox<HttSaber404>();
+		List<Entry> entries = urlPathToEntries(urlPath, entry, saber404Box);
 		HttSaberResponse res;
 
 		if(entries == null) {
-			res = getResponse404(req);
+			HttSaber404 saber404 = saber404Box.get();
+
+			if(saber404 != null) {
+				res = saber404.getResponse(req);
+
+				if(res == null) {
+					throw new NullPointerException("saber404.getResponse() returned null");
+				}
+			}
+			else {
+				res = getResponse404(req);
+			}
 		}
 		else {
 			entry = entries.get(entries.size() - 1);
@@ -173,8 +187,10 @@ public abstract class HttArtoria implements HttService, Closeable {
 		public String path;
 		public Map<String, Entry> children;
 		public List<Entry> alters;
+		public Entry saber404Entry;
 		public HttSaber saber;
 		public HttSaberAlter alter;
+		public HttSaber404 saber404;
 		public File file;
 	}
 
@@ -211,6 +227,9 @@ public abstract class HttArtoria implements HttService, Closeable {
 			else if(entry.alter != null) {
 				ret.alters.add(entry);
 			}
+			else if(entry.saber404 != null) {
+				ret.saber404Entry = entry;
+			}
 			else {
 				ret.children.put(lPath, entry);
 			}
@@ -238,6 +257,10 @@ public abstract class HttArtoria implements HttService, Closeable {
 				ret = new Entry();
 				ret.alter = (HttSaberAlter)ReflecTools.invokeDeclaredCtor(classObj, new Object[0]);
 			}
+			else if(ReflecTools.typeOf(classObj, HttSaber404.class)) {
+				ret = new Entry();
+				ret.saber404 = (HttSaber404)ReflecTools.invokeDeclaredCtor(classObj, new Object[0]);
+			}
 			else {
 				return null;
 			}
@@ -258,15 +281,13 @@ public abstract class HttArtoria implements HttService, Closeable {
 				"template".equalsIgnoreCase(lPath);
 	}
 
+	private static final String WILDCARD_SUFFIX = ".*";
+
 	public String lPathToSaberLPath(String lPath) {
 		lPath = FileTools.eraseExt(lPath);
-		lPath += getSaberLPathSuffix();
+		lPath += WILDCARD_SUFFIX;
 
 		return lPath;
-	}
-
-	public String getSaberLPathSuffix() {
-		return ".cgi";
 	}
 
 	@Override
@@ -300,6 +321,8 @@ public abstract class HttArtoria implements HttService, Closeable {
 		entry.saber = null;
 		FileTools.close(entry.alter);
 		entry.alter = null;
+		FileTools.close(entry.saber404);
+		entry.saber404 = null;
 	}
 
 	public String urlToUrlPath(String url) {
@@ -338,19 +361,31 @@ public abstract class HttArtoria implements HttService, Closeable {
 		return "index.html";
 	}
 
-	public List<Entry> urlPathToEntries(String urlPath, Entry entry) {
+	public List<Entry> urlPathToEntries(String urlPath, Entry entry, ValueSetter<HttSaber404> saber404Box) {
 		List<String> lPaths = StringTools.tokenize(urlPath, "/");
 		List<Entry> entries = new ArrayList<Entry>();
 
 		entries.add(entry);
 
 		for(String lPath : lPaths) {
-			entry = entry.children.get(lPath);
-
-			if(entry == null) {
+			if(entry.children == null) {
 				return null;
 			}
-			entries.add(entry);
+			if(entry.saber404Entry != null) {
+				saber404Box.set(entry.saber404Entry.saber404);
+			}
+			Entry entryNew = entry.children.get(lPath);
+
+			if(entryNew == null) {
+				lPath = lPathToSaberLPath(lPath);
+				entryNew = entry.children.get(lPath);
+
+				if(entryNew == null) {
+					return null;
+				}
+			}
+			entries.add(entryNew);
+			entry = entryNew;
 		}
 		return entries;
 	}
@@ -369,7 +404,26 @@ public abstract class HttArtoria implements HttService, Closeable {
 		return res;
 	}
 
-	public abstract HttSaber getSaber404(HttSaberRequest req) throws Exception;
+	private HttSaber _saber404;
+
+	public HttSaber getSaber404(HttSaberRequest req) {
+		if(_saber404 == null) {
+			_saber404 = new HttSaber() {
+				@Override
+				public HttSaberResponse doRequest(HttSaberRequest req) throws Exception {
+					HttSaberResponse res = createResponse();
+					res.setStatusCode(404);
+					return res;
+				}
+
+				@Override
+				public void close() throws IOException {
+					// noop
+				}
+			};
+		}
+		return _saber404;
+	}
 
 	public HttSaberResponse getResponse301(HttSaberRequest req) throws Exception {
 		String urlString = req.getUrlString();
@@ -381,7 +435,7 @@ public abstract class HttArtoria implements HttService, Closeable {
 		}
 
 		if(StringTools.endsWith(urlString, "/")) {
-			throw new Exception("");
+			return getResponse404(req);
 		}
 		String location = urlString + "/";
 
@@ -397,10 +451,7 @@ public abstract class HttArtoria implements HttService, Closeable {
 		HttSaberResponse res = createResponse();
 
 		res.setBodyFile(file);
-		res.getHeaderFields().put(
-				"Content-Type",
-				getContentType(file)
-				);
+		res.getHeaderFields().put("Content-Type", getContentType(file));
 
 		return res;
 	}
