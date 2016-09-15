@@ -3,6 +3,7 @@ package charlotte.flowertact;
 import charlotte.satellite.WinAPITools;
 import charlotte.tools.QueueData;
 import charlotte.tools.SecurityTools;
+import charlotte.tools.ThreadTools;
 
 public class RapidPOBox extends PostOfficeBox {
 	private String _identHash;
@@ -66,5 +67,32 @@ public class RapidPOBox extends PostOfficeBox {
 			WinAPITools.i().recvFromFortewave(_identHash, _rq, millis, 100, 5000000); // 5 MB
 		}
 		return _rq.poll();
+	}
+
+	@Override
+	public void close() {
+		super.close();
+
+		// wait for send()_thread
+		{
+			long millis = 0L;
+			long elapse = 0L;
+
+			while(_sending) {
+				if(millis == 0L) {
+					System.out.println("[RPOB]送信スレッドの停止を待っています...");
+				}
+				if(millis < 2000L) {
+					millis++;
+				}
+				ThreadTools.sleep(millis);
+				elapse += millis;
+
+				if(30000L < elapse) {
+					System.err.println("[RPOB]送信スレッドが停止しません。elapse=" + elapse);
+				}
+			}
+			System.out.println("[RPOB]送信スレッドは停止しています。");
+		}
 	}
 }
