@@ -344,6 +344,14 @@ public class StringTools {
 		return ArrayTools.contains(list, target, comp);
 	}
 
+	public static boolean containsIgnoreCase(String[] arr, String target) {
+		return ArrayTools.contains(arr, target, compIgnoreCase);
+	}
+
+	public static boolean containsIgnoreCase(List<String> list, String target) {
+		return ArrayTools.contains(list, target, compIgnoreCase);
+	}
+
 	public static boolean contains(String str, char chr) {
 		return str.indexOf(chr) != -1;
 	}

@@ -3,18 +3,17 @@ package charlotte.saber.htt;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import charlotte.htt.HttRequest;
 import charlotte.htt.HttResponse;
 import charlotte.htt.HttService;
-import charlotte.tools.ArrayTools;
 import charlotte.tools.ExtToContentType;
 import charlotte.tools.FileTools;
 import charlotte.tools.MapTools;
 import charlotte.tools.ReflecTools;
+import charlotte.tools.SetTools;
 import charlotte.tools.StringTools;
 
 public abstract class HttArtoria implements HttService, Closeable {
@@ -30,6 +29,9 @@ public abstract class HttArtoria implements HttService, Closeable {
 
 	private boolean _ended = false;
 
+	/**
+	 * thread safe
+	 */
 	public void end() {
 		_ended = true;
 	}
@@ -47,34 +49,27 @@ public abstract class HttArtoria implements HttService, Closeable {
 		if(p == null) {
 			throw new NullPointerException("getRoot() returned null");
 		}
-		Entry entry = getEntry(p);
+		Root root = getRoot(p);
 		String urlPath = urlToUrlPath(hr.getUrlString());
-		List<Entry> entries = urlPathToEntries(urlPath, entry);
+		Entry entry = root.entries.get(urlPath);
+
+		if(entry == null) {
+			entry = root.entries.get(urlPathToSaberUrlPath(urlPath));
+		}
 		HttSaberResponse res;
 
-		if(entries == null) {
-			res = getSaber404().doRequest(req);
+		if(entry == null) {
+			res = getResponse301(root, urlPath, req);
+
+			if(res == null) {
+				res = root.alter.doRequest(req);
+			}
+		}
+		else if(entry.saber == null) {
+			res = download(entry.file);
 		}
 		else {
-			entry = entries.get(entries.size() - 1);
-
-			if(entry.saber != null) {
-				alter(entries, req);
-				res = entry.saber.doRequest(req);
-
-				if(res == null) {
-					throw new NullPointerException("entry.saber.doRequest() returned null");
-				}
-				alter(entries, res);
-			}
-			else if(entry.file != null) {
-				alter(entries, req);
-				res = download(entry.file);
-				alter(entries, res);
-			}
-			else {
-				res = getResponse301(req);
-			}
+			res = entry.saber.doRequest(req);
 		}
 		return getHttResponse(res);
 	}
@@ -105,12 +100,12 @@ public abstract class HttArtoria implements HttService, Closeable {
 		return req;
 	}
 
-	public HttSaberResponse createResponse() throws Exception {
+	public HttSaberResponse createResponse() {
 		HttSaberResponse res = new HttSaberResponse();
 
 		res.setHTTPVersion("HTTP/1.1");
 		res.setStatusCode(200);
-		res.setReasonPhrase("Saber Lion");
+		res.setReasonPhrase("Gaooooooo");
 		res.setHeaderFields(MapTools.<String>createIgnoreCase());
 		res.setBodyFile(null);
 		res.setBody(null);
@@ -152,227 +147,199 @@ public abstract class HttArtoria implements HttService, Closeable {
 		};
 	}
 
-	private Map<String, Entry> _entries = MapTools.<Entry>createIgnoreCase();
+	private Map<String, Root> _roots = MapTools.<Root>createIgnoreCase();
 
-	public Entry getEntry(Package p) throws Exception {
-		Entry entry = _entries.get(p.getName());
+	public Root getRoot(Package p) throws Exception {
+		Root root = _roots.get(p.getName());
 
-		if(entry == null) {
-			entry = createEntry(p);
-			_entries.put(p.getName(), entry);
+		if(root == null) {
+			root = createRoot(p);
+			_roots.put(p.getName(), root);
 		}
-		return entry;
+		return root;
+	}
+
+	public static class Root {
+		public Map<String, Entry> entries;
+		public HttSaberAlter alter;
+	}
+
+	public static class Entry {
+		public HttSaber saber;
+		public File file;
+	}
+
+	public Root createRoot(Package p) throws Exception {
+		String dir = ReflecTools.getDir(getCritClassObj(), p);
+
+		if(FileTools.isDirectory(dir) == false) {
+			throw new RuntimeException("プロジェクトに含まれないパッケージは取得出来ません。");
+		}
+		Root root = new Root();
+
+		root.entries = MapTools.<Entry>createIgnoreCase();
+
+		for(String path : FileTools.lss(dir)) {
+			path = FileTools.norm(path);
+
+			if(FileTools.isDirectory(path)) {
+				continue;
+			}
+			if(isIgnorePath(path, dir)) {
+				continue;
+			}
+			String urlPath = getUrlPath(path, dir);
+
+			if(StringTools.endsWithIgnoreCase(path, ".class")) {
+				String className = getClassName(path);
+				Class<?> classObj = Class.forName(className);
+
+				if(ReflecTools.typeOf(classObj, HttSaber.class)) {
+					HttSaber saber = (HttSaber)ReflecTools.invokeDeclaredCtor(classObj, new Object[0]);
+
+					Entry entry = new Entry();
+					entry.saber = saber;
+					root.entries.put(urlPathToSaberUrlPath(urlPath), entry);
+
+					if(saber instanceof HttSaberAlter) {
+						root.alter = (HttSaberAlter)saber;
+					}
+				}
+			}
+			else {
+				Entry entry = new Entry();
+				entry.file = new File(path);
+				root.entries.put(urlPath, entry);
+			}
+		}
+		if(root.alter == null) {
+			root.alter = getAlter();
+		}
+		return root;
 	}
 
 	public Class<?> getCritClassObj() {
 		return HttArtoria.class;
 	}
 
-	public static class Entry {
-		public String classPath;
-		public String path;
-		public Map<String, Entry> children;
-		public List<Entry> alters;
-		public Entry entry404;
-		public HttSaber saber;
-		public HttSaberAlter alter;
-		public File file;
+	public boolean isIgnorePath(String path, String rootDir) {
+		String ext = FileTools.getExt(path);
+
+		if(ext.equalsIgnoreCase("html")) {
+			String tmp = path;
+
+			tmp = FileTools.eraseExt(tmp);
+			tmp += ".class";
+
+			if(FileTools.exists(tmp)) {
+				return true;
+			}
+		}
+		path = path.substring(rootDir.length());
+
+		Set<String> lps = SetTools.createIgnoreCase();
+		lps.addAll(StringTools.tokenize(path, "/"));
+
+		return lps.contains("res") ||
+				 lps.contains("resource") ||
+				 lps.contains("template") ||
+				 lps.contains("temp") ||
+				 lps.contains("tmp");
 	}
 
-	public Entry createEntry(Package p) throws Exception {
-		String dir = ReflecTools.getDir(getCritClassObj(), p);
+	public String getUrlPath(String path, String rootDir) {
+		String ret = path;
 
-		if(FileTools.isDirectory(dir) == false) {
-			throw new RuntimeException("プロジェクトに含まれないパッケージは取得出来ません。[" + dir + "]");
-		}
-		Entry ret = new Entry();
-
-		ret.classPath = p.getName();
-		ret.path = dir;
-		ret.children = MapTools.<Entry>createIgnoreCase();
-		ret.alters = new ArrayList<Entry>();
-
-		List<String> paths = FileTools.ls(dir);
-
-		ArrayTools.sort(paths, StringTools.compIgnoreCase);
-
-		for(String path : paths) {
-			String lPath = FileTools.getLocal(path);
-			String lClassPath = FileTools.eraseExt(lPath);
-			String classPath = ret.classPath + "." + lClassPath;
-			Entry entry = createEntry(classPath, path);
-
-			if(entry == null) {
-				// noop
-			}
-			else if(entry.saber != null) {
-				lPath = getSaberLPath(lPath);
-				ret.children.put(lPath, entry);
-			}
-			else if(entry.alter != null) {
-				ret.alters.add(entry);
-			}
-			else {
-				ret.children.put(lPath, entry);
-			}
-		}
-		return ret;
-	}
-
-	public Entry createEntry(String classPath, String path) throws Exception {
-		if(isIgnoreLocalPath(FileTools.getLocal(path))) {
-			return null;
-		}
-		if(FileTools.isDirectory(path)) {
-			return createEntry(Package.getPackage(classPath));
-		}
-		Entry ret;
-
-		if(StringTools.endsWithIgnoreCase(path, ".class")) {
-			Class<?> classObj = Class.forName(classPath);
-
-			if(ReflecTools.typeOf(classObj, HttSaber.class)) {
-				ret = new Entry();
-				ret.saber = (HttSaber)ReflecTools.invokeDeclaredCtor(classObj, new Object[0]);
-			}
-			else if(ReflecTools.typeOf(classObj, HttSaberAlter.class)) {
-				ret = new Entry();
-				ret.alter = (HttSaberAlter)ReflecTools.invokeDeclaredCtor(classObj, new Object[0]);
-			}
-			else {
-				return null;
-			}
-		}
-		else {
-			ret = new Entry();
-			ret.file = new File(path);
-		}
-		ret.classPath = classPath;
-		ret.path = path;
-
-		return ret;
-	}
-
-	public boolean isIgnoreLocalPath(String lPath) {
-		return "res".equalsIgnoreCase(lPath) ||
-				"resource".equalsIgnoreCase(lPath) ||
-				"template".equalsIgnoreCase(lPath);
-	}
-
-	private static final String WILDCARD_SUFFIX = ".*";
-
-	public String getSaberLPath(String lPath) {
-		lPath = FileTools.eraseExt(lPath);
-		lPath += WILDCARD_SUFFIX;
-
-		return lPath;
-	}
-
-	@Override
-	public void close() throws IOException {
-		clear();
-	}
-
-	public void clear() {
-		clearAllEntry();
-	}
-
-	public void clearAllEntry() {
-		for(Entry entry : _entries.values()) {
-			clearEntry(entry);
-		}
-		_entries.clear();
-	}
-
-	public void clearEntry(Entry entry) {
-		if(entry.children != null) {
-			for(Entry e : entry.children.values()) {
-				clearEntry(e);
-			}
-		}
-		if(entry.alters != null) {
-			for(Entry e : entry.alters) {
-				clearEntry(e);
-			}
-		}
-		FileTools.close(entry.saber);
-		entry.saber = null;
-		FileTools.close(entry.alter);
-		entry.alter = null;
-	}
-
-	public String urlToUrlPath(String url) {
-		int index;
-
-		index = url.indexOf('?');
-		if(index != -1) {
-			url = url.substring(0, index);
-		}
-
-		index = url.indexOf("://");
-		if(index != -1) {
-			url = url.substring(index + 3);
-
-			index = url.indexOf('/');
-			if(index != -1) {
-				url = url.substring(index);
-			}
-			else {
-				url = "/";
-			}
-		}
-		if(StringTools.endsWith(url, "/")) {
-			url += getIndexHtml();
-		}
-		url = String.join(
+		ret = ret.substring(rootDir.length());
+		ret = String.join(
 				"/",
-				StringTools.tokenize(url, "/", false, true)
+				StringTools.tokenize(ret, "/", false, true)
 				);
 
-		return url;
+		return ret;
+	}
+
+	public String getClassName(String path) {
+		String ret = path;
+
+		ret = ret.substring(getBinDirLen());
+		ret = FileTools.eraseExt(ret);
+		ret = String.join(
+				".",
+				StringTools.tokenize(ret, "/", false, true)
+				);
+
+		return ret;
+	}
+
+	private int _binDirLen = -1;
+
+	public int getBinDirLen() {
+		if(_binDirLen == -1) {
+			_binDirLen = ReflecTools.getBinDir(getCritClassObj()).length();
+		}
+		return _binDirLen;
+	}
+
+	public String urlPathToSaberUrlPath(String urlPath) {
+		String ret = urlPath;
+
+		ret = FileTools.eraseExt(ret);
+		ret += ".*";
+
+		return ret;
+	}
+
+	public String urlToUrlPath(String urlString) {
+		String ret = urlString;
+		int index;
+
+		index = ret.indexOf('?');
+		if(index != -1) {
+			ret = ret.substring(0, index);
+		}
+
+		index = ret.indexOf("://");
+		if(index != -1) {
+			index = ret.indexOf('/', index + 3);
+			if(index != -1) {
+				ret = ret.substring(index);
+			}
+		}
+
+		if(ret.length() == 0) {
+			return getIndexHtml();
+		}
+		if(ret.charAt(ret.length() - 1) == '/') {
+			ret += getIndexHtml();
+		}
+		ret = String.join(
+				"/",
+				StringTools.tokenize(ret, "/", false, true)
+				);
+
+		return ret;
 	}
 
 	public String getIndexHtml() {
-		//return "index.htm";
 		return "index.html";
 	}
 
-	public List<Entry> urlPathToEntries(String urlPath, Entry entry) {
-		List<String> lPaths = StringTools.tokenize(urlPath, "/");
-		List<Entry> entries = new ArrayList<Entry>();
+	public HttSaberResponse download(File file) throws Exception {
+		HttSaberResponse res = createResponse();
 
-		entries.add(entry);
+		res.getHeaderFields().put("Content-Type", getContentType(file));
+		res.setBodyFile(file);
 
-		for(int index = 0; index < lPaths.size(); index++) {
-			String lPath = lPaths.get(index);
-
-			if(entry.children == null) {
-				entries.add(entry.entry404);
-				break;
-			}
-			Entry entryNew = entry.children.get(lPath);
-
-			if(entryNew == null) {
-				if(index + 1 < lPaths.size()) {
-					entries.add(entry.entry404);
-					break;
-				}
-				lPath = getSaberLPath(lPath);
-				entryNew = entry.children.get(lPath);
-
-				if(entryNew == null) {
-					entries.add(entry.entry404);
-					break;
-				}
-			}
-			entries.add(entryNew);
-			entry = entryNew;
-		}
-		return entries;
+		return res;
 	}
 
-	public HttSaber getSaber404() {
-		return new HttSaber() {
+	public String getContentType(File file) throws Exception {
+		return ExtToContentType.getContentType(FileTools.getExt(file.getCanonicalPath()));
+	}
+
+	public HttSaberAlter getAlter() {
+		return new HttSaberAlter() {
 			@Override
 			public HttSaberResponse doRequest(HttSaberRequest req) throws Exception {
 				HttSaberResponse res = createResponse();
@@ -387,19 +354,18 @@ public abstract class HttArtoria implements HttService, Closeable {
 		};
 	}
 
-	public HttSaberResponse getResponse301(HttSaberRequest req) throws Exception {
-		String urlString = req.getUrlString();
-		int index;
+	public HttSaberResponse getResponse301(Root root, String urlPath, HttSaberRequest req) {
+		urlPath += "/" + getIndexHtml();
 
-		index = urlString.indexOf('?');
-		if(index != -1) {
-			urlString = urlString.substring(0, index);
+		if(root.entries.containsKey(urlPath) == false) {
+			return null;
 		}
+		String host = req.getHeaderFields().get("Host");
 
-		if(StringTools.endsWith(urlString, "/")) {
-			return getSaber404().doRequest(req);
+		if(host == null) {
+			return null;
 		}
-		String location = urlString + "/";
+		String location = "http://" + host + "/" + urlPath;
 
 		HttSaberResponse res = createResponse();
 
@@ -409,36 +375,26 @@ public abstract class HttArtoria implements HttService, Closeable {
 		return res;
 	}
 
-	public HttSaberResponse download(File file) throws Exception {
-		HttSaberResponse res = createResponse();
-
-		res.setBodyFile(file);
-		res.getHeaderFields().put("Content-Type", getContentType(file));
-
-		return res;
+	@Override
+	public void close() throws IOException {
+		clear();
 	}
 
-	public String getContentType(File file) throws Exception {
-		return ExtToContentType.getContentType(FileTools.getExt(file.getCanonicalPath()));
+	public void clear() {
+		clearAllRoot();
 	}
 
-	public void alter(List<Entry> entries, HttSaberRequest req) throws Exception {
-		for(int index = 0; index < entries.size() - 1; index++) {
-			Entry entry = entries.get(index);
-
-			for(int altndx = 0; altndx < entry.alters.size(); altndx++) {
-				entry.alters.get(altndx).alter.alter(req);
-			}
+	public void clearAllRoot() {
+		for(Root root : _roots.values()) {
+			clearRoot(root);
 		}
+		_roots.clear();
 	}
 
-	public void alter(List<Entry> entries, HttSaberResponse res) throws Exception {
-		for(int index = entries.size() - 2; 0 <= index; index--) {
-			Entry entry = entries.get(index);
-
-			for(int altndx = entry.alters.size(); 0 <= altndx; altndx--) {
-				entry.alters.get(altndx).alter.alter(res);
-			}
+	private void clearRoot(Root root) {
+		for(Entry entry : root.entries.values()) {
+			FileTools.close(entry.saber);
 		}
+		//FileTools.close(root.alter); // dont!
 	}
 }

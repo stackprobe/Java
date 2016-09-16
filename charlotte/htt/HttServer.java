@@ -70,14 +70,14 @@ public class HttServer {
 								for(String key : headerFields.keySet()) {
 									String value = headerFields.get(key);
 
-									for(String colo_value : StringTools.tokenize(value, ":")) {
-										String colo_key = key;
+									for(String div_value : StringTools.tokenize(value, "／")) {
+										String div_key = key;
 
-										for(String line_value : StringTools.tokenize(colo_value, "\n")) {
-											lines.add(colo_key);
+										for(String line_value : StringTools.tokenize(div_value, "\n")) {
+											lines.add(div_key);
 											lines.add(line_value);
 
-											colo_key = "";
+											div_key = "";
 										}
 									}
 								}

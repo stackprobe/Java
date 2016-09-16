@@ -53,6 +53,10 @@ public class ReflecTools {
 		}
 	}
 
+	public static Object invokeDeclaredCtor(String className, Object[] params) throws Exception {
+		return invokeDeclaredCtor(Class.forName(className), params);
+	}
+
 	public static Object invokeDeclaredCtor(Class<?> classObj, Object[] params) throws Exception {
 		return invokeDeclaredCtor(classObj, params, getTypes(params));
 	}

@@ -94,7 +94,7 @@ public class PostOfficeBox {
 	private int _lastNo;
 
 	private void getMessageRange() {
-		String[] files = FileTools.list(_messageDir);
+		String[] files = new File(_messageDir).list();
 
 		if(files == null) {
 			_firstNo = -1;
