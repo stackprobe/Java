@@ -4,6 +4,9 @@ import java.util.ArrayList;
 
 import charlotte.tools.ReflecTools;
 import charlotte.tools.TimeData;
+import charlotte.tools.ValueBox;
+import charlotte.tools.ValueGetter;
+import charlotte.tools.ValueSetter;
 
 public class ReflecToolsTest {
 	public static void main(String[] args) {
@@ -143,5 +146,13 @@ public class ReflecToolsTest {
 		System.out.println(ReflecTools.getBinDir(ReflecToolsTest.class));
 		System.out.println(ReflecTools.getDir(ReflecToolsTest.class, ReflecToolsTest.class.getPackage()));
 		System.out.println(ReflecTools.getFile(ReflecToolsTest.class, ReflecToolsTest.class));
+
+		System.out.println(ReflecTools.typeOf(String.class, Object.class)); // true
+		System.out.println(ReflecTools.typeOf(ValueGetter.class, ValueGetter.class)); // true
+		System.out.println(ReflecTools.typeOf(ValueGetter.class, ValueSetter.class)); // false
+		System.out.println(ReflecTools.typeOf(ValueGetter.class, ValueBox.class)); // false
+		System.out.println(ReflecTools.typeOf(ValueBox.class, ValueGetter.class)); // true
+		System.out.println(ReflecTools.typeOf(ValueBox.class, ValueSetter.class)); // true
+		System.out.println(ReflecTools.typeOf(ValueBox.class, ValueBox.class)); // true
 	}
 }

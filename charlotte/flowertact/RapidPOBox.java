@@ -73,15 +73,13 @@ public class RapidPOBox extends PostOfficeBox {
 	public void close() {
 		super.close();
 
-		// wait for send()_thread
-		{
+		if(_sending) {
 			long millis = 0L;
 			long elapse = 0L;
 
+			System.out.println("[RPOB]送信スレッドの停止を待っています...");
+
 			while(_sending) {
-				if(millis == 0L) {
-					System.out.println("[RPOB]送信スレッドの停止を待っています...");
-				}
 				if(millis < 2000L) {
 					millis++;
 				}

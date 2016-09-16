@@ -210,16 +210,34 @@ public class ReflecTools {
 	}
 
 	public static boolean typeOf(Class<?> classObj, String expectClassName) {
-		for(; ; ) {
+		QueueData<Class<?>> classObjs = new QueueData<Class<?>>();
+
+		classObjs.add(classObj);
+
+		while(1 <= classObjs.size()) {
+			classObj = classObjs.poll();
+
 			if(classObj.getName().equals(expectClassName)) {
 				return true;
 			}
+
+			{
+				Class<?>[] interfaceObjs = classObj.getInterfaces();
+
+				if(interfaceObjs != null) {
+					for(Class<?> interfaceObj : interfaceObjs) {
+						classObjs.add(interfaceObj);
+					}
+				}
+			}
+
 			classObj = classObj.getSuperclass();
 
-			if(classObj == null) {
-				return false;
+			if(classObj != null) {
+				classObjs.add(classObj);
 			}
 		}
+		return false;
 	}
 
 	public static String getDir(Class<?> critClassObj, Package p) {

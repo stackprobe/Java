@@ -19,7 +19,7 @@ import charlotte.tools.StringTools;
 public abstract class HttArtoria implements HttService, Closeable {
 	private static HttArtoria _self;
 
-	public static HttArtoria getInstance() {
+	public static HttArtoria i() {
 		return _self;
 	}
 
@@ -41,37 +41,41 @@ public abstract class HttArtoria implements HttService, Closeable {
 		return _ended == false;
 	}
 
+	private Object SYNCROOT = new Object();
+
 	@Override
 	public HttResponse service(HttRequest hr) throws Exception {
-		HttSaberRequest req = createRequest(hr);
-		Package p = getRoot(req);
+		synchronized(SYNCROOT) {
+			HttSaberRequest req = createRequest(hr);
+			Package p = getRoot(req);
 
-		if(p == null) {
-			throw new NullPointerException("getRoot() returned null");
-		}
-		Root root = getRoot(p);
-		String urlPath = urlToUrlPath(hr.getUrlString());
-		Entry entry = root.entries.get(urlPath);
-
-		if(entry == null) {
-			entry = root.entries.get(urlPathToSaberUrlPath(urlPath));
-		}
-		HttSaberResponse res;
-
-		if(entry == null) {
-			res = getResponse301(root, urlPath, req);
-
-			if(res == null) {
-				res = root.alter.doRequest(req);
+			if(p == null) {
+				throw new NullPointerException("getRoot() returned null");
 			}
+			Root root = getRoot(p);
+			String urlPath = urlToUrlPath(hr.getUrlString());
+			Entry entry = root.entries.get(urlPath);
+
+			if(entry == null) {
+				entry = root.entries.get(urlPathToSaberUrlPath(urlPath));
+			}
+			HttSaberResponse res;
+
+			if(entry == null) {
+				res = getResponse301(root, urlPath, req);
+
+				if(res == null) {
+					res = root.alter.doRequest(req);
+				}
+			}
+			else if(entry.saber == null) {
+				res = download(entry.file);
+			}
+			else {
+				res = entry.saber.doRequest(req);
+			}
+			return getHttResponse(res);
 		}
-		else if(entry.saber == null) {
-			res = download(entry.file);
-		}
-		else {
-			res = entry.saber.doRequest(req);
-		}
-		return getHttResponse(res);
 	}
 
 	protected abstract Package getRoot(HttSaberRequest req) throws Exception;
@@ -105,7 +109,7 @@ public abstract class HttArtoria implements HttService, Closeable {
 
 		res.setHTTPVersion("HTTP/1.1");
 		res.setStatusCode(200);
-		res.setReasonPhrase("Gaooooooo");
+		res.setReasonPhrase("Saber Lion Says Gaooooooo");
 		res.setHeaderFields(MapTools.<String>createIgnoreCase());
 		res.setBodyFile(null);
 		res.setBody(null);
@@ -154,6 +158,11 @@ public abstract class HttArtoria implements HttService, Closeable {
 
 		if(root == null) {
 			root = createRoot(p);
+
+			System.out.println("Package [" + p.getName() + "] loaded {");
+			root.debugPrint();
+			System.out.println("}");
+
 			_roots.put(p.getName(), root);
 		}
 		return root;
@@ -162,11 +171,28 @@ public abstract class HttArtoria implements HttService, Closeable {
 	public static class Root {
 		public Map<String, Entry> entries;
 		public HttSaberAlter alter;
+
+		public void debugPrint() {
+			for(String urlPath : entries.keySet()) {
+				System.out.println("[" + urlPath + "]=" + entries.get(urlPath).getDebugString());
+			}
+			System.out.println("ALTER=" + alter);
+		}
 	}
 
 	public static class Entry {
 		public HttSaber saber;
 		public File file;
+
+		public String getDebugString() {
+			if(saber != null) {
+				return "SABER:" + saber;
+			}
+			if(file != null) {
+				return "FILE:" + file;
+			}
+			return null;
+		}
 	}
 
 	public Root createRoot(Package p) throws Exception {
@@ -181,6 +207,8 @@ public abstract class HttArtoria implements HttService, Closeable {
 
 		for(String path : FileTools.lss(dir)) {
 			path = FileTools.norm(path);
+
+			System.out.println(path); // test
 
 			if(FileTools.isDirectory(path)) {
 				continue;
@@ -357,7 +385,9 @@ public abstract class HttArtoria implements HttService, Closeable {
 	public HttSaberResponse getResponse301(Root root, String urlPath, HttSaberRequest req) {
 		urlPath += "/" + getIndexHtml();
 
-		if(root.entries.containsKey(urlPath) == false) {
+		if(root.entries.containsKey(urlPath) == false &&
+				root.entries.containsKey(urlPathToSaberUrlPath(urlPath)) == false
+				) {
 			return null;
 		}
 		String host = req.getHeaderFields().get("Host");
@@ -380,11 +410,16 @@ public abstract class HttArtoria implements HttService, Closeable {
 		clear();
 	}
 
+	/**
+	 * thread safe
+	 */
 	public void clear() {
-		clearAllRoot();
+		synchronized(SYNCROOT) {
+			clearAllRoot();
+		}
 	}
 
-	public void clearAllRoot() {
+	private void clearAllRoot() {
 		for(Root root : _roots.values()) {
 			clearRoot(root);
 		}
