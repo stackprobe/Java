@@ -65,7 +65,11 @@ public class SortedList<T> {
 	 * _list が { } のとき -> { }
 	 */
 	public SubList<T> getMatch(T ferret) {
-		int[] lr = getRange(ferret);
+		return getMatch(ferret, _comp);
+	}
+
+	public SubList<T> getMatch(T ferret, Comparator<T> comp) {
+		int[] lr = getRange(ferret, comp);
 		return SubList.create(_list, lr[0] + 1, (lr[1] - lr[0]) - 1);
 	}
 
@@ -85,7 +89,11 @@ public class SortedList<T> {
 	 * _list が { } のとき -> { null, null }
 	 */
 	public SubList<T> getMatchWithEdge(T ferret) {
-		final int[] lr = getRange(ferret);
+		return getMatchWithEdge(ferret, _comp);
+	}
+
+	public SubList<T> getMatchWithEdge(T ferret, Comparator<T> comp) {
+		final int[] lr = getRange(ferret, comp);
 
 		if(lr[0] == -1 || lr[1] == size()) {
 			return new SubList<T>() {
@@ -114,21 +122,25 @@ public class SortedList<T> {
 	 * @return { ferret より小さい最後の位置。無ければ、-1, ferret より大きい最初の位置。無ければ、size() }
 	 */
 	public int[] getRange(T ferret) {
+		return getRange(ferret, _comp);
+	}
+
+	public int[] getRange(T ferret, final Comparator<T> comp) {
 		int l = -1;
 		int r = size();
 
 		while(l + 1 < r) {
 			int m = (l + r) / 2;
-			int ret = _comp.compare(get(m), ferret);
+			int ret = comp.compare(get(m), ferret);
 
 			if(ret == 0) {
 				l = getBorder(l, m, ferret, new Comparator<T>() {
 					@Override
-					public int compare(T a, T b) {
-						return _comp.compare(a, b) == 0 ? 1 : 0;
+					public int compare(T l, T r) {
+						return comp.compare(l, r) == 0 ? 1 : 0;
 					}
 				})[0];
-				r = getBorder(m, r, ferret, _comp)[1];
+				r = getBorder(m, r, ferret, comp)[1];
 				break;
 			}
 			if(ret < 0) {

@@ -3,6 +3,8 @@ package charlotte.saber.htt;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -60,12 +62,24 @@ public abstract class HttArtoria implements HttService, Closeable {
 				entry = root.entries.get(urlPathToSaberUrlPath(urlPath));
 			}
 			HttSaberResponse res;
+			List<HttSaberExtra> extraLinear = root.extras.getExtraLinear(urlPath);
+
+			flame(extraLinear, req);
 
 			if(entry == null) {
 				res = getResponse301(root, urlPath, req);
 
 				if(res == null) {
-					res = root.alter.doRequest(req);
+					HttSaberAlter alter = root.alters.getAlter(urlPath);
+
+					if(alter == null) {
+						alter = root.defAlter;
+					}
+					res = alter.doRequest(req);
+
+					if(res == null) {
+						throw new NullPointerException("alter.doRequest() returned null");
+					}
 				}
 			}
 			else if(entry.saber == null) {
@@ -73,7 +87,12 @@ public abstract class HttArtoria implements HttService, Closeable {
 			}
 			else {
 				res = entry.saber.doRequest(req);
+
+				if(res == null) {
+					throw new NullPointerException("entry.saber.doRequest() returned null");
+				}
 			}
+			flame(extraLinear, req, res);
 			return getHttResponse(res);
 		}
 	}
@@ -170,13 +189,16 @@ public abstract class HttArtoria implements HttService, Closeable {
 
 	public static class Root {
 		public Map<String, Entry> entries;
-		public HttSaberAlter alter;
+		public HttSaberAlter defAlter;
+		public AlterTree<HttSaberAlter> alters;
+		public AlterTree<HttSaberExtra> extras;
 
 		public void debugPrint() {
 			for(String urlPath : entries.keySet()) {
 				System.out.println("[" + urlPath + "]=" + entries.get(urlPath).getDebugString());
 			}
-			System.out.println("ALTER=" + alter);
+			alters.debugPrint("ALTER");
+			extras.debugPrint("EXTRA");
 		}
 	}
 
@@ -204,6 +226,9 @@ public abstract class HttArtoria implements HttService, Closeable {
 		Root root = new Root();
 
 		root.entries = MapTools.<Entry>createIgnoreCase();
+		root.defAlter = getDefAlter();
+		root.alters = new AlterTree<HttSaberAlter>();
+		root.extras = new AlterTree<HttSaberExtra>();
 
 		for(String path : FileTools.lss(dir)) {
 			path = FileTools.norm(path);
@@ -222,16 +247,20 @@ public abstract class HttArtoria implements HttService, Closeable {
 				String className = getClassName(path);
 				Class<?> classObj = Class.forName(className);
 
-				if(ReflecTools.typeOf(classObj, HttSaber.class)) {
+				if(ReflecTools.typeOf(classObj, HttSaberExtra.class)) {
+					HttSaberExtra extra = (HttSaberExtra)ReflecTools.invokeDeclaredCtor(classObj, new Object[0]);
+					root.extras.add(urlPath, extra);
+				}
+				else if(ReflecTools.typeOf(classObj, HttSaberAlter.class)) {
+					HttSaberAlter alter = (HttSaberAlter)ReflecTools.invokeDeclaredCtor(classObj, new Object[0]);
+					root.alters.add(urlPath, alter);
+				}
+				else if(ReflecTools.typeOf(classObj, HttSaber.class)) {
 					HttSaber saber = (HttSaber)ReflecTools.invokeDeclaredCtor(classObj, new Object[0]);
 
 					Entry entry = new Entry();
 					entry.saber = saber;
 					root.entries.put(urlPathToSaberUrlPath(urlPath), entry);
-
-					if(saber instanceof HttSaberAlter) {
-						root.alter = (HttSaberAlter)saber;
-					}
 				}
 			}
 			else {
@@ -239,9 +268,6 @@ public abstract class HttArtoria implements HttService, Closeable {
 				entry.file = new File(path);
 				root.entries.put(urlPath, entry);
 			}
-		}
-		if(root.alter == null) {
-			root.alter = getAlter();
 		}
 		return root;
 	}
@@ -366,7 +392,7 @@ public abstract class HttArtoria implements HttService, Closeable {
 		return ExtToContentType.getContentType(FileTools.getExt(file.getCanonicalPath()));
 	}
 
-	public HttSaberAlter getAlter() {
+	public HttSaberAlter getDefAlter() {
 		return new HttSaberAlter() {
 			@Override
 			public HttSaberResponse doRequest(HttSaberRequest req) throws Exception {
@@ -430,6 +456,116 @@ public abstract class HttArtoria implements HttService, Closeable {
 		for(Entry entry : root.entries.values()) {
 			FileTools.close(entry.saber);
 		}
-		//FileTools.close(root.alter); // dont!
+		root.alters.clear();
+		root.extras.clear();
+	}
+
+	public static class AlterTree<T> {
+		public Map<String, AlterTree<T>> children;
+		public List<T> leafs;
+
+		public AlterTree() {
+			children = MapTools.<AlterTree<T>>createIgnoreCase();
+			leafs = new ArrayList<T>();
+		}
+
+		public void add(String urlPath, T leaf) {
+			add(urlPathToLPaths(urlPath), 0, leaf);
+		}
+
+		private void add(List<String> lPaths, int index, T leaf) {
+			if(index < lPaths.size()) {
+				String lPath = lPaths.get(index);
+				AlterTree<T> child = children.get(lPath);
+
+				if(child == null) {
+					child = new AlterTree<T>();
+					children.put(lPath, child);
+				}
+				child.add(lPaths, index + 1, leaf);
+			}
+			else {
+				leafs.add(leaf);
+			}
+		}
+
+		public T getAlter(String urlPath) throws Exception {
+			return getAlter(urlPathToLPaths(urlPath), 0);
+		}
+
+		private T getAlter(List<String> lPaths, int index) {
+			if(index < lPaths.size()) {
+				String lPath = lPaths.get(index);
+				AlterTree<T> child = children.get(lPath);
+
+				if(child == null) {
+					return null;
+				}
+				return child.getAlter(lPaths, index + 1);
+			}
+			if(leafs.size() == 0) {
+				return null;
+			}
+			return leafs.get(leafs.size() - 1);
+		}
+
+		public List<T> getExtraLinear(String urlPath) {
+			List<T> dest = new ArrayList<T>();
+			getExtraLinear(urlPathToLPaths(urlPath), 0, dest);
+			return dest;
+		}
+
+		private void getExtraLinear(List<String> lPaths, int index, List<T> dest) {
+			dest.addAll(leafs);
+
+			if(index < lPaths.size()) {
+				String lPath = lPaths.get(index);
+				AlterTree<T> child = children.get(lPath);
+
+				if(child != null) {
+					child.getExtraLinear(lPaths, index + 1, dest);
+				}
+			}
+		}
+
+		private static List<String> urlPathToLPaths(String urlPath) {
+			List<String> ret = StringTools.tokenize(urlPath, "/", false, true);
+			ret.remove(ret.size() - 1);
+			return ret;
+		}
+
+		public void clear() {
+			for(String lPath : children.keySet()) {
+				children.get(lPath).clear();
+			}
+			for(T leaf : leafs) {
+				FileTools.close((Closeable)leaf);
+			}
+		}
+
+		public void debugPrint(String type) {
+			debugPrint(type, "");
+		}
+
+		private void debugPrint(String type, String urlPath) {
+			for(T leaf : leafs) {
+				System.out.println("[" + urlPath + "?]=" + type + ":" + leaf);
+			}
+			for(String lPath : children.keySet()) {
+				children.get(lPath).debugPrint(type, urlPath + lPath + "/");
+			}
+		}
+	}
+
+	public void flame(List<HttSaberExtra> extraLinear, HttSaberRequest req) {
+		for(HttSaberExtra extra : extraLinear) {
+			extra.flame(req);
+		}
+	}
+
+	public void flame(List<HttSaberExtra> extraLinear, HttSaberRequest req, HttSaberResponse res) {
+		for(int index = extraLinear.size() - 1; 0 <= index; index--) {
+			extraLinear.get(index).flame(req);
+		}
 	}
 }
