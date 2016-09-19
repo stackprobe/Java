@@ -136,8 +136,8 @@ public class SortedList<T> {
 			if(ret == 0) {
 				l = getBorder(l, m, ferret, new Comparator<T>() {
 					@Override
-					public int compare(T l, T r) {
-						return comp.compare(l, r) == 0 ? 1 : 0;
+					public int compare(T a, T b) {
+						return comp.compare(a, b) == 0 ? 1 : 0;
 					}
 				})[0];
 				r = getBorder(m, r, ferret, comp)[1];
