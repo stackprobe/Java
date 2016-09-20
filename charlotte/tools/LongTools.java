@@ -3,6 +3,9 @@ package charlotte.tools;
 import java.util.Comparator;
 
 public class LongTools {
+	public static final long IMAX = 1000000000L;
+	public static final long IMAX_64 = 1000000000000000000L;
+
 	public static long divRndOff(long numer, long denom) {
 		return divRndOff(numer, denom, 1, 2);
 	}

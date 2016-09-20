@@ -39,12 +39,14 @@ public class TabletStore {
 		}
 	}
 
-	public void mustGet() {
-		mustGet(1);
+	public void must() {
+		must(1);
 	}
 
-	public void mustGet(int count) {
+	public void must(int count) {
 		while(get(count) == false);
+		//get(count, LongTools.IMAX_64);
+		//get(count, Long.MAX_VALUE);
 	}
 
 	public boolean get() {
@@ -52,9 +54,10 @@ public class TabletStore {
 	}
 
 	public boolean get(int count) {
-		return get(count, 2000);
-		//return get(count, 30000);
+		//return get(count, 2000);
+		return get(count, 30000);
 		//return get(count, 60000);
+		//return get(count, LongTools.IMAX_64);
 		//return get(count, Long.MAX_VALUE);
 	}
 

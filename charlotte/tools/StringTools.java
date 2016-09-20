@@ -67,7 +67,6 @@ public class StringTools {
 	public static final String HEXADECIMAL = "0123456789ABCDEF";
 	public static final String hexadecimal = "0123456789abcdef";
 	public static final String OCTODECIMAL = "01234567";
-	public static final String octodecimal = "01234567";
 	public static final String BINADECIMAL = "01";
 
 	public static List<String> numericTokenize(String str) {

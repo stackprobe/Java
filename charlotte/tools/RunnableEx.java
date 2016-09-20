@@ -19,21 +19,7 @@ public abstract class RunnableEx {
 		};
 	}
 
-	public Runnable getNTRunnable() {
-		return new Runnable() {
-			@Override
-			public void run() {
-				try {
-					RunnableEx.this.run();
-				}
-				catch(Throwable e) {
-					e.printStackTrace();
-				}
-			}
-		};
-	}
-
-	public void bury() throws Exception {
+	public void relay() throws Exception {
 		if(_e != null) {
 			Throwable e = _e;
 

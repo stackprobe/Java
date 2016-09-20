@@ -78,7 +78,7 @@ public abstract class HttArtoria implements HttService, Closeable {
 					res = alter.doRequest(req);
 
 					if(res == null) {
-						throw new NullPointerException("alter.doRequest() returned null");
+						throw new NullPointerException("HttSaberAlter.doRequest() returned null");
 					}
 				}
 			}
@@ -89,7 +89,7 @@ public abstract class HttArtoria implements HttService, Closeable {
 				res = entry.saber.doRequest(req);
 
 				if(res == null) {
-					throw new NullPointerException("entry.saber.doRequest() returned null");
+					throw new NullPointerException("HttSaber.doRequest() returned null");
 				}
 			}
 			flame(extraLinear, req, res);
@@ -470,19 +470,19 @@ public abstract class HttArtoria implements HttService, Closeable {
 		}
 
 		public void add(String urlPath, T leaf) {
-			add(urlPathToLPaths(urlPath), 0, leaf);
+			add(urlPathToLDirs(urlPath), 0, leaf);
 		}
 
-		private void add(List<String> lPaths, int index, T leaf) {
-			if(index < lPaths.size()) {
-				String lPath = lPaths.get(index);
-				AlterTree<T> child = children.get(lPath);
+		private void add(List<String> lDirs, int index, T leaf) {
+			if(index < lDirs.size()) {
+				String lDir = lDirs.get(index);
+				AlterTree<T> child = children.get(lDir);
 
 				if(child == null) {
 					child = new AlterTree<T>();
-					children.put(lPath, child);
+					children.put(lDir, child);
 				}
-				child.add(lPaths, index + 1, leaf);
+				child.add(lDirs, index + 1, leaf);
 			}
 			else {
 				leafs.add(leaf);
@@ -490,18 +490,18 @@ public abstract class HttArtoria implements HttService, Closeable {
 		}
 
 		public T getAlter(String urlPath) throws Exception {
-			return getAlter(urlPathToLPaths(urlPath), 0);
+			return getAlter(urlPathToLDirs(urlPath), 0);
 		}
 
-		private T getAlter(List<String> lPaths, int index) {
-			if(index < lPaths.size()) {
-				String lPath = lPaths.get(index);
-				AlterTree<T> child = children.get(lPath);
+		private T getAlter(List<String> lDirs, int index) {
+			if(index < lDirs.size()) {
+				String lDir = lDirs.get(index);
+				AlterTree<T> child = children.get(lDir);
 
 				if(child == null) {
 					return null;
 				}
-				return child.getAlter(lPaths, index + 1);
+				return child.getAlter(lDirs, index + 1);
 			}
 			if(leafs.size() == 0) {
 				return null;
@@ -511,32 +511,32 @@ public abstract class HttArtoria implements HttService, Closeable {
 
 		public List<T> getExtraLinear(String urlPath) {
 			List<T> dest = new ArrayList<T>();
-			getExtraLinear(urlPathToLPaths(urlPath), 0, dest);
+			getExtraLinear(urlPathToLDirs(urlPath), 0, dest);
 			return dest;
 		}
 
-		private void getExtraLinear(List<String> lPaths, int index, List<T> dest) {
+		private void getExtraLinear(List<String> lDirs, int index, List<T> dest) {
 			dest.addAll(leafs);
 
-			if(index < lPaths.size()) {
-				String lPath = lPaths.get(index);
-				AlterTree<T> child = children.get(lPath);
+			if(index < lDirs.size()) {
+				String lDir = lDirs.get(index);
+				AlterTree<T> child = children.get(lDir);
 
 				if(child != null) {
-					child.getExtraLinear(lPaths, index + 1, dest);
+					child.getExtraLinear(lDirs, index + 1, dest);
 				}
 			}
 		}
 
-		private static List<String> urlPathToLPaths(String urlPath) {
+		private static List<String> urlPathToLDirs(String urlPath) {
 			List<String> ret = StringTools.tokenize(urlPath, "/", false, true);
 			ret.remove(ret.size() - 1);
 			return ret;
 		}
 
 		public void clear() {
-			for(String lPath : children.keySet()) {
-				children.get(lPath).clear();
+			for(String lDir : children.keySet()) {
+				children.get(lDir).clear();
 			}
 			for(T leaf : leafs) {
 				FileTools.close((Closeable)leaf);
@@ -551,8 +551,8 @@ public abstract class HttArtoria implements HttService, Closeable {
 			for(T leaf : leafs) {
 				System.out.println("[" + urlPath + "?]=" + type + ":" + leaf);
 			}
-			for(String lPath : children.keySet()) {
-				children.get(lPath).debugPrint(type, urlPath + lPath + "/");
+			for(String lDir : children.keySet()) {
+				children.get(lDir).debugPrint(type, urlPath + lDir + "/");
 			}
 		}
 	}

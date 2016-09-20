@@ -9,27 +9,3 @@ Javaで書いたコードの寄せ集めです。
 
 	Windows 7 Home Premium
 	Java 1.8
-
-
-パッケージの説明
-----------------
-
-charlotte
-
-	主にここに作り込んでいく予定
-
-charlotte.flowertact
-
-	プロセス間通信モジュール（メッセージ・キュー方式）
-
-charlotte.satellite
-
-	プロセス間通信モジュール（コネクション方式）
-
-charlotte.tools
-
-	ツール・ユーティリティ寄せ集め
-
-charlotte_test
-
-	テストコードの掃き溜め

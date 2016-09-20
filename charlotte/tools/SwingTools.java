@@ -18,8 +18,8 @@ public class SwingTools {
 			}
 		});
 
-		ts.mustGet();
-		runner.bury();
+		ts.must();
+		runner.relay();
 	}
 
 	public static void invokeLater(RunnableEx runner) {
@@ -28,12 +28,12 @@ public class SwingTools {
 
 	public static void invokeLaterDeep(RunnableEx runner) {
 		invokeLaterDeep(runner.getRunnable());
-		//runner.bury(); // 拾えません。
+		//runner.relay(); // 拾えません。
 	}
 
 	public static void invokeLaterDeep(RunnableEx runner, int deep, long millis) {
 		invokeLaterDeep(runner.getRunnable(), deep, millis);
-		//runner.bury(); // 拾えません。
+		//runner.relay(); // 拾えません。
 	}
 
 	public static void invokeLaterDeep(Runnable runner) {

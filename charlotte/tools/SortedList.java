@@ -125,6 +125,12 @@ public class SortedList<T> {
 		return getRange(ferret, _comp);
 	}
 
+	/**
+	 *
+	 * @param ferret
+	 * @param comp comp.compare の引数は、常に右側が ferret になるようにすること。
+	 * @return
+	 */
 	public int[] getRange(T ferret, final Comparator<T> comp) {
 		int l = -1;
 		int r = size();

@@ -19,7 +19,6 @@ public class IntTools {
 		return ret;
 	}
 
-
 	/**
 	 * little endian
 	 * @param block
@@ -244,7 +243,7 @@ public class IntTools {
 	}
 
 	public static int oct(String str) {
-		return toInt(str, StringTools.octodecimal);
+		return toInt(str, StringTools.OCTODECIMAL);
 	}
 
 	public static int bin(String str) {
