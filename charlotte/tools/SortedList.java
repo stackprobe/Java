@@ -9,14 +9,22 @@ public class SortedList<T> {
 	private Comparator<T> _comp;
 	private boolean _sortedFlag;
 
-	public SortedList(List<T> bind_list, Comparator<T> comp, boolean sortedFlag) {
-		_list = bind_list;
-		_comp = comp;
-		_sortedFlag = sortedFlag;
+	public static SortedList<String> create() {
+		return new SortedList<String>(StringTools.comp);
+	}
+
+	public static SortedList<String> createIgnoreCase() {
+		return new SortedList<String>(StringTools.compIgnoreCase);
 	}
 
 	public SortedList(Comparator<T> comp) {
 		this(new ArrayList<T>(), comp, true);
+	}
+
+	public SortedList(List<T> bind_list, Comparator<T> comp, boolean sortedFlag) {
+		_list = bind_list;
+		_comp = comp;
+		_sortedFlag = sortedFlag;
 	}
 
 	public void add(T element) {
@@ -128,7 +136,7 @@ public class SortedList<T> {
 	/**
 	 *
 	 * @param ferret
-	 * @param comp comp.compare の引数は、常に右側が ferret になるようにすること。
+	 * @param comp _comp と矛盾しないこと。comp.compare の引数は、右側が常に ferret になる。
 	 * @return
 	 */
 	public int[] getRange(T ferret, final Comparator<T> comp) {
