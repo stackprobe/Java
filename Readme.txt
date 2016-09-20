@@ -8,4 +8,4 @@ Javaで書いたコードの寄せ集めです。
 --------
 
 	Windows 7 Home Premium
-	Java 1.8
+	Java 1.8.0_92

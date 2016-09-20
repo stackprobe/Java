@@ -13,7 +13,7 @@ public class Test01 {
 			System.out.println("TMP: " + WinAPITools.i().getEnv("TMP", "error"));
 			System.out.println("tmp: " + System.getProperty("java.io.tmpdir"));
 
-			System.out.println(System.getProperty("java.version"));
+			System.out.println("JAVA_VERSION: " + System.getProperty("java.version"));
 
 			{
 				{
