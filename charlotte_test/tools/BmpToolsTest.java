@@ -57,7 +57,39 @@ public class BmpToolsTest {
 				);
 
 		Bmp bmp = asBmp.getStringBmp(StringTools.ASCII_SPC);
-
 		bmp.writeToFile("C:/temp/2.png");
+
+		bmp = asBmp.getStringBmp("_");
+		bmp.writeToFile("C:/temp/2-2.png");
+
+		bmp = asBmp.getStringBmp("-_");
+		bmp.writeToFile("C:/temp/2-3.png");
+
+		bmp = asBmp.getStringBmp("^-_");
+		bmp.writeToFile("C:/temp/2-4.png");
+
+		bmp = asBmp.getStringBmp("^-");
+		bmp.writeToFile("C:/temp/2-5.png");
+
+		bmp = asBmp.getStringBmp("^");
+		bmp.writeToFile("C:/temp/2-6.png");
+
+		asBmp = new BmpTools.AsciiStringBmp(
+				new Color(0, true),
+				Color.BLACK,
+				"Impact",
+				Font.BOLD,
+				120,
+				300,
+				300,
+				-1,
+				-1,
+				4,
+				2,
+				1
+				);
+
+		bmp = asBmp.getStringBmp(StringTools.ASCII_SPC);
+		bmp.writeToFile("C:/temp/2-7.png");
 	}
 }

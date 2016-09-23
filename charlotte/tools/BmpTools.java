@@ -38,19 +38,29 @@ public class BmpTools {
 	public static class AsciiStringBmp {
 		private Map<String, Bmp> _bmps = MapTools.<Bmp>create();
 		private Color _backColor;
+		private int _margin;
+		private int _pitch;
+		private int _spcW;
 
 		public AsciiStringBmp(Color backColor, Color textColor, String fontName, int fontStyle, int fontSize, int bi_w, int bi_h, int ds_l, int ds_t, int zoom, int margin) {
+			this(backColor, textColor, fontName, fontStyle, fontSize, bi_w, bi_h, ds_l, ds_t, zoom, margin, margin);
+		}
+
+		public AsciiStringBmp(Color backColor, Color textColor, String fontName, int fontStyle, int fontSize, int bi_w, int bi_h, int ds_l, int ds_t, int zoom, int margin, int pitch) {
 			for(char chr : StringTools.ASCII.toCharArray()) {
-				_bmps.put("" + chr, BmpTools.getStringBmp("" + chr, backColor, textColor, fontName, fontStyle, fontSize, bi_w, bi_h, ds_l, ds_t, zoom, margin));
+				_bmps.put("" + chr, BmpTools.getStringBmp("" + chr, backColor, textColor, fontName, fontStyle, fontSize, bi_w, bi_h, ds_l, ds_t, zoom, 0));
 			}
 			_backColor = backColor;
+			_margin = margin;
+			_pitch = pitch;
+			_spcW = _bmps.get("-").getWidth();
 		}
 
 		public Bmp getStringBmp(String str) {
 			List<Bmp> bmps = new ArrayList<Bmp>();
 			int w = -1;
 			int h = -1;
-			int spcW = _bmps.get("-").getWidth();
+			int minTrimmedT = Integer.MAX_VALUE;
 
 			for(char chr : str.toCharArray()) {
 				Bmp bmp = _bmps.get("" + chr);
@@ -58,24 +68,36 @@ public class BmpTools {
 				if(bmp != null) {
 					bmps.add(bmp);
 					w += bmp.getWidth();
-					h = Math.max(h, bmp.getHeight());
+					h = Math.max(h, bmp.getHeight() + bmp.trimmed_t);
+					minTrimmedT = Math.min(minTrimmedT, bmp.trimmed_t);
 				}
 				else {
 					bmps.add(null);
-					w += spcW;
+					w += _spcW;
 				}
 			}
+
+			// ? no visible char
+			if(h == -1) {
+				return new Bmp(_spcW, _spcW, _backColor);
+			}
+
+			w += (bmps.size() - 1) * _pitch;
+			h -= minTrimmedT;
+			w += _margin * 2;
+			h += _margin * 2;
 			Bmp ret = new Bmp(w, h, _backColor);
-			int x = 0;
+			int x = _margin;
 
 			for(Bmp bmp : bmps) {
 				if(bmp != null) {
-					ret.paste(bmp, x, h - bmp.getHeight());
+					ret.paste(bmp, x, _margin + bmp.trimmed_t - minTrimmedT);
 					x += bmp.getWidth();
 				}
 				else {
-					x += spcW;
+					x += _spcW;
 				}
+				x += _pitch;
 			}
 			return ret;
 		}

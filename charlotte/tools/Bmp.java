@@ -583,13 +583,25 @@ public class Bmp {
 		int w = r - l + 1;
 		int h = b - t + 1;
 
-		return copy(l, t, w, h, outerDot);
+		Bmp bmp = copy(l, t, w, h, outerDot);
+
+		bmp.trimmed_l = l;
+		bmp.trimmed_t = t;
+		bmp.trimmed_r = r;
+		bmp.trimmed_b = b;
+
+		return bmp;
 	}
 
 	private void trimCheckLW(String title, int l, int w) {
 		double rate = (double)l / w;
 		(rate < 0.1 ? System.err : System.out).println(title + l + " (" + rate + ") " + w);
 	}
+
+	public int trimmed_l = -1;
+	public int trimmed_t = -1;
+	public int trimmed_r = -1;
+	public int trimmed_b = -1;
 
 	public void swap(int x1, int y1, int x2, int y2) {
 		int tmp = get(x1, y1);

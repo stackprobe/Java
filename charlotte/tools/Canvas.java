@@ -117,8 +117,12 @@ public class Canvas {
 	}
 
 	public void drawDouble(int l, int t, int span, Bmp.Dot dot, String value) {
+		drawDouble(l, t, span, span / 2, dot, value);
+	}
+
+	public void drawDouble(int l, int t, int span, int pitch, Bmp.Dot dot, String value) {
 		for(char chr : value.toCharArray()) {
-			l += drawDoubleChar(l, t, span, dot, chr) + 1;
+			l += drawDoubleChar(l, t, span, dot, chr) + pitch;
 		}
 	}
 
