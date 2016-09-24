@@ -87,6 +87,14 @@ public class SecurityTools {
 		return chrs.charAt(cRandom(chrs.length()));
 	}
 
+	public static String cRandHex() {
+		return cRandHex(32);
+	}
+
+	public static String cRandHex(int len) {
+		return makePassword(StringTools.hexadecimal, len);
+	}
+
 	public static String makePassword(String chrs, int len) {
 		StringBuffer buff = new StringBuffer();
 

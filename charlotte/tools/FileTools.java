@@ -887,4 +887,8 @@ public class FileTools {
 		writer.write(line);
 		writer.write("\r\n");
 	}
+
+	public static String getFullPath(String path) throws Exception {
+		return new File(path).getCanonicalPath();
+	}
 }

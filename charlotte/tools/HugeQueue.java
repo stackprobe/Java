@@ -11,35 +11,15 @@ public class HugeQueue implements Closeable {
 
 	public HugeQueue() {
 		_writer = new FileQueue();
-		_writer.switchToWrite();
 		_reader = new FileQueue();
 	}
 
 	public void add(String str) {
-		try {
-			add(str.getBytes(StringTools.CHARSET_UTF8));
-		}
-		catch(Exception e) {
-			throw new RuntimeException(e);
-		}
+		_writer.add(str);
 	}
 
 	public void add(byte[] block) {
 		_writer.add(block);
-	}
-
-	public byte[] poll() {
-		if(_reader.size() == 0L) {
-			if(_writer.size() == 0L) {
-				return null;
-			}
-			FileQueue swap = _writer;
-			_writer = _reader;
-			_reader = swap;
-			_writer.switchToWrite();
-			_reader.switchToRead();
-		}
-		return _reader.poll();
 	}
 
 	public String pollString() {
@@ -56,15 +36,27 @@ public class HugeQueue implements Closeable {
 		}
 	}
 
+	public byte[] poll() {
+		if(_reader.size() == 0L) {
+			if(_writer.size() == 0L) {
+				return null;
+			}
+			FileQueue swap = _writer;
+			_writer = _reader;
+			_reader = swap;
+		}
+		return _reader.poll();
+	}
+
 	public long size() {
 		return _writer.size() + _reader.size();
 	}
 
 	public void clear() {
-		_writer.switchToWrite();
-		_writer._size = 0L;
-		_reader.switchToWrite(); // _size == 0L なら poll() しない。
-		_reader._size = 0L;
+		FileTools.close(_writer);
+		FileTools.close(_reader);
+		_writer = new FileQueue();
+		_reader = new FileQueue();
 	}
 
 	@Override
@@ -76,70 +68,42 @@ public class HugeQueue implements Closeable {
 		}
 	}
 
-	private static class FileQueue implements Closeable {
-		private String _file = FileTools.makeTempPath();
-		private FileOutputStream _writer;
-		private FileInputStream _reader;
-		private long _size = 0L;
+	public static class FileQueue implements Closeable {
+		private String _file;
+		private FileWriter _writer;
+		private FileReader _reader;
+		private long _size;
 
-		private void reset() {
-			FileTools.close(_writer);
-			FileTools.close(_reader);
-			_writer = null;
-			_reader = null;
+		public FileQueue() {
+			_file = FileTools.makeTempPath();
+			_writer = new FileWriter(_file);
+			_reader = new FileReader(_file);
 		}
 
-		public void switchToWrite() {
-			try {
-				reset();
-				_writer = new FileOutputStream(_file);
-			}
-			catch(Exception e) {
-				throw new RuntimeException(e);
-			}
+		public void add(String str) {
+			_writer.add(str);
+			_size++;
 		}
 
 		public void add(byte[] block) {
-			try {
-				_writer.write(IntTools.toBytes(block.length));
-				_writer.write(block);
-				_size++;
-			}
-			catch(Exception e) {
-				throw new RuntimeException(e);
-			}
+			_writer.add(block);
+			_size++;
 		}
 
-		public void switchToRead() {
-			try {
-				reset();
-				_reader = new FileInputStream(_file);
+		public String pollString() {
+			if(_size == 0L) {
+				return null;
 			}
-			catch(Exception e) {
-				throw new RuntimeException(e);
-			}
+			_size--;
+			return _reader.pollString();
 		}
 
 		public byte[] poll() {
+			if(_size == 0L) {
+				return null;
+			}
 			_size--;
-
-			return readBlock(
-					IntTools.toInt(readBlock(4), 0)
-					);
-		}
-
-		private byte[] readBlock(int size) {
-			try {
-				byte[] block = new byte[size];
-
-				if(_reader.read(block) != size) {
-					throw new RuntimeException("read error");
-				}
-				return block;
-			}
-			catch(Exception e) {
-				throw new RuntimeException(e);
-			}
+			return _reader.poll();
 		}
 
 		public long size() {
@@ -149,10 +113,106 @@ public class HugeQueue implements Closeable {
 		@Override
 		public void close() throws IOException {
 			if(_file != null) {
-				FileTools.close(_writer);
 				FileTools.close(_reader);
-				FileTools.del(_file);
+				FileTools.close(_writer);
+				FileTools.delete(_file);
 				_file = null;
+			}
+		}
+	}
+
+	public static class FileWriter implements Closeable {
+		private String _file;
+		private FileOutputStream _writer;
+
+		public FileWriter(String file) {
+			this(file, false);
+		}
+
+		public FileWriter(String file, boolean append) {
+			try {
+				_file = file;
+				_writer = new FileOutputStream(_file, append);
+			}
+			catch(Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		public void add(String str) {
+			try {
+				add(str.getBytes(StringTools.CHARSET_UTF8));
+			}
+			catch(Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		private void add(byte[] block) {
+			try {
+				_writer.write(IntTools.toBytes(block.length));
+				_writer.write(block);
+			}
+			catch(Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		@Override
+		public void close() throws IOException {
+			if(_writer != null) {
+				FileTools.close(_writer);
+				_writer = null;
+			}
+		}
+	}
+
+	public static class FileReader implements Closeable {
+		private String _file;
+		private FileInputStream _reader;
+
+		public FileReader(String file) {
+			try {
+				_file = file;
+				_reader = new FileInputStream(_file);
+			}
+			catch(Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		public String pollString() {
+			try {
+				return new String(poll(), StringTools.CHARSET_UTF8);
+			}
+			catch(Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		public byte[] poll() {
+			return read(IntTools.toInt(read(4), 0));
+		}
+
+		private byte[] read(int size) {
+			try {
+				byte[] block = new byte[size];
+
+				if(_reader.read(block) != size) {
+					throw new Exception("read error");
+				}
+				return block;
+			}
+			catch(Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		@Override
+		public void close() throws IOException {
+			if(_reader != null) {
+				FileTools.close(_reader);
+				_reader = null;
 			}
 		}
 	}

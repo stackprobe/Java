@@ -1,5 +1,6 @@
 package evergarden.violet;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -63,6 +64,25 @@ public class Test01 {
 
 			System.out.println(SystemTools.getHostName());
 			System.out.println(SystemTools.getHostIP());
+
+			// ----
+
+			//System.out.println(new File((String)null).getCanonicalPath()); // NullPointerException
+
+			System.out.println(new File("").getCanonicalPath());   // -> C:\pleiades\workspace\Test02
+			System.out.println(new File(".").getCanonicalPath());  // -> C:\pleiades\workspace\Test02
+			System.out.println(new File("..").getCanonicalPath()); // -> C:\pleiades\workspace
+
+			System.out.println(new File("a").getCanonicalPath());     // -> C:\pleiades\workspace\Test02\a
+			System.out.println(new File("a/.").getCanonicalPath());   // -> C:\pleiades\workspace\Test02\a
+			System.out.println(new File("./a").getCanonicalPath());   // -> C:\pleiades\workspace\Test02\a
+			System.out.println(new File("./a/.").getCanonicalPath()); // -> C:\pleiades\workspace\Test02\a
+
+			System.out.println(new File("").exists()); // false
+			System.out.println(new File("").isDirectory()); // false
+
+			System.out.println(new File(new File("").getCanonicalPath()).exists()); // true
+			System.out.println(new File(new File("").getCanonicalPath()).isDirectory()); // true
 		}
 		catch(Throwable e) {
 			e.printStackTrace();
