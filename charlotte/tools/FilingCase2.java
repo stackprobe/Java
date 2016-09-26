@@ -87,9 +87,17 @@ public class FilingCase2 {
 		throw null; // TODO
 	}
 
-	public void set(String table, String column, String value, Map<String, String> record) {
-		remove(table, column, value);
+	public void set(String table, Map<String, String> record) {
+		remove(table, record);
 		add(table, record);
+	}
+
+	public void remove(String table, Map<String, String> record) {
+		for(String column : record.keySet()) {
+			if(isUKColumn(column)) {
+				remove(table, column, record.get(column));
+			}
+		}
 	}
 
 	public void remove(String table, String column, String vlaue) {
