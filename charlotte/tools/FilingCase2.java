@@ -5,18 +5,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * _rootDir/FilingCase2.sig
- *          tables.dat = num { table-name ... }
+ *          tables.dat = { table-name ... }
  *          tables/ ...
  *
- * ... /[h(table-name)]/table/records/[record-ident]/record.dat = k-num {{ k v } ... }
- *                            uks/ ...
+ * ... /[h(table-name)]/table/records/[record-ident]/record.dat = {{ k v } ... }
+ *                            rks/ ...
  *
- * ... /[h(column)]/uk/uvs/ ...
+ * ... /[h(column)]/rk/rvs/ ...
  *
- * ... /[h(value)]/uv/record-ident.dat = record-ident
+ * ... /[h(value)]/rv/record-ident.dat = { record-ident ... }
  *
  * [?] = x1/x2/x3/x4/x5/x6/x7/x8/hash-or-ident
  *
@@ -28,8 +29,6 @@ public class FilingCase2 {
 		_rootDir = FileTools.getFullPath(rootDir);
 		init();
 	}
-
-	private static final int TABLE_MAX = 10000;
 
 	private String _sigFile;
 	private String _tablesDir;
@@ -50,21 +49,12 @@ public class FilingCase2 {
 		FileTools.mkdirs(_rootDir);
 		FileTools.createFile(_sigFile);
 		FileTools.mkdir(_tablesDir);
-
-		{
-			Writer writer = new Writer(_tablesFile);
-			try {
-				writer.writeInt(0);
-			}
-			finally {
-				FileTools.close(writer);
-			}
-		}
+		FileTools.createFile(_tablesFile);
 	}
 
 	private void check() {
 		if(FileTools.exists(_sigFile) == false) {
-			throw new RuntimeException("Bad _rootDir");
+			throw new IllegalArgumentException();
 		}
 	}
 
@@ -73,8 +63,13 @@ public class FilingCase2 {
 		try {
 			List<String> tables = new ArrayList<String>();
 
-			for(int count = reader.readInt(); 1 <= count; count--) {
-				tables.add(reader.read());
+			for(; ; ) {
+				String table = reader.read();
+
+				if(table == null) {
+					break;
+				}
+				tables.add(table);
 			}
 			return tables;
 		}
@@ -84,53 +79,130 @@ public class FilingCase2 {
 	}
 
 	public void add(String table, Map<String, String> record) {
+		if(table == null) {
+			throw new IllegalArgumentException();
+		}
+		if(isFairRecord(record) == false) {
+			throw new IllegalArgumentException();
+		}
 		throw null; // TODO
 	}
 
-	public void set(String table, Map<String, String> record) {
-		remove(table, record);
-		add(table, record);
-	}
-
-	public void remove(String table, Map<String, String> record) {
-		for(String column : record.keySet()) {
-			if(isUKColumn(column)) {
-				remove(table, column, record.get(column));
-			}
+	public boolean remove(String table, String column, String vlaue) {
+		if(table == null) {
+			throw new IllegalArgumentException();
 		}
-	}
-
-	public void remove(String table, String column, String vlaue) {
+		if(column == null) {
+			throw new IllegalArgumentException();
+		}
+		if(isRKColumn(column) == false) {
+			throw new IllegalArgumentException();
+		}
+		if(vlaue == null) {
+			throw new IllegalArgumentException();
+		}
 		throw null; // TODO
 	}
 
 	public void remove(String table, AcceptListener<Map<String, String>> selector) {
+		if(table == null) {
+			throw new IllegalArgumentException();
+		}
+		if(selector == null) {
+			throw new IllegalArgumentException();
+		}
 		throw null; // TODO
 	}
 
 	public void scan(String table, AcceptListener<Map<String, String>> scanner) {
+		if(table == null) {
+			throw new IllegalArgumentException();
+		}
+		if(scanner == null) {
+			throw new IllegalArgumentException();
+		}
+		throw null; // TODO
+	}
+
+	public void scan(String table, String column, String vlaue, AcceptListener<Map<String, String>> scanner) {
+		if(table == null) {
+			throw new IllegalArgumentException();
+		}
+		if(column == null) {
+			throw new IllegalArgumentException();
+		}
+		if(isRKColumn(column) == false) {
+			throw new IllegalArgumentException();
+		}
+		if(scanner == null) {
+			throw new IllegalArgumentException();
+		}
 		throw null; // TODO
 	}
 
 	public Map<String, String> get(String table, String column, String vlaue) {
+		if(table == null) {
+			throw new IllegalArgumentException();
+		}
+		if(column == null) {
+			throw new IllegalArgumentException();
+		}
+		if(isRKColumn(column) == false) {
+			throw new IllegalArgumentException();
+		}
+		if(vlaue == null) {
+			throw new IllegalArgumentException();
+		}
 		throw null; // TODO
 	}
 
-	private boolean isUKColumn(String column) {
-		return StringTools.startsWithIgnoreCase(column, "U");
+	private boolean isFairRecord(Map<String, String> record) {
+		if(record == null) {
+			return false;
+		}
+		Set<String> columns = record.keySet();
+
+		if(columns == null) {
+			return false;
+		}
+		Set<String> knownColumns = SetTools.create();
+
+		for(String column : columns) {
+			if(column == null) {
+				return false;
+			}
+			String value = record.get(column);
+
+			if(value == null) {
+				return false;
+			}
+			if(knownColumns.contains(column)) {
+				return false;
+			}
+			knownColumns.add(column);
+		}
+		return true;
+	}
+
+	private boolean isRKColumn(String column) {
+		return StringTools.startsWithIgnoreCase(column, "R");
 	}
 
 	private String getIdent(String str) {
+		return getHash(str);
+	}
+
+	private String getIdent() {
+		return SecurityTools.cRandHex();
+	}
+
+	private String getHash(String str) {
 		try {
 			return SecurityTools.getSHA512_128String(str.getBytes(StringTools.CHARSET_UTF8));
 		}
 		catch(Exception e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	private String getIdent() {
-		return SecurityTools.cRandHex();
 	}
 
 	private class Reader implements Closeable {
@@ -140,12 +212,14 @@ public class FilingCase2 {
 			_reader = new HugeQueue.FileReader(file);
 		}
 
-		public int readInt() {
-			return Integer.parseInt(read());
-		}
-
 		public String read() {
-			return _reader.pollString();
+			try {
+				return _reader.pollString();
+			}
+			catch(Throwable e) {
+				// ignore
+			}
+			return null;
 		}
 
 		@Override
@@ -162,10 +236,6 @@ public class FilingCase2 {
 
 		public Writer(String file) {
 			_writer = new HugeQueue.FileWriter(file);
-		}
-
-		public void writeInt(int value) {
-			write("" + value);
 		}
 
 		public void write(String str) {

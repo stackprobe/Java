@@ -11,6 +11,7 @@ import java.util.Set;
 import charlotte.htt.HttRequest;
 import charlotte.htt.HttResponse;
 import charlotte.htt.HttService;
+import charlotte.htt.response.HttRes404;
 import charlotte.tools.ExtToContentType;
 import charlotte.tools.FileTools;
 import charlotte.tools.MapTools;
@@ -56,6 +57,11 @@ public abstract class HttArtoria implements HttService, Closeable {
 			}
 			Root root = getRoot(p);
 			String urlPath = urlToUrlPath(hr.getUrlString());
+
+			if(FileTools.PATH_MAX < urlPath.length()) {
+				System.out.println("Requested URL path too long");
+				return get404();
+			}
 			Entry entry = root.entries.get(urlPath);
 
 			if(entry == null) {
@@ -95,6 +101,10 @@ public abstract class HttArtoria implements HttService, Closeable {
 			flame(extraLinear, req, res);
 			return getHttResponse(res);
 		}
+	}
+
+	public HttResponse get404() {
+		return new HttRes404();
 	}
 
 	protected abstract Package getRoot(HttSaberRequest req) throws Exception;
