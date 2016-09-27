@@ -11,6 +11,14 @@ import java.net.Socket;
 public class SockClient implements Closeable {
 	private Socket _sock;
 
+	/**
+	 *
+	 * @param domain
+	 * @param portNo
+	 * @param connectTimeoutMillis
+	 * @param soTimeoutMillis A timeout of zero is interpreted as an infinite timeout.
+	 * @throws Exception
+	 */
 	public SockClient(String domain, int portNo, int connectTimeoutMillis, int soTimeoutMillis) throws Exception {
 		_sock = new Socket();
 		_sock.setSoTimeout(soTimeoutMillis);

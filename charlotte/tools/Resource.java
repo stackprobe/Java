@@ -8,41 +8,61 @@ public class Resource {
 
 	public Resource(Object src) {
 		if(src == null) {
-			throw new NullPointerException("Resource format error");
+			throw new IllegalArgumentException("Resource has null");
 		}
 		_src = src;
 	}
 
-	public String getString(String key) {
-		return toMap().getString(key).toString();
+	private ObjectList cList() {
+		return (ObjectList)_src;
 	}
 
-	public String getString(int index) {
-		return toList().getString(index).toString();
+	private ObjectMap cMap() {
+		return (ObjectMap)_src;
+	}
+
+	private String cString() {
+		return (String)_src;
+	}
+
+	private byte[] cBytes() {
+		return (byte[])_src;
 	}
 
 	public Resource get(int index) {
-		return new Resource(toList().get(index));
+		return new Resource(cList().get(index));
 	}
 
 	public Resource get(String key) {
-		return new Resource(toMap().get(key));
+		return new Resource(cMap().get(key));
 	}
 
 	public List<Resource> getList() {
 		List<Resource> ret = new ArrayList<Resource>();
 
-		for(Object src : toList().getList()) {
+		for(Object src : cList().getList()) {
 			ret.add(new Resource(src));
 		}
 		return ret;
 	}
 
-	private ObjectList toList() {
-		return (ObjectList)_src;
+	public String getString() {
+		return cString();
 	}
 
-	private ObjectMap toMap() {
-		return (ObjectMap)_src;
+	public int getInt() {
+		return Integer.parseInt(cString());
+	}
+
+	public long getLong() {
+		return Long.parseLong(cString());
+	}
+
+	public double getDouble() {
+		return Double.parseDouble(cString());
+	}
+
+	public byte[] getBytes() {
+		return cBytes();
 	}
 }
