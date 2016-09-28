@@ -14,11 +14,13 @@ import charlotte.tools.StringTools;
 
 public class FilingCase3Client implements Closeable {
 	private SockClient _client;
+	private String _basePath;
 	private OutputStream _writer;
 	private InputStream _reader;
 
-	public FilingCase3Client(String domain, int portno) throws Exception {
+	public FilingCase3Client(String domain, int portno, String basePath) throws Exception {
 		_client = new SockClient(domain, portno, 30000, 0);
+		_basePath = basePath;
 		_writer = _client.getOutputStream();
 		_reader = _client.getInputStream();
 	}
@@ -28,8 +30,9 @@ public class FilingCase3Client implements Closeable {
 		return read();
 	}
 
-	public void post(String path, byte[] data) throws Exception {
+	public boolean post(String path, byte[] data) throws Exception {
 		send("POST", path, data);
+		return readInt() != 0;
 	}
 
 	public List<String> list(String path) throws Exception {
@@ -37,8 +40,9 @@ public class FilingCase3Client implements Closeable {
 		return readLines();
 	}
 
-	public void delete(String path) throws Exception {
+	public boolean delete(String path) throws Exception {
 		send("DELETE", path);
+		return readInt() != 0;
 	}
 
 	private void send(String command, String path) throws Exception {
@@ -47,9 +51,10 @@ public class FilingCase3Client implements Closeable {
 
 	private void send(String command, String path, byte[] data) throws Exception {
 		writeLine(command);
-		writeLine(path);
+		writeLine(FileTools.oNorm(_basePath + "/" + path));
 		writeLine("" + data.length);
 		writeLine(data);
+		_writer.flush();
 	}
 
 	private void writeLine(String line) throws Exception {
@@ -74,6 +79,10 @@ public class FilingCase3Client implements Closeable {
 			lines.add(line);
 		}
 		return lines;
+	}
+
+	private int readInt() throws Exception {
+		return Integer.parseInt(readLine());
 	}
 
 	private String readLine() throws Exception {

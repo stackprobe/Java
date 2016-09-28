@@ -141,6 +141,13 @@ public class FileTools {
 		return path;
 	}
 
+	public static String oNorm(String path) {
+		path = path.replace('\\', '/');
+		path = StringTools.replace(path, "//", "/", 20);
+
+		return path;
+	}
+
 	public static void delete(String path) {
 		new File(path).delete();
 	}
