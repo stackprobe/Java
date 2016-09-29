@@ -26,7 +26,7 @@ public class Logger implements Closeable {
 	}
 
 	public static Logger create(String fileBase) {
-		return new Logger(new TextWriter() {
+		return new Logger(new Oac<Void, String>() {
 			private OutputStreamWriter _writer;
 
 			@Override
@@ -42,7 +42,7 @@ public class Logger implements Closeable {
 			}
 
 			@Override
-			public void writeLine(String line) {
+			public Void action(String line) {
 				try {
 					_writer.write(line);
 					_writer.write('\r');
@@ -51,6 +51,7 @@ public class Logger implements Closeable {
 				catch(Throwable e) {
 					e.printStackTrace();
 				}
+				return null;
 			}
 
 			@Override
@@ -68,7 +69,7 @@ public class Logger implements Closeable {
 	}
 
 	public static Logger createForResident(String fileBase) {
-		return new Logger(new TextWriter() {
+		return new Logger(new Oac<Void, String>() {
 			private String _file = null;
 			private OutputStreamWriter _writer = null;
 
@@ -78,9 +79,17 @@ public class Logger implements Closeable {
 			}
 
 			@Override
-			public void writeLine(String line) {
+			public Void action(String line) {
 				try {
-					reopen();
+					{
+						String file = fileBase + DateToDay.Today.getDate() + ".log";
+
+						if(file.equalsIgnoreCase(_file) == false) {
+							_file = file;
+							_writer = FileTools.writeOpenTextFile(_file, StringTools.CHARSET_UTF8, true);
+						}
+					}
+
 					_writer.write(line);
 					_writer.write('\r');
 					_writer.write('\n');
@@ -88,15 +97,7 @@ public class Logger implements Closeable {
 				catch(Throwable e) {
 					e.printStackTrace();
 				}
-			}
-
-			private void reopen() throws Exception {
-				String file = fileBase + DateToDay.Today.getDate() + ".log";
-
-				if(file.equalsIgnoreCase(_file) == false) {
-					_file = file;
-					_writer = FileTools.writeOpenTextFile(_file, StringTools.CHARSET_UTF8, true);
-				}
+				return null;
 			}
 
 			@Override
@@ -109,9 +110,9 @@ public class Logger implements Closeable {
 		});
 	}
 
-	public TextWriter _writer;
+	public Oac<?, String> _writer;
 
-	public Logger(TextWriter writer_bind) {
+	public Logger(Oac<?, String> writer_bind) {
 		_writer = writer_bind;
 		_writer.open();
 	}
@@ -125,7 +126,7 @@ public class Logger implements Closeable {
 			for(int index = 1; index < reasons.size(); index++) {
 				writeLine("\t原因(" + index + "): " + reasons.get(index));
 			}
-			writeLine(SystemTools.toString(e));
+			writeLine("\r\n\t発生した例外:\r\n\t" + getMessage(SystemTools.toString(e)) + "\r\n");
 		}
 		catch(Throwable ex) {
 			ex.printStackTrace();
@@ -160,7 +161,7 @@ public class Logger implements Closeable {
 	public void writeLine(String line) {
 		try {
 			System.out.println(line);
-			_writer.writeLine(line);
+			_writer.action(line);
 		}
 		catch(Throwable e) {
 			e.printStackTrace();
@@ -197,5 +198,17 @@ public class Logger implements Closeable {
 		for(int index = 0; index < delCount; index++) {
 			FileTools.rm(files.get(index));
 		}
+	}
+
+	public static String getMessage(String... lines) {
+		return getMessage(String.join("\n", lines));
+	}
+
+	public static String getMessage(String line) {
+		line = line.replace("\r", "");
+		line = StringTools.trim(line, "\n");
+		line = line.replace("\n", "\r\n\t");
+
+		return line;
 	}
 }
