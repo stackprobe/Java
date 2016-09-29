@@ -1,11 +1,7 @@
 package charlotte.tools;
 
-public abstract class TextWriter {
-	public abstract void open();
-	public abstract void close();
-	public abstract void writeLine(String line);
-
-	public void writeError(String line) {
-		writeLine(line);
-	}
+public interface TextWriter {
+	public void open();
+	public void writeLine(String line);
+	public void close();
 }

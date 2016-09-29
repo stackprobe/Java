@@ -42,14 +42,6 @@ public class Logger implements Closeable {
 			}
 
 			@Override
-			public void close() {
-				if(_writer != null) {
-					FileTools.close(_writer);
-					_writer = null;
-				}
-			}
-
-			@Override
 			public void writeLine(String line) {
 				try {
 					_writer.write(line);
@@ -58,6 +50,14 @@ public class Logger implements Closeable {
 				}
 				catch(Throwable e) {
 					e.printStackTrace();
+				}
+			}
+
+			@Override
+			public void close() {
+				if(_writer != null) {
+					FileTools.close(_writer);
+					_writer = null;
 				}
 			}
 		});
@@ -75,14 +75,6 @@ public class Logger implements Closeable {
 			@Override
 			public void open() {
 				// noop
-			}
-
-			@Override
-			public void close() {
-				if(_writer != null) {
-					FileTools.close(_writer);
-					_writer = null;
-				}
 			}
 
 			@Override
@@ -106,6 +98,14 @@ public class Logger implements Closeable {
 					_writer = FileTools.writeOpenTextFile(_file, StringTools.CHARSET_UTF8, true);
 				}
 			}
+
+			@Override
+			public void close() {
+				if(_writer != null) {
+					FileTools.close(_writer);
+					_writer = null;
+				}
+			}
 		});
 	}
 
@@ -123,9 +123,9 @@ public class Logger implements Closeable {
 			write("エラー: " + reasons.get(0));
 
 			for(int index = 1; index < reasons.size(); index++) {
-				_writer.writeLine("\t原因(" + index + "): " + reasons.get(index));
+				writeLine("\t原因(" + index + "): " + reasons.get(index));
 			}
-			_writer.writeError(SystemTools.toString(e));
+			writeLine(SystemTools.toString(e));
 		}
 		catch(Throwable ex) {
 			ex.printStackTrace();
@@ -150,7 +150,7 @@ public class Logger implements Closeable {
 
 	public void write(String line) {
 		try {
-			_writer.writeLine(TimeData.now().getString("[Y/M/D h:m:s] ") + line);
+			writeLine(TimeData.now().getString("[Y/M/D h:m:s] ") + line);
 		}
 		catch(Throwable e) {
 			e.printStackTrace();
@@ -159,6 +159,7 @@ public class Logger implements Closeable {
 
 	public void writeLine(String line) {
 		try {
+			System.out.println(line);
 			_writer.writeLine(line);
 		}
 		catch(Throwable e) {
