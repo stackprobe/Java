@@ -237,8 +237,18 @@ public class FileTools {
 		}
 	}
 
+	public static void clear(String dir) {
+		for(String path : list(dir)) {
+			rm(path);
+		}
+	}
+
 	public static boolean isDirectory(String path) {
 		return new File(path).isDirectory();
+	}
+
+	public static boolean isFile(String path) {
+		return new File(path).isFile();
 	}
 
 	public static void tryDelete(String path) {
