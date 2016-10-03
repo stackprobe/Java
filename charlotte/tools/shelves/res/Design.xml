@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="Shift_JIS" ?>
+<Root>
+	<Default num="1:1">
+		<Frame num="1:1" mad=""/>
+		<Tab num="1:1" mad=""/>
+		<Column num="1:1" mad=""/>
+		<Shelf num="1:1" mad=""/>
+		<Header num="1:1" mad=""/>
+		<Footer num="1:1" mad=""/>
+	</Default>
+	<Frame num="0:1" mad=""/>
+	<Tab num="0:*">
+		<Default num="0:1">
+			<Column num="0:1" mad=""/>
+			<Shelf num="0:1" mad=""/>
+		</Default>
+		<Column num="0:*">
+			<Default num="0:1">
+				<Shelf num="0:1" mad=""/>
+			</Default>
+			<Shelf num="0:*" mad="">
+				<name num="1:1"/>
+			</Shelf>
+		</Column>
+	</Tab>
+	<Header num="0:1">
+		<Default num="0:1">
+			<Button num="0:1" mad=""/>
+		</Default>
+		<Button num="0:*" mad=""/>
+	</Header>
+	<Footer num="0:1">
+		<Default num="0:1">
+			<Button num="0:1" mad=""/>
+		</Default>
+		<Button num="0:*" mad=""/>
+	</Footer>
+</Root>

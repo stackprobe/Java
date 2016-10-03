@@ -54,6 +54,18 @@ public class XNode {
 		return _children;
 	}
 
+	public static XNode load(byte[] fileData) throws Exception {
+		WorkDir wd = new WorkDir();
+		try {
+			String file = wd.makeSubPath();
+			FileTools.writeAllBytes(file, fileData);
+			return load(file);
+		}
+		finally {
+			FileTools.close(wd);
+		}
+	}
+
 	public static XNode load(String file) throws Exception {
 		XNode root = load(DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File(file)));
 		root = root._children.get(0);
