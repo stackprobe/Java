@@ -1,38 +1,56 @@
 <?xml version="1.0" encoding="Shift_JIS" ?>
 <Root>
-	<Default num="1:1">
-		<Frame num="1:1" mad=""/>
-		<Tab num="1:1" mad=""/>
-		<Column num="1:1" mad=""/>
-		<Shelf num="1:1" mad=""/>
-		<Header num="1:1" mad=""/>
-		<Footer num="1:1" mad=""/>
+	<Default _num="1:1">
+		<Ground _num="1:1" _props=""/>
+		<Tab _num="1:1" _props=""/>
+		<Column _num="1:1" _props=""/>
+		<Shelf _num="1:1" _props=""/>
+		<NShelf _num="0:*">
+			<className _num="1:1"/>
+			<_props/>
+		</NShelf>
+		<Header _num="1:1" _props=""/>
+		<Footer _num="1:1" _props=""/>
+		<Button _num="1:1" _props=""/>
 	</Default>
-	<Frame num="0:1" mad=""/>
-	<Tab num="0:*">
-		<Default num="0:1">
-			<Column num="0:1" mad=""/>
-			<Shelf num="0:1" mad=""/>
+	<Ground _num="0:1" _props=""/>
+	<Tab _num="0:*">
+		<Default _num="0:1">
+			<Column _num="0:1" _props=""/>
+			<Shelf _num="0:1" _props=""/>
+			<NShelf _num="0:*">
+				<className _num="1:1"/>
+				<_props/>
+			</NShelf>
 		</Default>
-		<Column num="0:*">
-			<Default num="0:1">
-				<Shelf num="0:1" mad=""/>
+		<Column _num="0:*">
+			<Default _num="0:1">
+				<Shelf _num="0:1" _props=""/>
+				<NShelf _num="0:*">
+					<className _num="1:1"/>
+					<_props/>
+				</NShelf>
 			</Default>
-			<Shelf num="0:*" mad="">
-				<name num="1:1"/>
+			<Shelf _num="0:*">
+				<className _num="1:1"/>
+				<_props/>
 			</Shelf>
+			<_props/>
 		</Column>
+		<_props/>
 	</Tab>
-	<Header num="0:1">
-		<Default num="0:1">
-			<Button num="0:1" mad=""/>
+	<Header _num="0:1">
+		<Default _num="0:1">
+			<Button _num="0:1" _props=""/>
 		</Default>
-		<Button num="0:*" mad=""/>
+		<Button _num="0:*" _props=""/>
+		<_props/>
 	</Header>
-	<Footer num="0:1">
-		<Default num="0:1">
-			<Button num="0:1" mad=""/>
+	<Footer _num="0:1">
+		<Default _num="0:1">
+			<Button _num="0:1" _props=""/>
 		</Default>
-		<Button num="0:*" mad=""/>
+		<Button _num="0:*" _props=""/>
+		<_props/>
 	</Footer>
 </Root>

@@ -1,12 +1,18 @@
 package charlotte.tools;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class XResource {
-	public static final String LINK_NODE_NAME = "Link";
-	public static final String LINKED_PATH_NODE_NAME = "Path";
+	public static final String LINK_NODE_NAME = "XResLink";
+	public static final String LINKED_PATH_NODE_NAME = "SubPath";
+	public static final String OPTION_NODE_NAME = "XResOption";
 
 	public abstract XNode getRoot();
 	public abstract boolean isLink(XNode node);
 	public abstract XNode getLinkedRoot(XNode node);
+	public abstract boolean isOption(XNode node);
+	public abstract List<XNode> adoptOption(XNode node);
 
 	public XNode load() {
 		XNode root = getRoot();
@@ -27,6 +33,10 @@ public abstract class XResource {
 					solveLink(parent, index, child);
 					index--;
 				}
+				else if(isOption(child)) {
+					solveOption(parent, index, child);
+					index--;
+				}
 				else {
 					q.add(child);
 				}
@@ -42,7 +52,36 @@ public abstract class XResource {
 		parent.getChildren().addAll(index, root.getChildren());
 	}
 
-	public static abstract class File extends XResource {
+	private void solveOption(XNode parent, int index, XNode child) {
+		List<XNode> adopted = adoptOption(child);
+		if(adopted != null) {
+			adopted = new ArrayList<XNode>();
+		}
+
+		parent.getChildren().remove(index);
+		parent.getChildren().addAll(index, adopted);
+	}
+
+	public static abstract class XResource2 extends XResource {
+		public abstract boolean adopt(XNode node);
+
+		@Override
+		public boolean isLink(XNode node) {
+			return LINK_NODE_NAME.equalsIgnoreCase(node.getName());
+		}
+
+		@Override
+		public boolean isOption(XNode node) {
+			return OPTION_NODE_NAME.equalsIgnoreCase(node.getName());
+		}
+
+		@Override
+		public List<XNode> adoptOption(XNode node) {
+			return adopt(node) ? node.getChildren() : null;
+		}
+	}
+
+	public static abstract class File extends XResource2 {
 		public abstract String getFile();
 		public abstract String getSubRootDir();
 
@@ -54,11 +93,6 @@ public abstract class XResource {
 			catch(Exception e) {
 				throw RunnableEx.re(e);
 			}
-		}
-
-		@Override
-		public boolean isLink(XNode node) {
-			return LINK_NODE_NAME.equalsIgnoreCase(node.getName());
 		}
 
 		@Override
@@ -75,7 +109,7 @@ public abstract class XResource {
 		}
 	}
 
-	public static abstract class Resource extends XResource {
+	public static abstract class Resource extends XResource2 {
 		public abstract Class<?> getRootClassObj();
 		public abstract String getRootRelPath();
 
@@ -90,11 +124,6 @@ public abstract class XResource {
 			catch(Exception e) {
 				throw RunnableEx.re(e);
 			}
-		}
-
-		@Override
-		public boolean isLink(XNode node) {
-			return LINK_NODE_NAME.equalsIgnoreCase(node.getName());
 		}
 
 		@Override

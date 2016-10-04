@@ -35,6 +35,20 @@ public abstract class RunnableEx {
 		}
 	}
 
+	public Runnable getUnrelayRunnable() {
+		return new Runnable() {
+			@Override
+			public void run() {
+				try {
+					RunnableEx.this.run();
+				}
+				catch(Throwable e) {
+					e.printStackTrace();
+				}
+			}
+		};
+	}
+
 	public static RuntimeException re(Throwable e) {
 		if(e instanceof Error) {
 			throw (Error)e;

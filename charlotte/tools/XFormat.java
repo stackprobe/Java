@@ -8,13 +8,27 @@ public class XFormat {
 	private Map<String, XFormat> _children = MapTools.<XFormat>create();
 	private int _min = 1;
 	private int _max = 1;
+
+	/**
+	 * 未定義ノードが存在しても良い。_noc, _unq より優先する。
+	 */
 	private boolean _mad = false;
+
+	/**
+	 * 子を持たない未定義ノードなら存在しても良い。
+	 */
+	private boolean _noc = false;
+
+	/**
+	 * 単独の(名前が重複しない)未定義ノードなら存在しても良い。
+	 */
+	private boolean _unq = false;
 
 	public XFormat(XNode root) throws Exception {
 		for(XNode node : root.getChildren()) {
 			String name = node.getName();
 
-			if(name.equals("num")) {
+			if(name.equals("_num")) {
 				String value = node.getValue();
 				int index;
 
@@ -39,8 +53,18 @@ public class XFormat {
 					throw new IllegalArgumentException();
 				}
 			}
-			else if(name.equals("mad")) {
+			else if(name.equals("_mad")) {
 				_mad = true;
+			}
+			else if(name.equals("_noc")) {
+				_noc = true;
+			}
+			else if(name.equals("_unq")) {
+				_unq = true;
+			}
+			else if(name.equals("_props")) {
+				_noc = true;
+				_unq = true;
 			}
 			else {
 				_children.put(name, new XFormat(node));
@@ -49,7 +73,7 @@ public class XFormat {
 	}
 
 	public void check(XNode root) throws Exception {
-		check(root, "Root");
+		check(root, root.getName());
 	}
 
 	private void check(XNode root, String debugPath) throws Exception {
@@ -68,11 +92,31 @@ public class XFormat {
 		if(_mad == false) {
 			for(String name : m.keySet()) {
 				if(_children.containsKey(name) == false) {
-					throw new IllegalXFormatException(
-							name,
-							debugPath,
-							"存在してはならないタグです。"
-							);
+					if(_noc == false && _unq == false) {
+						throw new IllegalXFormatException(
+								name,
+								debugPath,
+								"存在してはならないタグです。"
+								);
+					}
+					if(_noc) {
+						for(XNode node : m.get(name)) {
+							if(1 <= node.getChildren().size()) {
+								throw new IllegalXFormatException(
+										name,
+										debugPath,
+										"このタグは子ノードを持てません。 <" + node.getChildren().get(0).getName() + ">..."
+										);
+							}
+						}
+					}
+					if(_unq && 2 <= m.get(name).size()) {
+						throw new IllegalXFormatException(
+								name,
+								debugPath,
+								"複数存在してはらならないタグです。" + m.get(name).size()
+								);
+					}
 				}
 			}
 		}
@@ -87,19 +131,14 @@ public class XFormat {
 			else {
 				num = nodes.size();
 			}
-			String message = null;
+			int min = format._min;
+			int max = format._max;
 
-			if(num < _min) {
-				message = "タグが少なすぎます。";
-			}
-			else if(_max < num) {
-				message = "タグが多すぎます。";
-			}
-			if(message != null) {
+			if(IntTools.isRange(num, min, max) == false) {
 				throw new IllegalXFormatException(
 						name,
 						debugPath,
-						message + num + " " + _min + ":" + _max
+						"タグの個数に問題があります。" + num + "(" + min + ":" + max + ")"
 						);
 			}
 		}

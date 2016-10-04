@@ -3,9 +3,11 @@ package charlotte.tools.shelves.shelf;
 import java.awt.Component;
 
 public abstract class Shelf {
-	public String name;
 	public int height;
-	public double rHeight;
+	public int marginT;
+	public int marginB;
+
+	public int index;
 
 	public abstract Component getComponent();
 
