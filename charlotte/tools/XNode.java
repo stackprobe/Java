@@ -133,9 +133,14 @@ public class XNode {
 	}
 
 	private static String trimValue(String value) {
+		value = StringTools.trim(value);
+
+		// old
+		/*
 		value = value.replace("　", StringTools.S_ESCAPE); // XXX
 		value = value.trim();
 		value = value.replace(StringTools.S_ESCAPE, "　"); // XXX
+		*/
 
 		return value;
 	}

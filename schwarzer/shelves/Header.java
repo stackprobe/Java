@@ -30,15 +30,25 @@ public class Header {
 
 	// ----
 
+	private int getAlign() {
+		if(StringTools.startsWithIgnoreCase(align, "L")) {
+			return 1;
+		}
+		if(StringTools.startsWithIgnoreCase(align, "R")) {
+			return 3;
+		}
+		return 2;
+	}
+
 	public boolean alignLeft() {
-		return StringTools.startsWithIgnoreCase(align, "L");
+		return getAlign() == 1;
 	}
 
 	public boolean alignMiddle() {
-		return alignLeft() == false && alignRight() == false;
+		return getAlign() == 2;
 	}
 
 	public boolean alignRight() {
-		return StringTools.startsWithIgnoreCase(align, "R");
+		return getAlign() == 3;
 	}
 }

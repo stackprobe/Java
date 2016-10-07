@@ -4,10 +4,12 @@ import schwarzer.shelves.Button;
 import schwarzer.shelves.Column;
 import schwarzer.shelves.Form;
 import schwarzer.shelves.Header;
+import schwarzer.shelves.Shelf;
 import schwarzer.shelves.ShelvesDialog;
 import schwarzer.shelves.ShelvesManager;
 import schwarzer.shelves.Tab;
 import schwarzer.shelves.shelf.DummyShelf;
+import schwarzer.shelves.shelf.LabelledTextField;
 
 public class Test01 {
 	public static void main(String[] args) {
@@ -113,6 +115,60 @@ public class Test01 {
 						column.shelves.add(new DummyShelf());
 
 						tab.columns.add(column);
+					}
+
+					form.tabs.add(tab);
+				}
+
+				{
+					Tab tab = new Tab();
+
+					{
+						Column column = new Column();
+
+						column.shelves.add(new LabelledTextField());
+						column.shelves.add(new LabelledTextField());
+						column.shelves.add(new LabelledTextField());
+						column.shelves.add(new LabelledTextField());
+						column.shelves.add(new LabelledTextField());
+						column.shelves.add(new LabelledTextField());
+						column.shelves.add(new LabelledTextField());
+						column.shelves.add(new LabelledTextField());
+						column.shelves.add(new LabelledTextField());
+
+						tab.columns.add(column);
+					}
+
+					{
+						Column column = new Column();
+
+						column.shelves.add(new LabelledTextField());
+						column.shelves.add(new LabelledTextField());
+						column.shelves.add(new LabelledTextField());
+						column.shelves.add(new LabelledTextField());
+						column.shelves.add(new LabelledTextField());
+						column.shelves.add(new LabelledTextField());
+						column.shelves.add(new LabelledTextField());
+
+						tab.columns.add(column);
+					}
+
+					{
+						Column column = new Column();
+
+						column.shelves.add(new LabelledTextField());
+						column.shelves.add(new LabelledTextField());
+						column.shelves.add(new LabelledTextField());
+						column.shelves.add(new LabelledTextField());
+						column.shelves.add(new LabelledTextField());
+
+						tab.columns.add(column);
+					}
+
+					for(Column column : tab.columns) {
+						for(Shelf shelf : column.shelves) {
+							shelf.height = 26;
+						}
 					}
 
 					form.tabs.add(tab);

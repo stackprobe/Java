@@ -9,6 +9,7 @@ import charlotte.tools.FileTools;
 import charlotte.tools.MapTools;
 import charlotte.tools.ReflecTools;
 import charlotte.tools.RunnableEx;
+import charlotte.tools.StringTools;
 import charlotte.tools.XFormat;
 import charlotte.tools.XNode;
 
@@ -129,9 +130,9 @@ public abstract class ShelvesDesign extends ShelvesManager {
 					addToProps(props, root.getNodes("Default/Shelf"));
 					addToProps(props, tabNode.getNodes("Default/Shelf"));
 					addToProps(props, columnNode.getNodes("Default/Shelf"));
-					addToProps(props, classNameFltr(root.getNodes("Default/NShelf"), lClassName));
-					addToProps(props, classNameFltr(tabNode.getNodes("Default/NShelf"), lClassName));
-					addToProps(props, classNameFltr(columnNode.getNodes("Default/NShelf"), lClassName));
+					addToProps(props, matchedClassNameOnly(root.getNodes("Default/NShelf"), lClassName));
+					addToProps(props, matchedClassNameOnly(tabNode.getNodes("Default/NShelf"), lClassName));
+					addToProps(props, matchedClassNameOnly(columnNode.getNodes("Default/NShelf"), lClassName));
 					addToProps(props, shelfNode);
 					ignoreProp(props, "className");
 
@@ -140,10 +141,9 @@ public abstract class ShelvesDesign extends ShelvesManager {
 				}
 			}
 		}
-		throw null; // TODO
 	}
 
-	private List<XNode> classNameFltr(List<XNode> src, String className) {
+	private List<XNode> matchedClassNameOnly(List<XNode> src, String className) {
 		List<XNode> dest = new ArrayList<XNode>();
 
 		for(XNode node : src) {
@@ -175,14 +175,32 @@ public abstract class ShelvesDesign extends ShelvesManager {
 			Field field = ReflecTools.getField(dest.getClass(), name);
 			Object value = props.get(name);
 
-			if(int.class.equals(field.getType())) {
+			if(boolean.class.equals(field.getType())) {
+				value = new Boolean(StringTools.toFlag("" + value));
+			}
+			else if(int.class.equals(field.getType())) {
 				value = new Integer(Integer.parseInt("" + value));
 			}
 			else if(long.class.equals(field.getType())) {
-				value = new Integer(Integer.parseInt("" + value));
+				value = new Long(Long.parseLong("" + value));
+			}
+			else if(double.class.equals(field.getType())) {
+				value = new Double(Double.parseDouble("" + value));
 			}
 			ReflecTools.setObject(field, dest, value);
 		}
+	}
+
+	private String valToStrInt(Object value) {
+		String ret = "" + value;
+
+		ret = StringTools.replaceChar(ret, StringTools.ZEN_ALPHA, StringTools.ALPHA);
+		ret = StringTools.replaceChar(ret, StringTools.zen_alpha, StringTools.alpha);
+		ret = StringTools.replaceChar(ret, StringTools.ZEN_DIGIT, StringTools.DIGIT);
+		ret = StringTools.replaceChar(ret, StringTools.ZEN_PUNCT, StringTools.PUNCT);
+		ret = StringTools.trim(ret);
+
+		return ret;
 	}
 
 	public List<Shelf> getAllShelf() {

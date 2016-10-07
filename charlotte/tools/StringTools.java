@@ -555,6 +555,7 @@ public class StringTools {
 	public static final String ZEN_DIGIT = "０１２３４５６７８９";
 	public static final String ZEN_ALPHA = "ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ";
 	public static final String zen_alpha = "ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ";
+	public static final String ZEN_PUNCT = "！”＃＄％＆’（）＊＋，－．／：；＜＝＞？＠［￥］＾＿｀｛｜｝￣";
 
 	public static String getRandString(int minlen, int maxlen) {
 		return getRandString(minlen, maxlen, ASCII + ZEN_HIRAGANA + ZEN_KATAKANA);

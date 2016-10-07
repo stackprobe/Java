@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import charlotte.satellite.WinAPITools;
+import charlotte.tools.StringTools;
 import charlotte.tools.SystemTools;
 
 public class Test01 {
@@ -89,6 +90,10 @@ public class Test01 {
 			//System.out.println(Class.forName("String")); // ClassNotFoundException
 			System.out.println(Class.forName("java.lang.String"));
 			//System.out.println(Class.forName("XXX---XXX")); // ClassNotFoundException
+
+			// ----
+
+			System.out.println(StringTools.PUNCT);
 		}
 		catch(Throwable e) {
 			e.printStackTrace();
