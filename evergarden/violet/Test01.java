@@ -83,6 +83,12 @@ public class Test01 {
 
 			System.out.println(new File(new File("").getCanonicalPath()).exists()); // true
 			System.out.println(new File(new File("").getCanonicalPath()).isDirectory()); // true
+
+			// ----
+
+			//System.out.println(Class.forName("String")); // ClassNotFoundException
+			System.out.println(Class.forName("java.lang.String"));
+			//System.out.println(Class.forName("XXX---XXX")); // ClassNotFoundException
 		}
 		catch(Throwable e) {
 			e.printStackTrace();

@@ -7,6 +7,8 @@ public class Button {
 	public String title = "未定義";
 	public String method = "defaultButtonActionPerformed";
 
+	// ここへ追加...
+
 	// ---- for ShelvesDialog ----
 
 	public IRect rect;

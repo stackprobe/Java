@@ -206,7 +206,7 @@ public class XNode {
 		}
 	}
 
-	public XNode getNode(String path) throws Exception {
+	public XNode getNode(String path) {
 		List<XNode> ret = getNodes(path);
 
 		if(ret.size() == 0) {
@@ -216,7 +216,7 @@ public class XNode {
 		return ret.get(0);
 	}
 
-	public XNode getNode(String path, int index) throws Exception {
+	public XNode getNode(String path, int index) {
 		List<XNode> ret = getNodes(path);
 
 		if(ret.size() <= index) {
@@ -226,7 +226,7 @@ public class XNode {
 		return ret.get(index);
 	}
 
-	public String getNodeValue(String path) throws Exception {
+	public String getNodeValue(String path) {
 		XNode node = getNode(path);
 
 		if(node == null) {
@@ -235,7 +235,7 @@ public class XNode {
 		return node.getValue();
 	}
 
-	public String getNodeValue(String path, int index) throws Exception {
+	public String getNodeValue(String path, int index) {
 		XNode node = getNode(path, index);
 
 		if(node == null) {

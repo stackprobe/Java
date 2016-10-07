@@ -13,6 +13,8 @@ public class Tab {
 	public int colSpan = 10;
 	public String title = "未定義";
 
+	// ここへ追加...
+
 	// ---- children ----
 
 	public List<Column> columns = new ArrayList<Column>();

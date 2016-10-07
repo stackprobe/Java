@@ -4,19 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import charlotte.tools.IRect;
+import charlotte.tools.StringTools;
 
 public class Header {
-	public static final int ALIGN_L = 1;
-	public static final int ALIGN_M = 2;
-	public static final int ALIGN_R = 3;
-
 	public int height = 50;
 	public int marginL = 10;
 	public int marginT = 10;
 	public int marginR = 10;
 	public int marginB = 10;
 	public int buttonSpan = 10;
-	public int align = ALIGN_M;
+	public String align = "center";
+
+	// ここへ追加...
 
 	// ---- children ----
 
@@ -30,4 +29,16 @@ public class Header {
 	public int index;
 
 	// ----
+
+	public boolean alignLeft() {
+		return StringTools.startsWithIgnoreCase(align, "L");
+	}
+
+	public boolean alignMiddle() {
+		return alignLeft() == false && alignRight() == false;
+	}
+
+	public boolean alignRight() {
+		return StringTools.startsWithIgnoreCase(align, "R");
+	}
 }

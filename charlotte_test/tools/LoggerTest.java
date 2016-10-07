@@ -30,15 +30,15 @@ public class LoggerTest {
 	}
 
 	private static void test01(int prm) {
-		_logger.write("開始します。");
-		_logger.write("prm == " + prm);
+		_logger.println("開始します。");
+		_logger.println("prm == " + prm);
 
 		try {
 			try {
 				try {
 					try {
 						if(prm != 1) {
-							throw new Exception("パラメータが1ではありません。");
+							throw new Exception("パラメータが1ではありません。prm=" + prm);
 						}
 					}
 					catch(Throwable e) {
@@ -52,11 +52,11 @@ public class LoggerTest {
 			catch(Throwable e) {
 				throw new Exception("一段目", e);
 			}
-			_logger.write("正常終了しました。");
+			_logger.println("正常終了しました。");
 		}
 		catch(Throwable e) {
-			_logger.write(e);
-			_logger.write("異常終了しました。");
+			_logger.print(e);
+			_logger.println("異常終了しました。");
 		}
 	}
 }

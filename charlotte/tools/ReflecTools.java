@@ -28,6 +28,10 @@ public class ReflecTools {
 
 	public static Object invokeDeclaredMethod(Class<?> classObj, String methodName, Object instance, Object[] params, Class<?>[] paramTypes) throws Exception {
 		Method methodObj = getDeclaredMethod(classObj, methodName, paramTypes);
+
+		if(methodObj == null) {
+			throw new Exception("クラス [" + classObj + "] に、メソッド [" + methodName + "] は定義されていません。");
+		}
 		return methodObj.invoke(instance, params);
 	}
 
@@ -165,6 +169,23 @@ public class ReflecTools {
 
 	public static void setObject(Field field, Object instance, Object value) throws Exception {
 		field.set(instance, value);
+	}
+
+	public static Field getField(Class<?> classObj, String fieldName) throws Exception {
+		Field field = getDeclaredField(classObj, fieldName);
+
+		if(field == null) {
+			throw new Exception("クラス [" + classObj + "] に、フィールド [" + fieldName + "] は定義されていません。");
+		}
+		return field;
+	}
+
+	public static Object getValue(Class<?> classObj, String fieldName, Object instance) throws Exception {
+		return getObject(getField(classObj, fieldName), instance);
+	}
+
+	public static void setValue(Class<?> classObj, String fieldName, Object instance, Object value) throws Exception {
+		setObject(getField(classObj, fieldName), instance, value);
 	}
 
 	public static class FieldData {

@@ -8,25 +8,31 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.LayoutManager;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 
 import charlotte.tools.IRect;
+import charlotte.tools.ReflecTools;
 
 public class ShelvesDialog extends JDialog {
-	private ShelvesMaster _master;
+	private ShelvesManager mgr;
 
-	public ShelvesDialog(Frame parent, ShelvesMaster master) {
+	public ShelvesDialog(Frame parent, ShelvesManager mgr) {
 		super(parent);
-		_master = master;
+		this.mgr = mgr;
 		init();
 	}
 
 	private void init() {
-		Form form = _master.getForm();
+		Form form = mgr.getForm();
 
 		form.outernal = new IRect(0, 0, form.width, form.height);
 		form.internal = form.outernal.unextend(
@@ -60,7 +66,7 @@ public class ShelvesDialog extends JDialog {
 			form.tabRect = form.tabRect.unextend(0, header.height, 0, 0);
 		}
 		if(form.footer != null) {
-			Header footer = form.header;
+			Header footer = form.footer;
 
 			footer.outernal = new IRect(
 					form.tabRect.l,
@@ -79,7 +85,7 @@ public class ShelvesDialog extends JDialog {
 
 			checkHeaderButtons(footer);
 
-			form.tabRect = form.tabRect.unextend(0, 0, footer.height, 0);
+			form.tabRect = form.tabRect.unextend(0, 0, 0, footer.height);
 		}
 		for(int tabIndex = 0; tabIndex < form.tabs.size(); tabIndex++) {
 			Tab tab = form.tabs.get(tabIndex);
@@ -87,7 +93,8 @@ public class ShelvesDialog extends JDialog {
 			tab.parent = form;
 			tab.index = tabIndex;
 
-			int l = tab.marginL;
+			int lOrig = tab.marginL;
+			int l = lOrig;
 			int maxH = -1;
 
 			for(int colIndex = 0; colIndex < tab.columns.size(); colIndex++) {
@@ -105,7 +112,8 @@ public class ShelvesDialog extends JDialog {
 				column.parent = tab;
 				column.index = colIndex;
 
-				int t = column.rect.t;
+				int tOrig = column.rect.t;
+				int t = tOrig;
 
 				for(int shelfIndex = 0; shelfIndex < column.shelves.size(); shelfIndex++) {
 					Shelf shelf = column.shelves.get(shelfIndex);
@@ -124,14 +132,14 @@ public class ShelvesDialog extends JDialog {
 
 					t += shelf.rect.h;
 				}
-				column.rect.h = t;
+				column.rect.h = t - tOrig;
 				l += column.rect.w;
-				maxH = Math.max(maxH, t);
+				maxH = Math.max(maxH, t - tOrig);
 			}
 			tab.internal = new IRect(
 					tab.marginL,
 					tab.marginT,
-					l,
+					l - lOrig,
 					maxH
 					);
 			tab.outernal = tab.internal.extend(
@@ -149,14 +157,112 @@ public class ShelvesDialog extends JDialog {
 			}
 		};
 
-		AncLayoutMgr layout = new AncLayoutMgr(panel);
+		AncLayoutMgr layout = new AncLayoutMgr(panel, form.outernal.w, form.outernal.h);
 		panel.setLayout(layout);
 		this.getContentPane().setLayout(new BorderLayout());
 		this.getContentPane().add(panel, BorderLayout.CENTER);
+
+		if(form.header != null) {
+			addHeaderButtonsToLayout(layout, form.header, true);
+		}
+		if(form.footer != null) {
+			addHeaderButtonsToLayout(layout, form.footer, false);
+		}
+		addTabsToLayout(layout, form);
+
+		this.setTitle(form.title);
+		this.setSize(form.outernal.w, form.outernal.h);
+		this.setMinimumSize(this.getSize());
+		this.setLocationRelativeTo(this.getOwner());
+		this.setModal(true);
+	}
+
+	private void addTabsToLayout(AncLayoutMgr dlgLayout, Form form) {
+		JTabbedPane comp = new JTabbedPane();
+
+		for(Tab tab : form.tabs) {
+			JPanel panel = new JPanel() {
+				@Override
+				protected void paintComponent(Graphics g) {
+					super.paintComponent(g);
+				}
+			};
+
+			AncLayoutMgr layout = new AncLayoutMgr(panel, tab.outernal.w, tab.outernal.h);
+			panel.setLayout(layout);
+
+			for(Column column : tab.columns) {
+				for(Shelf shelf : column.shelves) {
+					Component shelfComp = shelf.getComponent();
+
+					layout.add(
+							shelfComp,
+							shelf.rect.l,
+							shelf.rect.t,
+							shelf.rect.w,
+							shelf.rect.h,
+							true,
+							true,
+							false,
+							false
+							);
+				}
+			}
+			JScrollPane scroll = new JScrollPane();
+
+			scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+			scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+			scroll.getViewport().add(panel);
+
+			comp.add(tab.title, scroll);
+		}
+		dlgLayout.add(
+				comp,
+				form.tabRect.l,
+				form.tabRect.t,
+				form.tabRect.w,
+				form.tabRect.h,
+				true,
+				true,
+				true,
+				true
+				);
+	}
+
+	private void addHeaderButtonsToLayout(AncLayoutMgr layout, Header header, boolean alignTop) {
+		for(Button button : header.buttons) {
+			JButton comp = new JButton();
+
+			comp.setText(button.title);
+			comp.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					try {
+						call(button.method, button);
+					}
+					catch(Throwable ex) {
+						ex.printStackTrace();
+					}
+				}
+			});
+
+			layout.add(
+					comp,
+					button.rect.l,
+					button.rect.t,
+					button.rect.w,
+					button.rect.h,
+					header.alignLeft(),
+					alignTop,
+					header.alignRight(),
+					alignTop == false
+					);
+		}
 	}
 
 	private void checkHeaderButtons(Header header) {
-		int l = 0;
+		int lOrig = header.internal.l;
+		int l = lOrig;
 
 		for(int btnIndex = 0; btnIndex < header.buttons.size(); btnIndex++) {
 			Button button = header.buttons.get(btnIndex);
@@ -172,17 +278,24 @@ public class ShelvesDialog extends JDialog {
 					);
 			button.parent = header;
 			button.index = btnIndex;
-		}
-		int m = header.internal.w - l;
 
-		switch(header.align) {
-		case Header.ALIGN_L: m = 0; break;
-		case Header.ALIGN_M: m /= 2; break;
-		case Header.ALIGN_R: break;
+			l += button.rect.w;
+		}
+		int m = header.internal.w - (l - lOrig);
+
+		if(header.alignLeft()) {
+			m = 0;
+		}
+		else if(header.alignMiddle()) {
+			m /= 2;
 		}
 		for(Button button : header.buttons) {
 			button.rect.l += m;
 		}
+	}
+
+	private void call(String method, Button source) throws Exception {
+		ReflecTools.invokeDeclaredMethod(mgr.getClass(), method, mgr, new Object[0]);
 	}
 
 	public void perform() {
@@ -238,7 +351,7 @@ public class ShelvesDialog extends JDialog {
 				);
 	}
 
-	private static class AncLayoutMgr implements LayoutManager {
+	public static class AncLayoutMgr implements LayoutManager {
 		private Container _parent;
 		private int _w;
 		private int _h;

@@ -3,14 +3,9 @@ package charlotte.tools;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Logger implements Closeable {
-	public static Logger create(String dir, String prefix) throws Exception {
-		return create(getFileBase(dir, prefix));
-	}
-
 	private static String getFileBase(String dir, String prefix) throws Exception {
 		dir = FileTools.getFullPath(dir);
 
@@ -23,6 +18,10 @@ public class Logger implements Closeable {
 			}
 		}
 		return FileTools.combine(dir, prefix);
+	}
+
+	public static Logger create(String dir, String prefix) throws Exception {
+		return create(getFileBase(dir, prefix));
 	}
 
 	public static Logger create(String fileBase) {
@@ -117,54 +116,41 @@ public class Logger implements Closeable {
 		_writer.open();
 	}
 
-	public void write(Throwable e) {
+	public void println(String line) {
 		try {
-			List<String> reasons = getReasons(e);
+			System.out.println(line);
+			_writer.action(TimeData.now().getString("[Y/M/D h:m:s] ") + line);
+		}
+		catch(Throwable e) {
+			e.printStackTrace();
+		}
+	}
 
-			write("エラー: " + reasons.get(0));
+	public void print(Throwable e) {
+		try {
+			e.printStackTrace();
 
-			for(int index = 1; index < reasons.size(); index++) {
-				writeLine("\t原因(" + index + "): " + reasons.get(index));
-			}
-			writeLine("\r\n\t発生した例外:\r\n\t" + getMessage(SystemTools.toString(e)) + "\r\n");
+			_writer.action(TimeData.now().getString("[Y/M/D h:m:s]!エラー: 例外がスローされました。"));
+			writeReasons(e);
+			_writer.action("");
+			_writer.action("スタックトレース:");
+			_writer.action(SystemTools.toString(e));
 		}
 		catch(Throwable ex) {
 			ex.printStackTrace();
 		}
 	}
 
-	private static List<String> getReasons(Throwable e) {
-		List<String> ret = new ArrayList<String>();
-
+	private void writeReasons(Throwable e) {
 		while(e != null) {
 			String message = e.getMessage();
 
-			if(message == null) {
+			if(StringTools.isEmpty(message)) {
 				message = e.getClass().getName();
 			}
-			ret.add(message);
+			_writer.action(message);
 
 			e = e.getCause();
-		}
-		return ret;
-	}
-
-	public void write(String line) {
-		try {
-			writeLine(TimeData.now().getString("[Y/M/D h:m:s] ") + line);
-		}
-		catch(Throwable e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void writeLine(String line) {
-		try {
-			System.out.println(line);
-			_writer.action(line);
-		}
-		catch(Throwable e) {
-			e.printStackTrace();
 		}
 	}
 
@@ -198,17 +184,5 @@ public class Logger implements Closeable {
 		for(int index = 0; index < delCount; index++) {
 			FileTools.rm(files.get(index));
 		}
-	}
-
-	public static String getMessage(String... lines) {
-		return getMessage(String.join("\n", lines));
-	}
-
-	public static String getMessage(String line) {
-		line = line.replace("\r", "");
-		line = StringTools.trim(line, "\n");
-		line = line.replace("\n", "\r\n\t");
-
-		return line;
 	}
 }

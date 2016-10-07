@@ -1,39 +1,200 @@
 package schwarzer.shelves;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import charlotte.tools.FileTools;
+import charlotte.tools.MapTools;
+import charlotte.tools.ReflecTools;
+import charlotte.tools.RunnableEx;
 import charlotte.tools.XFormat;
 import charlotte.tools.XNode;
 
-public abstract class ShelvesDesign extends ShelvesMaster {
-	private XNode _root;
+public abstract class ShelvesDesign extends ShelvesManager {
+	private XNode root;
 
 	public ShelvesDesign(XNode root) throws Exception {
-		_root = root;
+		this.root = root;
 		init();
 	}
 
-	private static XFormat _format = null;
+	private static XFormat format = null;
 
 	private void init() throws Exception {
-		if(_format == null) {
-			_format = new XFormat(XNode.load(FileTools.readToEnd(ShelvesDesign.class.getResource(
+		if(format == null) {
+			format = new XFormat(XNode.load(FileTools.readToEnd(ShelvesDesign.class.getResource(
 					"format/Design.xml"
 					))));
 		}
-		_format.check(_root);
+		format.check(root);
 	}
 
-	private Form _form = null;
+	private Form form = null;
 
 	@Override
 	public Form getForm() {
-		if(_form == null) {
-			_form = createForm();
+		try {
+			if(form == null) {
+				createForm();
+			}
+			return form;
 		}
-		return _form;
+		catch(Exception e) {
+			throw RunnableEx.re(e);
+		}
 	}
 
-	private Form createForm() {
+	private void createForm() throws Exception {
+		Map<String, String> props = MapTools.create();
+
+		form = new Form();
+
+		for(XNode node : root.getNodes("Header")) {
+			form.header = new Header();
+			props.clear();
+
+			addToProps(props, root.getNodes("Default/Header"));
+			addToProps(props, node);
+			ignoreProp(props, "Default");
+			ignoreProp(props, "Button");
+
+			setProps(form.header, props);
+		}
+		for(XNode node : root.getNodes("Header/Button")) {
+			Button button = new Button();
+			props.clear();
+
+			addToProps(props, root.getNodes("Default/Button"));
+			addToProps(props, root.getNodes("Header/Default/Button"));
+			addToProps(props, node);
+
+			setProps(button, props);
+			form.header.buttons.add(button);
+		}
+		for(XNode node : root.getNodes("Footer")) {
+			form.footer = new Header();
+			props.clear();
+
+			addToProps(props, root.getNodes("Default/Footer"));
+			addToProps(props, node);
+			ignoreProp(props, "Default");
+			ignoreProp(props, "Button");
+
+			setProps(form.footer, props);
+		}
+		for(XNode node : root.getNodes("Footer/Button")) {
+			Button button = new Button();
+			props.clear();
+
+			addToProps(props, root.getNodes("Default/Button"));
+			addToProps(props, root.getNodes("Footer/Default/Button"));
+			addToProps(props, node);
+
+			setProps(button, props);
+			form.footer.buttons.add(button);
+		}
+		for(XNode tabNode : root.getNodes("Tab")) {
+			Tab tab = new Tab();
+			props.clear();
+
+			addToProps(props, root.getNodes("Default/Tab"));
+			addToProps(props, tabNode);
+			ignoreProp(props, "Default");
+			ignoreProp(props, "Column");
+
+			setProps(tab, props);
+			form.tabs.add(tab);
+
+			for(XNode columnNode : tabNode.getNodes("Column")) {
+				Column column = new Column();
+				props.clear();
+
+				addToProps(props, root.getNodes("Default/Column"));
+				addToProps(props, tabNode.getNodes("Default/Column"));
+				addToProps(props, columnNode);
+				ignoreProp(props, "Default");
+				ignoreProp(props, "Shelf");
+
+				setProps(column, props);
+				tab.columns.add(column);
+
+				for(XNode shelfNode : columnNode.getNodes("Shelf")) {
+					String lClassName = shelfNode.getNodeValue("className");
+					String className = this.getShelfPackage().getName() + "." + lClassName;
+					Shelf shelf = (Shelf)ReflecTools.invokeDeclaredCtor(className, new Object[0]);
+					props.clear();
+
+					addToProps(props, root.getNodes("Default/Shelf"));
+					addToProps(props, tabNode.getNodes("Default/Shelf"));
+					addToProps(props, columnNode.getNodes("Default/Shelf"));
+					addToProps(props, classNameFltr(root.getNodes("Default/NShelf"), lClassName));
+					addToProps(props, classNameFltr(tabNode.getNodes("Default/NShelf"), lClassName));
+					addToProps(props, classNameFltr(columnNode.getNodes("Default/NShelf"), lClassName));
+					addToProps(props, shelfNode);
+					ignoreProp(props, "className");
+
+					setProps(shelf, props);
+					column.shelves.add(shelf);
+				}
+			}
+		}
 		throw null; // TODO
+	}
+
+	private List<XNode> classNameFltr(List<XNode> src, String className) {
+		List<XNode> dest = new ArrayList<XNode>();
+
+		for(XNode node : src) {
+			if(className.equals(node.getNodeValue("className"))) {
+				dest.add(node);
+			}
+		}
+		return dest;
+	}
+
+	private void addToProps(Map<String, String> dest, List<XNode> nodes) {
+		for(XNode node : nodes) {
+			addToProps(dest, node);
+		}
+	}
+
+	private void addToProps(Map<String, String> dest, XNode node) {
+		for(XNode prop : node.getChildren()) {
+			dest.put(prop.getName(), prop.getValue());
+		}
+	}
+
+	private void ignoreProp(Map<String, String> props, String name) {
+		props.remove(name);
+	}
+
+	private void setProps(Object dest, Map<String, String> props) throws Exception {
+		for(String name : props.keySet()) {
+			Field field = ReflecTools.getField(dest.getClass(), name);
+			Object value = props.get(name);
+
+			if(int.class.equals(field.getType())) {
+				value = new Integer(Integer.parseInt("" + value));
+			}
+			else if(long.class.equals(field.getType())) {
+				value = new Integer(Integer.parseInt("" + value));
+			}
+			ReflecTools.setObject(field, dest, value);
+		}
+	}
+
+	public List<Shelf> getAllShelf() {
+		List<Shelf> ret = new ArrayList<Shelf>();
+
+		for(Tab tab : getForm().tabs) {
+			for(Column column : tab.columns) {
+				for(Shelf shelf : column.shelves) {
+					ret.add(shelf);
+				}
+			}
+		}
+		return ret;
 	}
 }

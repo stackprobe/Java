@@ -14,6 +14,8 @@ public class Form {
 	public int marginB = 10;
 	public String title = "未定義";
 
+	// ここへ追加...
+
 	// ---- children ----
 
 	public Header header = null;

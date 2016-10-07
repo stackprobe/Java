@@ -6,8 +6,10 @@ import java.util.List;
 import charlotte.tools.IRect;
 
 public class Column {
-	public int width = 600;
+	public int width = 500;
 	public int shelfSpan = 10;
+
+	// ここへ追加...
 
 	// ---- children ----
 

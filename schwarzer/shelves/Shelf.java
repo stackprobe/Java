@@ -8,6 +8,8 @@ public abstract class Shelf {
 	public int height = 50;
 	public String className = "DummyShelf";
 
+	// ここへ追加...
+
 	// ---- for ShelvesDialog ----
 
 	public IRect rect;
