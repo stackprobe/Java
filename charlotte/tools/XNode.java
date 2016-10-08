@@ -215,7 +215,6 @@ public class XNode {
 		List<XNode> ret = getNodes(path);
 
 		if(ret.size() == 0) {
-			System.out.println("パス " + path + " のタグが見つかりません。");
 			return null;
 		}
 		return ret.get(0);
@@ -225,7 +224,6 @@ public class XNode {
 		List<XNode> ret = getNodes(path);
 
 		if(ret.size() <= index) {
-			System.out.println("パス " + path + " の " + (index + 1) + " 番目のタグが見つかりません。");
 			return null;
 		}
 		return ret.get(index);
@@ -247,5 +245,13 @@ public class XNode {
 			return null;
 		}
 		return node.getValue();
+	}
+
+	public int getNodeCount(String path) {
+		return getNodes(path).size();
+	}
+
+	public boolean hasNode(String path) {
+		return 1 <= getNodeCount(path);
 	}
 }

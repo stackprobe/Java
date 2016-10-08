@@ -48,7 +48,7 @@ public abstract class ShelvesDesign extends ShelvesManager {
 	}
 
 	private void createForm() throws Exception {
-		Map<String, String> props = MapTools.create();
+		Map<String, XNode> props = MapTools.<XNode>create();
 
 		form = new Form();
 
@@ -130,9 +130,9 @@ public abstract class ShelvesDesign extends ShelvesManager {
 					addToProps(props, root.getNodes("Default/Shelf"));
 					addToProps(props, tabNode.getNodes("Default/Shelf"));
 					addToProps(props, columnNode.getNodes("Default/Shelf"));
-					addToProps(props, matchedClassNameOnly(root.getNodes("Default/NShelf"), lClassName));
-					addToProps(props, matchedClassNameOnly(tabNode.getNodes("Default/NShelf"), lClassName));
-					addToProps(props, matchedClassNameOnly(columnNode.getNodes("Default/NShelf"), lClassName));
+					addToProps(props, onlyClassName(root.getNodes("Default/NShelf"), lClassName));
+					addToProps(props, onlyClassName(tabNode.getNodes("Default/NShelf"), lClassName));
+					addToProps(props, onlyClassName(columnNode.getNodes("Default/NShelf"), lClassName));
 					addToProps(props, shelfNode);
 					ignoreProp(props, "className");
 
@@ -143,7 +143,7 @@ public abstract class ShelvesDesign extends ShelvesManager {
 		}
 	}
 
-	private List<XNode> matchedClassNameOnly(List<XNode> src, String className) {
+	private List<XNode> onlyClassName(List<XNode> src, String className) {
 		List<XNode> dest = new ArrayList<XNode>();
 
 		for(XNode node : src) {
@@ -154,55 +154,79 @@ public abstract class ShelvesDesign extends ShelvesManager {
 		return dest;
 	}
 
-	private void addToProps(Map<String, String> dest, List<XNode> nodes) {
+	private void addToProps(Map<String, XNode> dest, List<XNode> nodes) {
 		for(XNode node : nodes) {
 			addToProps(dest, node);
 		}
 	}
 
-	private void addToProps(Map<String, String> dest, XNode node) {
+	private void addToProps(Map<String, XNode> dest, XNode node) {
 		for(XNode prop : node.getChildren()) {
-			dest.put(prop.getName(), prop.getValue());
+			dest.put(prop.getName(), prop);
 		}
 	}
 
-	private void ignoreProp(Map<String, String> props, String name) {
+	private void ignoreProp(Map<String, XNode> props, String name) {
 		props.remove(name);
 	}
 
-	private void setProps(Object dest, Map<String, String> props) throws Exception {
+	private static final String MAP_KEY_NODE_NAME = "name";
+	private static final String MAP_VALUE_NODE_NAME = "value";
+
+	private void setProps(Object dest, Map<String, XNode> props) throws Exception {
 		for(String name : props.keySet()) {
 			Field field = ReflecTools.getField(dest.getClass(), name);
-			Object value = props.get(name);
+			Class<?> fieldType = field.getType();
 
-			if(boolean.class.equals(field.getType())) {
-				value = new Boolean(StringTools.toFlag("" + value));
+			if(List.class.equals(fieldType)) {
+				List<String> val = new ArrayList<String>();
+
+				for(XNode node : props.get(name).getChildren()) {
+					val.add(node.getValue());
+				}
+				ReflecTools.setObject(field, dest, val);
 			}
-			else if(int.class.equals(field.getType())) {
-				value = new Integer(Integer.parseInt("" + value));
+			else if(Map.class.equals(fieldType)) {
+				Map<String, String> val = MapTools.create();
+
+				for(XNode node : props.get(name).getChildren()) {
+					if(node.hasNode(MAP_KEY_NODE_NAME) && node.hasNode(MAP_VALUE_NODE_NAME)) {
+						val.put(node.getNodeValue(MAP_KEY_NODE_NAME), node.getNodeValue(MAP_VALUE_NODE_NAME));
+					}
+					else {
+						val.put(node.getName(), node.getValue());
+					}
+				}
+				ReflecTools.setObject(field, dest, val);
 			}
-			else if(long.class.equals(field.getType())) {
-				value = new Long(Long.parseLong("" + value));
+			else {
+				Object value = props.get(name).getValue();
+
+				if(boolean.class.equals(fieldType)) {
+					value = new Boolean(StringTools.toFlag("" + value));
+				}
+				else if(int.class.equals(fieldType)) {
+					value = new Integer(Integer.parseInt("" + value));
+				}
+				else if(long.class.equals(fieldType)) {
+					value = new Long(Long.parseLong("" + value));
+				}
+				else if(double.class.equals(fieldType)) {
+					value = new Double(Double.parseDouble("" + value));
+				}
+				else if(String.class.equals(fieldType)) {
+					// noop
+				}
+				else {
+					throw new Exception("クラス [" + dest.getClass() + "] の、フィールド [" + field.getName() + "] の型に問題があります。");
+				}
+				ReflecTools.setObject(field, dest, value);
 			}
-			else if(double.class.equals(field.getType())) {
-				value = new Double(Double.parseDouble("" + value));
-			}
-			ReflecTools.setObject(field, dest, value);
 		}
 	}
 
-	private String valToStrInt(Object value) {
-		String ret = "" + value;
-
-		ret = StringTools.replaceChar(ret, StringTools.ZEN_ALPHA, StringTools.ALPHA);
-		ret = StringTools.replaceChar(ret, StringTools.zen_alpha, StringTools.alpha);
-		ret = StringTools.replaceChar(ret, StringTools.ZEN_DIGIT, StringTools.DIGIT);
-		ret = StringTools.replaceChar(ret, StringTools.ZEN_PUNCT, StringTools.PUNCT);
-		ret = StringTools.trim(ret);
-
-		return ret;
-	}
-
+	// いるかしら..
+	/*
 	public List<Shelf> getAllShelf() {
 		List<Shelf> ret = new ArrayList<Shelf>();
 
@@ -215,4 +239,5 @@ public abstract class ShelvesDesign extends ShelvesManager {
 		}
 		return ret;
 	}
+	*/
 }

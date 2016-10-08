@@ -67,6 +67,10 @@ public class ReflecTools {
 
 	public static Object invokeDeclaredCtor(Class<?> classObj, Object[] params, Class<?>[] paramTypes) throws Exception {
 		Constructor<?> ctor = getDeclaredCtor(classObj, paramTypes);
+
+		if(ctor == null) {
+			throw new Exception("クラス [" + classObj + "] のコンストラクタが見つかりません。");
+		}
 		Object instance = ctor.newInstance(params);
 		return instance;
 	}

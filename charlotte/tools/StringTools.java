@@ -550,8 +550,8 @@ public class StringTools {
 		}
 	}
 
-	public static final String ZEN_HIRAGANA = "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん";
-	public static final String ZEN_KATAKANA = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
+	public static final String ZEN_HIRAGANA = "。「」、・をぁぃぅぇぉゃゅょっーあいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわん゛゜";
+	public static final String ZEN_KATAKANA = "。「」、・ヲァィゥェォャュョッーアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワン゛゜";
 	public static final String ZEN_DIGIT = "０１２３４５６７８９";
 	public static final String ZEN_ALPHA = "ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ";
 	public static final String zen_alpha = "ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ";
@@ -573,6 +573,44 @@ public class StringTools {
 			buff.append(validChrs.charAt(MathTools.random(validChrs.length())));
 		}
 		return buff.toString();
+	}
+
+	public static String hanToZen(String str) {
+		return replaceChar(
+				str,
+				HAN_KATAKANA +
+				DIGIT +
+				ALPHA +
+				alpha +
+				PUNCT +
+				" ",
+				ZEN_KATAKANA +
+				ZEN_DIGIT +
+				ZEN_ALPHA +
+				zen_alpha +
+				ZEN_PUNCT +
+				"　"
+				);
+	}
+
+	public static String zenToHan(String str) {
+		return replaceChar(
+				str,
+				ZEN_HIRAGANA +
+				ZEN_KATAKANA +
+				ZEN_DIGIT +
+				ZEN_ALPHA +
+				zen_alpha +
+				ZEN_PUNCT +
+				"　",
+				HAN_KATAKANA +
+				HAN_KATAKANA +
+				DIGIT +
+				ALPHA +
+				alpha +
+				PUNCT +
+				" "
+				);
 	}
 
 	public static final String S_TRUE = "true";

@@ -3,9 +3,12 @@ package evergarden.violet;
 import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import charlotte.satellite.WinAPITools;
+import charlotte.tools.ReflecTools;
 import charlotte.tools.StringTools;
 import charlotte.tools.SystemTools;
 
@@ -94,9 +97,54 @@ public class Test01 {
 			// ----
 
 			System.out.println(StringTools.PUNCT);
+			System.out.println(StringTools.HAN_KATAKANA);
+
+			// ----
+
+			System.out.println("i");
+			System.out.println(int.class.equals(ReflecTools.getField(O.class, "i").getType())); // true
+			System.out.println(int.class.equals(ReflecTools.getField(O.class, "l").getType())); // false
+			System.out.println(int.class.equals(ReflecTools.getField(O.class, "d").getType())); // false
+			System.out.println(int.class.equals(ReflecTools.getField(O.class, "s").getType())); // false
+
+			System.out.println("l");
+			System.out.println(long.class.equals(ReflecTools.getField(O.class, "i").getType())); // false
+			System.out.println(long.class.equals(ReflecTools.getField(O.class, "l").getType())); // true
+			System.out.println(long.class.equals(ReflecTools.getField(O.class, "d").getType())); // false
+			System.out.println(long.class.equals(ReflecTools.getField(O.class, "s").getType())); // false
+
+			System.out.println("d");
+			System.out.println(double.class.equals(ReflecTools.getField(O.class, "i").getType())); // false
+			System.out.println(double.class.equals(ReflecTools.getField(O.class, "l").getType())); // false
+			System.out.println(double.class.equals(ReflecTools.getField(O.class, "d").getType())); // true
+			System.out.println(double.class.equals(ReflecTools.getField(O.class, "s").getType())); // false
+
+			System.out.println("s");
+			System.out.println(String.class.equals(ReflecTools.getField(O.class, "i").getType())); // false
+			System.out.println(String.class.equals(ReflecTools.getField(O.class, "l").getType())); // false
+			System.out.println(String.class.equals(ReflecTools.getField(O.class, "d").getType())); // false
+			System.out.println(String.class.equals(ReflecTools.getField(O.class, "s").getType())); // true
+
+			System.out.println("----");
+
+			System.out.println(Object.class.equals(ReflecTools.getField(O.class, "s").getType())); // false
+
+			System.out.println(List.class.equals(ReflecTools.getField(O.class, "ls").getType())); // true
+			System.out.println(Map.class.equals(ReflecTools.getField(O.class, "mss").getType())); // true
+
+			// ----
 		}
 		catch(Throwable e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static class O {
+		public int i;
+		public long l;
+		public double d;
+		public String s;
+		public List<String> ls;
+		public Map<String, String> mss;
 	}
 }

@@ -10,8 +10,8 @@ import schwarzer.shelves.Shelf;
 import schwarzer.shelves.ShelvesDialog;
 
 public class LabelledTextField extends Shelf {
-	public String title = "未定義：";
-	public int titleWidth = 100;
+	public String labelText = "未定義：";
+	public int labelWidth = 100;
 
 	@Override
 	public Component getComponent() {
@@ -31,13 +31,13 @@ public class LabelledTextField extends Shelf {
 		panel.setLayout(layout);
 
 		label = new JLabel();
-		label.setText(title);
+		label.setText(labelText);
 
 		layout.add(
 				label,
 				0,
 				0,
-				titleWidth,
+				labelWidth,
 				0,
 				true,
 				true,
@@ -49,7 +49,7 @@ public class LabelledTextField extends Shelf {
 
 		layout.add(
 				field,
-				titleWidth,
+				labelWidth,
 				0,
 				0,
 				0,
