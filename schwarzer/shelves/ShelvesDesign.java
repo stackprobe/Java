@@ -170,15 +170,15 @@ public abstract class ShelvesDesign extends ShelvesManager {
 		props.remove(name);
 	}
 
-	private static final String MAP_KEY_NODE_NAME = "name";
-	private static final String MAP_VALUE_NODE_NAME = "value";
-
 	private void setProps(Object dest, Map<String, XNode> props) throws Exception {
 		for(String name : props.keySet()) {
 			Field field = ReflecTools.getField(dest.getClass(), name);
 			Class<?> fieldType = field.getType();
 
-			if(List.class.equals(fieldType)) {
+			if(XNode.class.equals(fieldType)) {
+				ReflecTools.setObject(field, dest, props.get(name));
+			}
+			else if(List.class.equals(fieldType)) {
 				List<String> val = new ArrayList<String>();
 
 				for(XNode node : props.get(name).getChildren()) {
@@ -187,15 +187,10 @@ public abstract class ShelvesDesign extends ShelvesManager {
 				ReflecTools.setObject(field, dest, val);
 			}
 			else if(Map.class.equals(fieldType)) {
-				Map<String, String> val = MapTools.create();
+				Map<String, String> val = MapTools.<String>create();
 
 				for(XNode node : props.get(name).getChildren()) {
-					if(node.hasNode(MAP_KEY_NODE_NAME) && node.hasNode(MAP_VALUE_NODE_NAME)) {
-						val.put(node.getNodeValue(MAP_KEY_NODE_NAME), node.getNodeValue(MAP_VALUE_NODE_NAME));
-					}
-					else {
-						val.put(node.getName(), node.getValue());
-					}
+					val.put(node.getName(), node.getValue());
 				}
 				ReflecTools.setObject(field, dest, val);
 			}
@@ -218,7 +213,7 @@ public abstract class ShelvesDesign extends ShelvesManager {
 					// noop
 				}
 				else {
-					throw new Exception("クラス [" + dest.getClass() + "] の、フィールド [" + field.getName() + "] の型に問題があります。");
+					throw new Exception("クラス [" + dest.getClass() + "] の、フィールド [" + field.getName() + "] の型に対応していません。");
 				}
 				ReflecTools.setObject(field, dest, value);
 			}

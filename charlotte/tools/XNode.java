@@ -254,4 +254,8 @@ public class XNode {
 	public boolean hasNode(String path) {
 		return 1 <= getNodeCount(path);
 	}
+
+	public boolean hasChildren() {
+		return 1 <= getChildren().size();
+	}
 }

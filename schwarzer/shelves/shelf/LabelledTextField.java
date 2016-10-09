@@ -61,12 +61,12 @@ public class LabelledTextField extends Shelf {
 	}
 
 	@Override
-	public void setValue(String value) {
-		field.setText(value);
+	public void setValue(Object value) {
+		field.setText((String)value);
 	}
 
 	@Override
-	public String getValue() {
+	public Object getValue() {
 		return field.getText();
 	}
 }

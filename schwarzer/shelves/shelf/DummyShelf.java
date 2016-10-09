@@ -29,12 +29,12 @@ public class DummyShelf extends Shelf {
 	}
 
 	@Override
-	public void setValue(String value) {
-		label.setText(value);
+	public void setValue(Object value) {
+		label.setText((String)value);
 	}
 
 	@Override
-	public String getValue() {
+	public Object getValue() {
 		return label.getText();
 	}
 }

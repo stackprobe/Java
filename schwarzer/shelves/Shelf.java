@@ -19,6 +19,6 @@ public abstract class Shelf {
 	// ----
 
 	public abstract Component getComponent();
-	public abstract void setValue(String value);
-	public abstract String getValue();
+	public abstract void setValue(Object value);
+	public abstract Object getValue();
 }
