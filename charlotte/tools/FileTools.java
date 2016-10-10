@@ -148,6 +148,13 @@ public class FileTools {
 		return path;
 	}
 
+	public static String oNormYen(String path) {
+		path = oNorm(path);
+		path = path.replace('/', '\\');
+
+		return path;
+	}
+
 	public static void delete(String path) {
 		new File(path).delete();
 	}

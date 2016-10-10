@@ -37,7 +37,7 @@ public class FilingCase3Client implements Closeable {
 
 	public List<String> list(String path) throws Exception {
 		send("LIST", path);
-		return readLines();
+		return readListYen();
 	}
 
 	public boolean delete(String path) throws Exception {
@@ -51,9 +51,10 @@ public class FilingCase3Client implements Closeable {
 
 	private void send(String command, String path, byte[] data) throws Exception {
 		writeLine(command);
-		writeLine(FileTools.oNorm(_basePath + "/" + path));
+		writeLine(FileTools.oNormYen(_basePath + "/" + path));
 		writeLine("" + data.length);
-		writeLine(data);
+		_writer.write(data);
+		writeLine("/e");
 		_writer.flush();
 	}
 
@@ -67,18 +68,20 @@ public class FilingCase3Client implements Closeable {
 		_writer.write(0x0a); // lf
 	}
 
-	private List<String> readLines() throws Exception {
-		List<String> lines = new ArrayList<String>();
+	private List<String> readListYen() throws Exception {
+		List<String> list = new ArrayList<String>();
 
 		for(; ; ) {
-			String line = readLine();
+			String lPathYen = readLine();
 
-			if(line.length() == 0) {
+			if(lPathYen.length() == 0) {
 				break;
 			}
-			lines.add(line);
+			String lPath = lPathYen.replace('\\', '/');
+
+			list.add(lPath);
 		}
-		return lines;
+		return list;
 	}
 
 	private int readInt() throws Exception {
