@@ -13,6 +13,7 @@ public class Form {
 	public int marginR = 10;
 	public int marginB = 10;
 	public String title = "未定義";
+	public boolean noTab = false;
 
 	// ここへ追加...
 

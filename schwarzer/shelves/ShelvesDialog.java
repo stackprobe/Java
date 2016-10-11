@@ -170,6 +170,8 @@ public class ShelvesDialog extends JDialog {
 		}
 		addTabsToLayout(layout, form);
 
+		mgr.load();
+
 		this.setTitle(form.title);
 		this.setSize(form.outernal.w, form.outernal.h);
 		this.setMinimumSize(this.getSize());
@@ -178,8 +180,6 @@ public class ShelvesDialog extends JDialog {
 	}
 
 	private void addTabsToLayout(AncLayoutMgr dlgLayout, Form form) {
-		JTabbedPane comp = new JTabbedPane();
-
 		for(Tab tab : form.tabs) {
 			JPanel panel = new JPanel() {
 				@Override
@@ -214,10 +214,10 @@ public class ShelvesDialog extends JDialog {
 			scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 			scroll.getViewport().add(panel);
 
-			comp.add(tab.title, scroll);
+			tab.scroll = scroll;
 		}
 		dlgLayout.add(
-				comp,
+				getTabComponent(form),
 				form.tabRect.l,
 				form.tabRect.t,
 				form.tabRect.w,
@@ -227,6 +227,21 @@ public class ShelvesDialog extends JDialog {
 				true,
 				true
 				);
+	}
+
+	private Component getTabComponent(Form form) {
+		if(form.noTab) {
+			return form.tabs.get(0).scroll;
+		}
+
+		{
+			JTabbedPane comp = new JTabbedPane();
+
+			for(Tab tab : form.tabs) {
+				comp.add(tab.title, tab.scroll);
+			}
+			return comp;
+		}
 	}
 
 	private void addHeaderButtonsToLayout(AncLayoutMgr layout, Header header, boolean alignTop) {

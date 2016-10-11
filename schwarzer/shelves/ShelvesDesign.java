@@ -172,7 +172,12 @@ public abstract class ShelvesDesign extends ShelvesManager {
 
 	private void setProps(Object dest, Map<String, XNode> props) throws Exception {
 		for(String name : props.keySet()) {
-			Field field = ReflecTools.getField(dest.getClass(), name);
+			Field field = ReflecTools.getDeclaredField(dest.getClass(), name);
+
+			if(field == null) {
+				System.out.println("クラス [" + dest.getClass() + "] に、フィールド [" + name + "] は定義されていません。(スキップ)");
+				continue;
+			}
 			Class<?> fieldType = field.getType();
 
 			if(XNode.class.equals(fieldType)) {

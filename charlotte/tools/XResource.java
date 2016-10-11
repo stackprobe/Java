@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class XResource {
-	public static final String LINK_NODE_NAME = "XResLink";
+	public static final String LINK_NODE_NAME = "_xResLink";
 	public static final String LINKED_PATH_NODE_NAME = "SubPath";
-	public static final String OPTION_NODE_NAME = "XResOption";
+	public static final String OPTION_NODE_NAME = "_xResOption";
+	public static final String OPTION_PRM_NODE_NAME = "_option";
 
 	public abstract XNode getRoot();
 	public abstract boolean isLink(XNode node);
@@ -54,7 +55,7 @@ public abstract class XResource {
 
 	private void solveOption(XNode parent, int index, XNode child) {
 		List<XNode> adopted = adoptOption(child);
-		if(adopted != null) {
+		if(adopted == null) {
 			adopted = new ArrayList<XNode>();
 		}
 
@@ -63,7 +64,7 @@ public abstract class XResource {
 	}
 
 	public static abstract class XResource2 extends XResource {
-		public abstract boolean adopt(XNode node);
+		public abstract boolean adopt(XNode node, String prm);
 
 		@Override
 		public boolean isLink(XNode node) {
@@ -77,7 +78,9 @@ public abstract class XResource {
 
 		@Override
 		public List<XNode> adoptOption(XNode node) {
-			return adopt(node) ? node.getChildren() : null;
+			return adopt(node, node.getNodeValue(OPTION_PRM_NODE_NAME)) ?
+					XNode.except(node.getChildren(), OPTION_PRM_NODE_NAME) :
+					null;
 		}
 	}
 
@@ -110,14 +113,18 @@ public abstract class XResource {
 	}
 
 	public static abstract class Resource extends XResource2 {
-		public abstract Class<?> getRootClassObj();
+		public abstract Class<?> getBaseClassObj();
+		public abstract String getBaseRelPath();
 		public abstract String getRootRelPath();
 
 		@Override
 		public XNode getRoot() {
 			try {
-				Class<?> rootClassObj = getRootClassObj();
-				String relPath = getRootRelPath();
+				Class<?> rootClassObj = getBaseClassObj();
+				String relPath = FileTools.combine(
+						getBaseRelPath(),
+						getRootRelPath()
+						);
 
 				return XNode.load(FileTools.readToEnd(rootClassObj.getResource(relPath)));
 			}
@@ -129,8 +136,11 @@ public abstract class XResource {
 		@Override
 		public XNode getLinkedRoot(XNode node) {
 			try {
-				Class<?> rootClassObj = getRootClassObj();
-				String relPath = node.getNodeValue(LINKED_PATH_NODE_NAME);
+				Class<?> rootClassObj = getBaseClassObj();
+				String relPath = FileTools.combine(
+						getBaseRelPath(),
+						node.getNodeValue(LINKED_PATH_NODE_NAME)
+						);
 
 				return XNode.load(FileTools.readToEnd(rootClassObj.getResource(relPath)));
 			}

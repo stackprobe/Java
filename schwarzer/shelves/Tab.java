@@ -3,6 +3,8 @@ package schwarzer.shelves;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JScrollPane;
+
 import charlotte.tools.IRect;
 
 public class Tab {
@@ -25,6 +27,7 @@ public class Tab {
 	public IRect internal;
 	public Form parent;
 	public int index;
+	public JScrollPane scroll;
 
 	// ----
 }

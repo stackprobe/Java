@@ -230,19 +230,27 @@ public class XNode {
 	}
 
 	public String getNodeValue(String path) {
+		return getNodeValue(path, null);
+	}
+
+	public String getNodeValue(String path, String defval) {
 		XNode node = getNode(path);
 
 		if(node == null) {
-			return null;
+			return defval;
 		}
 		return node.getValue();
 	}
 
 	public String getNodeValue(String path, int index) {
+		return getNodeValue(path, index, null);
+	}
+
+	public String getNodeValue(String path, int index, String defval) {
 		XNode node = getNode(path, index);
 
 		if(node == null) {
-			return null;
+			return defval;
 		}
 		return node.getValue();
 	}
@@ -257,5 +265,16 @@ public class XNode {
 
 	public boolean hasChildren() {
 		return 1 <= getChildren().size();
+	}
+
+	public static List<XNode> except(List<XNode> nodes, String name) {
+		List<XNode> ret = new ArrayList<XNode>();
+
+		for(XNode node : nodes) {
+			if(name.equals(node.getName()) == false) {
+				ret.add(node);
+			}
+		}
+		return ret;
 	}
 }

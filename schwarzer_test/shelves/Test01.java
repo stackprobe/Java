@@ -9,6 +9,7 @@ import schwarzer.shelves.ShelvesDialog;
 import schwarzer.shelves.ShelvesManager;
 import schwarzer.shelves.Tab;
 import schwarzer.shelves.shelf.DummyShelf;
+import schwarzer.shelves.shelf.LabelledComboBox;
 import schwarzer.shelves.shelf.LabelledTextField;
 
 public class Test01 {
@@ -156,11 +157,11 @@ public class Test01 {
 					{
 						Column column = new Column();
 
+						column.shelves.add(new LabelledComboBox());
 						column.shelves.add(new LabelledTextField());
+						column.shelves.add(new LabelledComboBox());
 						column.shelves.add(new LabelledTextField());
-						column.shelves.add(new LabelledTextField());
-						column.shelves.add(new LabelledTextField());
-						column.shelves.add(new LabelledTextField());
+						column.shelves.add(new LabelledComboBox());
 
 						tab.columns.add(column);
 					}
@@ -179,11 +180,6 @@ public class Test01 {
 
 			@Override
 			public void load() {
-				// noop
-			}
-
-			@Override
-			public void save() {
 				// noop
 			}
 		};

@@ -33,6 +33,7 @@
 			</Default>
 			<Shelf _num="1:*">
 				<className _num="1:1"/>
+				<extra _num="0:1" _mad=""/>
 				<_props/>
 			</Shelf>
 			<_props/>

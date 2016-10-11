@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="Shift_JIS" ?>
+<Default>
+	<Form>
+	</Form>
+	<Tab>
+	</Tab>
+	<Column>
+	</Column>
+	<Shelf>
+		<editable>true</editable>
+	</Shelf>
+	<NShelf className="LabelledTextField">
+		<labelText>テキスト</labelText>
+		<labelWidth>200</labelWidth>
+	</NShelf>
+	<NShelf className="LabelledComboBox">
+		<labelText>こんぼぼっくす</labelText>
+		<labelWidth>150</labelWidth>
+	</NShelf>
+	<Header>
+	</Header>
+	<Footer>
+	</Footer>
+	<Button>
+		<width>100</width>
+	</Button>
+</Default>

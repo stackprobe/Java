@@ -640,7 +640,7 @@ public class StringTools {
 	}
 
 	public static boolean containsIgnoreCase(String str, String ptn) {
-		return indexOfIgnoreCase(str, ptn) == -1;
+		return indexOfIgnoreCase(str, ptn) != -1;
 	}
 
 	public static String decodeUrl(String str, String charset) throws Exception {
