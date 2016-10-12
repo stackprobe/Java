@@ -130,9 +130,9 @@ public abstract class ShelvesDesign extends ShelvesManager {
 					addToProps(props, root.getNodes("Default/Shelf"));
 					addToProps(props, tabNode.getNodes("Default/Shelf"));
 					addToProps(props, columnNode.getNodes("Default/Shelf"));
-					addToProps(props, onlyClassName(root.getNodes("Default/NShelf"), lClassName));
-					addToProps(props, onlyClassName(tabNode.getNodes("Default/NShelf"), lClassName));
-					addToProps(props, onlyClassName(columnNode.getNodes("Default/NShelf"), lClassName));
+					addToProps(props, onlySpecClassName(root.getNodes("Default/NShelf"), lClassName));
+					addToProps(props, onlySpecClassName(tabNode.getNodes("Default/NShelf"), lClassName));
+					addToProps(props, onlySpecClassName(columnNode.getNodes("Default/NShelf"), lClassName));
 					addToProps(props, shelfNode);
 					ignoreProp(props, "className");
 
@@ -143,7 +143,7 @@ public abstract class ShelvesDesign extends ShelvesManager {
 		}
 	}
 
-	private List<XNode> onlyClassName(List<XNode> src, String className) {
+	private List<XNode> onlySpecClassName(List<XNode> src, String className) {
 		List<XNode> dest = new ArrayList<XNode>();
 
 		for(XNode node : src) {

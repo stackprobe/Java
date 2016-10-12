@@ -27,7 +27,7 @@ public class FilingCase3Client implements Closeable {
 
 	public byte[] get(String path) throws Exception {
 		send("GET", path);
-		return read();
+		return read64();
 	}
 
 	public boolean post(String path, byte[] data) throws Exception {
@@ -94,6 +94,10 @@ public class FilingCase3Client implements Closeable {
 
 	private byte[] read() throws Exception {
 		return read(IntTools.toInt(read(4), 0));
+	}
+
+	private byte[] read64() throws Exception {
+		return read(IntTools.toInt(read(8), 0));
 	}
 
 	private byte[] read(int size) throws Exception {
