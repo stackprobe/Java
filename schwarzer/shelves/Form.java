@@ -23,7 +23,7 @@ public class Form {
 	public Header footer = null;
 	public List<Tab> tabs = new ArrayList<Tab>();
 
-	// ---- for ShelvesDialog ----
+	// ---- init @ ShelvesDialog.init() ----
 
 	public IRect outernal;
 	public IRect internal;

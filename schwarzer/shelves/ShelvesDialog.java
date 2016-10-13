@@ -227,6 +227,10 @@ public class ShelvesDialog extends JDialog {
 				true,
 				true
 				);
+
+		for(Tab tab : form.tabs) {
+			tab.scroll = null;
+		}
 	}
 
 	private Component getTabComponent(Form form) {

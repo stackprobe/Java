@@ -10,7 +10,7 @@ public abstract class Shelf {
 
 	// ここへ追加...
 
-	// ---- for ShelvesDialog ----
+	// ---- init @ ShelvesDialog.init() ----
 
 	public IRect rect;
 	public Column parent;

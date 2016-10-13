@@ -21,7 +21,7 @@ public class Header {
 
 	public List<Button> buttons = new ArrayList<Button>();
 
-	// ---- for ShelvesDialog ----
+	// ---- init @ ShelvesDialog.init() ----
 
 	public IRect outernal;
 	public IRect internal;

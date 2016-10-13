@@ -9,7 +9,7 @@ public class Button {
 
 	// ここへ追加...
 
-	// ---- for ShelvesDialog ----
+	// ---- init @ ShelvesDialog.init() ----
 
 	public IRect rect;
 	public Header parent;

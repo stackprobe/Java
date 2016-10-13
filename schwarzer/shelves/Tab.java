@@ -21,12 +21,15 @@ public class Tab {
 
 	public List<Column> columns = new ArrayList<Column>();
 
-	// ---- for ShelvesDialog ----
+	// ---- init @ ShelvesDialog.init() ----
 
 	public IRect outernal;
 	public IRect internal;
 	public Form parent;
 	public int index;
+
+	// ---- work @ ShelvesDialog.inti() ----
+
 	public JScrollPane scroll;
 
 	// ----

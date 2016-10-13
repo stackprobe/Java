@@ -15,7 +15,7 @@ public class Column {
 
 	public List<Shelf> shelves = new ArrayList<Shelf>();
 
-	// ---- for ShelvesDialog ----
+	// ---- init @ ShelvesDialog.init() ----
 
 	public IRect rect;
 	public Tab parent;

@@ -4,14 +4,21 @@ public class EraDate {
 	private static class EraInfo {
 		public int firstDate;
 		public String name;
+		public String code;
 
 		public EraInfo(int firstDate, String name) {
+			this(firstDate, name, null);
+		}
+
+		public EraInfo(int firstDate, String name, String code) {
 			this.firstDate = firstDate;
 			this.name = name;
+			this.code = code;
 		}
 	}
 
 	private static EraInfo[] _eraInfos = new EraInfo[] {
+			new EraInfo(10101, null),
 			new EraInfo(6450717, "大化"),
 			new EraInfo(6500322, "白雉"),
 			new EraInfo(6541124, null),
@@ -257,15 +264,15 @@ public class EraDate {
 			new EraInfo(18610329, "文久"),
 			new EraInfo(18640327, "元治"),
 			new EraInfo(18650501, "慶応"),
-			new EraInfo(18680125, "明治"),
-			new EraInfo(19120730, "大正"),
-			new EraInfo(19261225, "昭和"),
-			new EraInfo(19890108, "平成"),
+			new EraInfo(18680101, "明治", "M"),
+			new EraInfo(19120730, "大正", "T"),
+			new EraInfo(19261225, "昭和", "S"),
+			new EraInfo(19890108, "平成", "H"),
 			// ここへ追加..
 	};
 
-	private String _eraName = null;
-	private int _nen = -1;
+	private int _index = -1;
+	private EraInfo _info = null;
 	private int _date = -1; // YYYYMMDD
 
 	public EraDate(int date) {
@@ -280,39 +287,17 @@ public class EraDate {
 	 *
 	 * @param date YYYYMMDD
 	 */
-	public void setDate(int date) {
+	private void setDate(int date) {
 		date = IntTools.toRange(date, 10101, 99991231);
 
-		EraInfo eraInfo = getEraInfo(date);
-
-		if(eraInfo != null && eraInfo.name != null) {
-			_eraName = eraInfo.name;
-			_nen = date / 10000 - eraInfo.firstDate / 10000 + 1;
-		}
-		else {
-			_eraName = "西暦";
-			_nen = date / 10000;
-		}
+		_index = getIndex(date);
+		_info = _eraInfos[_index];
 		_date = date;
 	}
 
-	private static EraInfo getEraInfo(int date) {
-		if(date < _eraInfos[0].firstDate) {
-			return null;
-		}
+	private static int getIndex(int date) {
 		int l = 0;
 		int r = _eraInfos.length;
-
-		{
-			int m = r - 4;
-
-			if(date < _eraInfos[m].firstDate) {
-				r = m;
-			}
-			else {
-				l = m;
-			}
-		}
 
 		do {
 			int m = (l + r) / 2;
@@ -326,15 +311,19 @@ public class EraDate {
 		}
 		while(l + 1 < r);
 
-		return _eraInfos[l];
+		return l;
 	}
 
-	public String getEraName() {
-		return _eraName;
+	public String getName() {
+		return _info.name;
+	}
+
+	public String getCode() {
+		return _info.code;
 	}
 
 	public int getNen() {
-		return _nen;
+		return _date / 10000 - _info.firstDate / 10000 + 1;
 	}
 
 	public int getDate() {
@@ -350,23 +339,46 @@ public class EraDate {
 		int m = (_date / 100) % 100;
 		int d = _date % 100;
 
+		int nen = getNen();
 		String strNen;
 
-		if(_nen == 1) {
+		if(nen == 1) {
 			strNen = "元";
 		}
 		else {
-			strNen = "" + _nen;
+			strNen = "" + nen;
+		}
+		String name = _info.name;
+		String code = _info.code;
+
+		if(name == null) {
+			name = "不明";
+		}
+		if(code == null) {
+			code = "#";
 		}
 
 		String str = format;
 
-		str = str.replace("E", _eraName);
+		str = str.replace("E", name);
 		str = str.replace("N", strNen);
+		str = str.replace("n", StringTools.zPad(nen, 2));
 		str = str.replace("Y", StringTools.zPad(y, 4));
 		str = str.replace("M", StringTools.zPad(m, 2));
 		str = str.replace("D", StringTools.zPad(d, 2));
+		str = str.replace("e", code);
 
 		return str;
+	}
+
+	public int getFirstDate() {
+		return _info.firstDate;
+	}
+
+	public int getLastDate() {
+		if(_index < _eraInfos.length - 1) {
+			return DateToDay.toDate(DateToDay.toDay(_eraInfos[_index + 1].firstDate) - 1);
+		}
+		return 99991231;
 	}
 }
