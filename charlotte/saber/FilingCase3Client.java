@@ -27,12 +27,23 @@ public class FilingCase3Client implements Closeable {
 
 	public byte[] get(String path) throws Exception {
 		send("GET", path);
-		return read64();
+		byte[] ret = read64();
+		readLineCheck("/GET/e");
+		return ret;
 	}
 
-	public boolean post(String path, byte[] data) throws Exception {
+	public int post(String path, byte[] data) throws Exception {
 		send("POST", path, data);
-		return readInt() != 0;
+		readLineCheck("/POST/e");
+		return 1;
+	}
+
+	public byte[] getPost(String path, byte[] data) throws Exception {
+		send("GET-POST", path, data);
+		byte[] ret = read64();
+		readLineCheck("/GET/e");
+		readLineCheck("/GET-POST/e");
+		return ret;
 	}
 
 	public List<String> list(String path) throws Exception {
@@ -40,9 +51,10 @@ public class FilingCase3Client implements Closeable {
 		return readListYen();
 	}
 
-	public boolean delete(String path) throws Exception {
+	public int delete(String path) throws Exception {
 		send("DELETE", path);
-		return readInt() != 0;
+		readLineCheck("/DELETE/e");
+		return 1;
 	}
 
 	private void send(String command, String path) throws Exception {
@@ -74,7 +86,7 @@ public class FilingCase3Client implements Closeable {
 		for(; ; ) {
 			String lPathYen = readLine();
 
-			if(lPathYen.length() == 0) {
+			if("/LIST/e".equals(lPathYen)) {
 				break;
 			}
 			String lPath = lPathYen.replace('\\', '/');
@@ -84,8 +96,10 @@ public class FilingCase3Client implements Closeable {
 		return list;
 	}
 
-	private int readInt() throws Exception {
-		return Integer.parseInt(readLine());
+	private void readLineCheck(String line) throws Exception {
+		if(line.equals(readLine()) == false) {
+			throw new Exception("Can not read " + line);
+		}
 	}
 
 	private String readLine() throws Exception {

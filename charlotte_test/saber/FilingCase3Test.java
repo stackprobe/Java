@@ -34,6 +34,9 @@ public class FilingCase3Test {
 			for(String lPath : fc3.list("a/b")) {
 				System.out.println(lPath);
 			}
+			System.out.println(new String(fc3.getPost("a/b/1/123.txt", "123".getBytes(StringTools.CHARSET_ASCII)), StringTools.CHARSET_ASCII));
+			System.out.println(new String(fc3.getPost("a/b/1/123.txt", "456".getBytes(StringTools.CHARSET_ASCII)), StringTools.CHARSET_ASCII));
+			System.out.println(new String(fc3.getPost("a/b/1/123.txt", "789".getBytes(StringTools.CHARSET_ASCII)), StringTools.CHARSET_ASCII));
 		}
 		finally {
 			FileTools.close(fc3);
