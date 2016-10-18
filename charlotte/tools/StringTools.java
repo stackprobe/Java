@@ -724,7 +724,7 @@ public class StringTools {
 	}
 
 	public static String trim(String str) {
-		return trim(str, CONTROLCODE + "　");
+		return trim(str, CONTROLCODE + " " + "　");
 	}
 
 	public static String trim(String str, String spcChrs) {

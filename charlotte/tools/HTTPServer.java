@@ -138,6 +138,10 @@ public abstract class HTTPServer extends SockServer {
 		return parseQuery(query, charset);
 	}
 
+	public static ObjectMap parseQuery(String query) throws Exception {
+		return parseQuery(query, StringTools.CHARSET_UTF8);
+	}
+
 	private static ObjectMap parseQuery(String query, String charset) throws Exception {
 		ObjectMap ret = ObjectMap.createIgnoreCase();
 

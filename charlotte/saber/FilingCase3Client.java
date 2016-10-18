@@ -66,7 +66,7 @@ public class FilingCase3Client implements Closeable {
 		writeLine(FileTools.oNormYen(_basePath + "/" + path));
 		writeLine("" + data.length);
 		_writer.write(data);
-		writeLine("/e");
+		writeLine("/SEND/e");
 		_writer.flush();
 	}
 
