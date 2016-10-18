@@ -113,9 +113,6 @@ public class JsonTools {
 				return StringTools.CHARSET_UTF16;
 			}
 		}
-
-		// TODO BOM が無い場合..
-
 		return StringTools.CHARSET_UTF8;
 	}
 
@@ -148,12 +145,6 @@ public class JsonTools {
 
 		private Object get() throws Exception {
 			char chr = nextNS();
-
-			// 固有のコメント
-			while(chr == ';') {
-				while(next() != '\n');
-				chr = nextNS();
-			}
 
 			if(chr == '{') {
 				ObjectMap om = ObjectMap.createIgnoreCase();

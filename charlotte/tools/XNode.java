@@ -277,4 +277,13 @@ public class XNode {
 		}
 		return ret;
 	}
+
+	public List<String> getNodeValues(String path) {
+		List<String> ret = new ArrayList<String>();
+
+		for(XNode node : getNodes(path)) {
+			ret.add(node.getValue());
+		}
+		return ret;
+	}
 }
