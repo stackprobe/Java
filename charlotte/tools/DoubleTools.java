@@ -1,5 +1,6 @@
 package charlotte.tools;
 
+import java.text.DecimalFormat;
 import java.util.Comparator;
 import java.util.List;
 
@@ -48,4 +49,17 @@ public class DoubleTools {
 			return 0;
 		}
 	};
+
+	private static DecimalFormat _df = new DecimalFormat(
+			StringTools.repeat("#", 1000) +
+			"." +
+			StringTools.repeat("#", 1000)
+			);
+
+	public static String toString(double value) {
+		if(Double.isNaN(value)) {
+			return "NaN";
+		}
+		return _df.format(value);
+	}
 }

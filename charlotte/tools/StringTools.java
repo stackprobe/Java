@@ -88,11 +88,21 @@ public class StringTools {
 		return str;
 	}
 
-	private static String repeat(char chr, int count) {
+	public static String repeat(char chr, int count) {
 		StringBuffer buff = new StringBuffer();
 
 		while(1 <= count) {
 			buff.append(chr);
+			count--;
+		}
+		return buff.toString();
+	}
+
+	public static String repeat(String ptn, int count) {
+		StringBuffer buff = new StringBuffer();
+
+		while(1 <= count) {
+			buff.append(ptn);
 			count--;
 		}
 		return buff.toString();
@@ -753,5 +763,30 @@ public class StringTools {
 			}
 		}
 		return count;
+	}
+
+	public static String thousandComma(String str) {
+		return thousandComma(str, 3);
+	}
+
+	private static String thousandComma(String str, int span) {
+		str = zenToHan(str);
+		str = trim(str);
+
+		int dotPos = str.indexOf('.');
+
+		if(dotPos == -1) {
+			dotPos = str.length();
+		}
+		for(int index = dotPos + span + 1; index < str.length(); index += span + 1) {
+			str = insert(str, index, ',');
+		}
+		for(int index = dotPos - span; 0 < index; index -= span) {
+			str = insert(str, index, ',');
+		}
+		if(str.startsWith("+,") || str.startsWith("-,")) {
+			str = remove(str, 1);
+		}
+		return str;
 	}
 }
