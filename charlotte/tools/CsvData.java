@@ -370,7 +370,19 @@ public class CsvData {
 			writeRow(row.toArray(new String[row.size()]));
 		}
 
-		public void writeRows(List<List<String>> rows) throws Exception {
+		public void writeRows(List<String[]> rows) throws Exception {
+			for(String[] row : rows) {
+				writeRow(row);
+			}
+		}
+
+		public void writeRows(String[][] rows) throws Exception {
+			for(String[] row : rows) {
+				writeRow(row);
+			}
+		}
+
+		public void writeTable(List<List<String>> rows) throws Exception {
 			for(List<String> row : rows) {
 				writeRow(row);
 			}

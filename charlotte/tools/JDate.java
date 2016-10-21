@@ -30,6 +30,17 @@ public class JDate {
 		return ret;
 	}
 
+	public static JDate forDate(int y, int m, int d) {
+		JDate ret = new JDate();
+
+		ret.y = y;
+		ret.m = m;
+		ret.d = d;
+		ret.gggn();
+
+		return ret;
+	}
+
 	/**
 	 * { y, m, d } -> { gg, g, nen }
 	 */
@@ -254,5 +265,37 @@ public class JDate {
 					);
 		}
 		return null;
+	}
+
+	/**
+	 *
+	 * @param str 西暦表現の文字列
+	 * @return null == 不明な文字列
+	 */
+	public static JDate forSeireki(String str) {
+		str = StringTools.zenToHan(str);
+
+		List<String> sVals = StringTools.numericTokenize(str);
+
+		switch(sVals.size()) {
+		case 1:
+			return forDate(Integer.parseInt(sVals.get(0)));
+		case 3:
+			return forDate(
+					Integer.parseInt(sVals.get(0)),
+					Integer.parseInt(sVals.get(1)),
+					Integer.parseInt(sVals.get(2))
+					);
+		}
+		return null;
+	}
+
+	public static JDate forString(String str) {
+		JDate ret = forWareki(str);
+
+		if(ret == null) {
+			ret = forSeireki(str);
+		}
+		return ret;
 	}
 }

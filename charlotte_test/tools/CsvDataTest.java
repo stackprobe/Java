@@ -35,7 +35,7 @@ public class CsvDataTest {
 			reader.readOpen();
 			writer.writeOpen();
 
-			writer.writeRows(reader.readToEnd());
+			writer.writeTable(reader.readToEnd());
 		}
 		finally {
 			reader.readClose();
@@ -102,7 +102,7 @@ public class CsvDataTest {
 			reader.readOpen();
 			writer.writeOpen();
 
-			writer.writeRows(reader.readToEnd());
+			writer.writeTable(reader.readToEnd());
 		}
 		finally {
 			reader.readClose();
