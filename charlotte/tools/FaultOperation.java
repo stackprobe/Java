@@ -36,9 +36,14 @@ public class FaultOperation extends Exception {
 					);
 		}
 		else if(e instanceof FaultOperation) {
+			String message = e.getMessage();
+
+			if(StringTools.isEmpty(message)) {
+				message = "失敗しました。";
+			}
 			JOptionPane.showMessageDialog(
 					parent,
-					e.getMessage(),
+					message,
 					title + " - 失敗",
 					JOptionPane.WARNING_MESSAGE
 					);
@@ -46,9 +51,14 @@ public class FaultOperation extends Exception {
 		else {
 			e.printStackTrace();
 
+			String message = e.getMessage();
+
+			if(StringTools.isEmpty(message)) {
+				message = e.getClass().getName();
+			}
 			JOptionPane.showMessageDialog(
 					parent,
-					e.getMessage(),
+					message,
 					title + " - エラー",
 					JOptionPane.ERROR_MESSAGE
 					);
