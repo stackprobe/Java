@@ -376,7 +376,7 @@ public class ShelvesDialog extends JDialog {
 		private int _h;
 
 		public AncLayoutMgr(Container parent) {
-			this(parent, 10000, 10000);
+			this(parent, 1000, 1000);
 		}
 
 		public AncLayoutMgr(Container parent, int w, int h) {

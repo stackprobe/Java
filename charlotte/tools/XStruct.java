@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class XStruct {
+	public static int valueListMax = 10;
+
 	public int min = 1;
 	public int max = 1;
 	public Set<String> values = SetTools.create();
@@ -69,7 +71,7 @@ public class XStruct {
 
 			int c = 0;
 			for(String value : values4Prn) {
-				if(10 < ++c) {
+				if(valueListMax < ++c) {
 					dest.add(indent + "\t...");
 					break;
 				}
@@ -107,7 +109,7 @@ public class XStruct {
 
 		int c = 0;
 		for(String value : values4Prn) {
-			if(10 < ++c) {
+			if(valueListMax < ++c) {
 				dest.add("<has-more-values/>");
 				break;
 			}
@@ -154,7 +156,7 @@ public class XStruct {
 					ret.add("{");
 					int c = 0;
 					for(String value : values4Prn) {
-						if(10 < ++c) {
+						if(valueListMax < ++c) {
 							ret.add("\t...");
 							break;
 						}
