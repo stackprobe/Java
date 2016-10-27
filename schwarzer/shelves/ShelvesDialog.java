@@ -212,6 +212,11 @@ public class ShelvesDialog extends JDialog {
 
 			scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 			scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+			// ng
+			/*
+			scroll.getViewport().setLayout(new BorderLayout());
+			scroll.getViewport().add(panel, BorderLayout.CENTER);
+			*/
 			scroll.getViewport().add(panel);
 
 			tab.scroll = scroll;
