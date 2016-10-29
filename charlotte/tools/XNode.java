@@ -215,6 +215,7 @@ public class XNode {
 		List<XNode> ret = getNodes(path);
 
 		if(ret.size() == 0) {
+			System.out.println("Warning: XML node does not exist! " + path);
 			return null;
 		}
 		return ret.get(0);
@@ -224,6 +225,7 @@ public class XNode {
 		List<XNode> ret = getNodes(path);
 
 		if(ret.size() <= index) {
+			System.out.println("Warning: XML node does not exist! " + path + ", " + index + " / " + ret.size());
 			return null;
 		}
 		return ret.get(index);
@@ -265,17 +267,6 @@ public class XNode {
 
 	public boolean hasChildren() {
 		return 1 <= getChildren().size();
-	}
-
-	public static List<XNode> except(List<XNode> nodes, String name) {
-		List<XNode> ret = new ArrayList<XNode>();
-
-		for(XNode node : nodes) {
-			if(name.equals(node.getName()) == false) {
-				ret.add(node);
-			}
-		}
-		return ret;
 	}
 
 	public List<String> getNodeValues(String path) {

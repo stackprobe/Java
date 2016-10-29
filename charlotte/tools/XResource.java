@@ -78,9 +78,17 @@ public abstract class XResource {
 
 		@Override
 		public List<XNode> adoptOption(XNode node) {
-			return adopt(node, node.getNodeValue(OPTION_PRM_NODE_NAME)) ?
-					XNode.except(node.getChildren(), OPTION_PRM_NODE_NAME) :
-					null;
+			return adopt(node, node.getNodeValue(OPTION_PRM_NODE_NAME)) ? exceptPrm(node) : null;
+		}
+
+		private List<XNode> exceptPrm(XNode node) {
+			{
+				WNode wNode = WNode.create(node);
+				wNode.remove(OPTION_PRM_NODE_NAME);
+				node = wNode.getXNode();
+			}
+
+			return node.getChildren();
 		}
 	}
 

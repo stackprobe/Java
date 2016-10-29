@@ -299,16 +299,13 @@ public abstract class HttArtoria implements HttService, Closeable {
 				return true;
 			}
 		}
-		path = path.substring(rootDir.length());
+		String relPath = path.substring(rootDir.length());
+		Set<String> lPaths = SetTools.createIgnoreCase();
+		lPaths.addAll(StringTools.tokenize(relPath, "/"));
 
-		Set<String> lps = SetTools.createIgnoreCase();
-		lps.addAll(StringTools.tokenize(path, "/"));
-
-		return lps.contains("res") ||
-				 lps.contains("resource") ||
-				 lps.contains("template") ||
-				 lps.contains("temp") ||
-				 lps.contains("tmp");
+		return lPaths.contains("res") ||
+				lPaths.contains("resource") ||
+				lPaths.contains("template");
 	}
 
 	public String getUrlPath(String path, String rootDir) {

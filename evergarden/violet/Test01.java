@@ -11,6 +11,7 @@ import charlotte.satellite.WinAPITools;
 import charlotte.tools.ReflecTools;
 import charlotte.tools.StringTools;
 import charlotte.tools.SystemTools;
+import charlotte.tools.XNode;
 
 public class Test01 {
 	public static void main(String[] args) {
@@ -133,6 +134,11 @@ public class Test01 {
 			System.out.println(Map.class.equals(ReflecTools.getField(O.class, "mss").getType())); // true
 
 			// ----
+
+			{
+				new XNode("a", "b").getNode("c");
+				new XNode("a", "b").getNode("c", 123);
+			}
 		}
 		catch(Throwable e) {
 			e.printStackTrace();
