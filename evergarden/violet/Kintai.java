@@ -14,7 +14,12 @@ import charlotte.tools.XNode;
 public class Kintai {
 	public static void main(String[] args) {
 		try {
-			main2("C:/var/201609_kintai.xml");
+			//main2("C:/var/201609_kintai.xml");
+			//main2("C:/var/tt_20161011.xml");
+			//main2("C:/var/tt_20161014.xml");
+			//main2("C:/var/tt_20161021.xml");
+			//main2("C:/var/tt_20161028.xml");
+			main2("C:/var/tt_20161031.xml");
 
 			System.out.println("OK!");
 		}
