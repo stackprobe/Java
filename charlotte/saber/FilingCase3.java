@@ -54,7 +54,7 @@ public class FilingCase3 implements Closeable {
 
 	private FilingCase3Client _client = null;
 
-	private FilingCase3Client getClient() throws Exception {
+	private FilingCase3Client getClient() {
 		if(_client == null) {
 			_client = new FilingCase3Client(_domain, _portno, _basePath);
 		}

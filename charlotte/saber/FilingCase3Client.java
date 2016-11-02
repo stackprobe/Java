@@ -9,6 +9,7 @@ import java.util.List;
 
 import charlotte.tools.FileTools;
 import charlotte.tools.IntTools;
+import charlotte.tools.RunnableEx;
 import charlotte.tools.SockClient;
 import charlotte.tools.StringTools;
 
@@ -18,43 +19,73 @@ public class FilingCase3Client implements Closeable {
 	private OutputStream _writer;
 	private InputStream _reader;
 
-	public FilingCase3Client(String domain, int portno, String basePath) throws Exception {
-		_client = new SockClient(domain, portno, 30000, 0);
-		_basePath = basePath;
-		_writer = _client.getOutputStream();
-		_reader = _client.getInputStream();
+	public FilingCase3Client(String domain, int portno, String basePath) {
+		try {
+			_client = new SockClient(domain, portno, 30000, 0);
+			_basePath = basePath;
+			_writer = _client.getOutputStream();
+			_reader = _client.getInputStream();
+		}
+		catch(Throwable e) {
+			throw RunnableEx.re(e);
+		}
 	}
 
-	public byte[] get(String path) throws Exception {
-		send("GET", path);
-		byte[] ret = read64();
-		readLineCheck("/GET/e");
-		return ret;
+	public byte[] get(String path) {
+		try {
+			send("GET", path);
+			byte[] ret = read64();
+			readLineCheck("/GET/e");
+			return ret;
+		}
+		catch(Throwable e) {
+			throw RunnableEx.re(e);
+		}
 	}
 
-	public int post(String path, byte[] data) throws Exception {
-		send("POST", path, data);
-		readLineCheck("/POST/e");
-		return 1;
+	public int post(String path, byte[] data) {
+		try {
+			send("POST", path, data);
+			readLineCheck("/POST/e");
+			return 1;
+		}
+		catch(Throwable e) {
+			throw RunnableEx.re(e);
+		}
 	}
 
-	public byte[] getPost(String path, byte[] data) throws Exception {
-		send("GET-POST", path, data);
-		byte[] ret = read64();
-		readLineCheck("/GET/e");
-		readLineCheck("/GET-POST/e");
-		return ret;
+	public byte[] getPost(String path, byte[] data) {
+		try {
+			send("GET-POST", path, data);
+			byte[] ret = read64();
+			readLineCheck("/GET/e");
+			readLineCheck("/GET-POST/e");
+			return ret;
+		}
+		catch(Throwable e) {
+			throw RunnableEx.re(e);
+		}
 	}
 
-	public List<String> list(String path) throws Exception {
-		send("LIST", path);
-		return readListYen();
+	public List<String> list(String path) {
+		try {
+			send("LIST", path);
+			return readListYen();
+		}
+		catch(Throwable e) {
+			throw RunnableEx.re(e);
+		}
 	}
 
-	public int delete(String path) throws Exception {
-		send("DELETE", path);
-		readLineCheck("/DELETE/e");
-		return 1;
+	public int delete(String path) {
+		try {
+			send("DELETE", path);
+			readLineCheck("/DELETE/e");
+			return 1;
+		}
+		catch(Throwable e) {
+			throw RunnableEx.re(e);
+		}
 	}
 
 	private void send(String command, String path) throws Exception {

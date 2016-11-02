@@ -56,4 +56,18 @@ public class QueueData<T> {
 		_last = _top;
 		_count = 0;
 	}
+
+	public ValueStore<T> toValueStore() {
+		return new ValueStore<T>() {
+			@Override
+			public T get() {
+				return poll();
+			}
+
+			@Override
+			public void set(T element) {
+				add(element);
+			}
+		};
+	}
 }

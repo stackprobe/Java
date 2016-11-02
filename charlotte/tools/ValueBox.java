@@ -1,6 +1,6 @@
 package charlotte.tools;
 
-public class ValueBox<T> implements ValueGetter<T>, ValueSetter<T> {
+public class ValueBox<T> implements ValueStore<T> {
 	private T _value;
 
 	public ValueBox() {
@@ -12,7 +12,7 @@ public class ValueBox<T> implements ValueGetter<T>, ValueSetter<T> {
 	}
 
 	@Override
-	public T get() throws Exception {
+	public T get() {
 		return _value;
 	}
 
