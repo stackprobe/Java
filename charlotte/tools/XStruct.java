@@ -47,13 +47,13 @@ public class XStruct {
 		return count;
 	}
 
-	public List<String> toLines() {
-		List<String> ret = new ArrayList<String>();
+	public HugeQueue toLines() {
+		HugeQueue ret = new HugeQueue();
 		toLines("", "Root", ret);
 		return ret;
 	}
 
-	private void toLines(String indent, String name, List<String> dest) {
+	private void toLines(String indent, String name, HugeQueue dest) {
 		dest.add(indent + name + " " + this.min + ":" + this.max);
 
 		if(1 <= this.branches.size()) {
@@ -92,14 +92,14 @@ public class XStruct {
 		return ret;
 	}
 
-	public List<String> toXmlLines() {
-		List<String> ret = new ArrayList<String>();
+	public HugeQueue toXmlLines() {
+		HugeQueue ret = new HugeQueue();
 		ret.add("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		toXmlLines("Root", ret);
 		return ret;
 	}
 
-	private void toXmlLines(String name, List<String> dest) {
+	private void toXmlLines(String name, HugeQueue dest) {
 		dest.add("<" + name + " count=\"" + this.min + ":" + this.max + "\">");
 
 		for(String brName : this.branches.keySet()) {
@@ -136,13 +136,13 @@ public class XStruct {
 		}
 	}
 
-	public List<String> toPathValueLines() {
-		List<String> ret = new ArrayList<String>();
+	public HugeQueue toPathValueLines() {
+		HugeQueue ret = new HugeQueue();
 		toPathValueLines(null, ret);
 		return ret;
 	}
 
-	private void toPathValueLines(String parentPath, List<String> ret) {
+	private void toPathValueLines(String parentPath, HugeQueue ret) {
 		for(String brName : this.branches.keySet()) {
 			XStruct br = this.branches.get(brName);
 			String path = parentPath == null ? brName : parentPath + "/" + brName;

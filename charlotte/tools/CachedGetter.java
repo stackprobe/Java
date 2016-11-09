@@ -1,6 +1,7 @@
 package charlotte.tools;
 
 import java.util.Map;
+import java.util.Set;
 
 public class CachedGetter<K, V> implements ParamedGetter<K, V> {
 	public static <V> CachedGetter<String, V> create(ParamedGetter<String, V> getter) {
@@ -20,17 +21,21 @@ public class CachedGetter<K, V> implements ParamedGetter<K, V> {
 	}
 
 	@Override
-	public V get(K key) throws Exception {
+	public V get(K key) {
 		V value = _cache.get(key);
 
 		if(value == null) {
 			value = _getter.get(key);
 
 			if(value == null) {
-				throw new Exception("Getter returned null");
+				throw new RuntimeException("Getter returned null");
 			}
 			_cache.put(key, value);
 		}
 		return value;
+	}
+
+	public Set<K> keySet() {
+		return _cache.keySet();
 	}
 }

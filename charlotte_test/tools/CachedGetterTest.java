@@ -19,7 +19,7 @@ public class CachedGetterTest {
 	private static void test01() throws Exception {
 		ParamedGetter<String, String> pg = CachedGetter.create(new ParamedGetter<String, String>() {
 			@Override
-			public String get(String key) throws Exception {
+			public String get(String key) {
 				System.out.println("CALLED " + key);
 				return "[" + key + "]";
 			}

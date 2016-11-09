@@ -244,6 +244,10 @@ public class StringTools {
 		return str == null || str.length() == 0;
 	}
 
+	public static String join(String separator, HugeQueue tokens) {
+		return join(separator, tokens.toStringList());
+	}
+
 	public static String join(String separator, List<String> tokens) {
 		StringBuffer buff = new StringBuffer();
 

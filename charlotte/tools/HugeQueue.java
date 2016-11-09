@@ -4,6 +4,8 @@ import java.io.Closeable;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HugeQueue implements Closeable {
 	private FileQueue _writer;
@@ -69,12 +71,72 @@ public class HugeQueue implements Closeable {
 	}
 
 	public static class FileQueue implements Closeable {
+		private FileQueue2 _queue = null;
+
+		public void add(String str) {
+			beforeAdd();
+			_queue.add(str);
+		}
+
+		public void add(byte[] block) {
+			beforeAdd();
+			_queue.add(block);
+		}
+
+		public String pollString() {
+			if(_queue == null) {
+				return null;
+			}
+			String ret = _queue.pollString();
+			afterPoll();
+			return ret;
+		}
+
+		public byte[] poll() {
+			if(_queue == null) {
+				return null;
+			}
+			byte[] ret = _queue.poll();
+			afterPoll();
+			return ret;
+		}
+
+		private void beforeAdd() {
+			if(_queue == null) {
+				_queue = new FileQueue2();
+			}
+		}
+
+		private void afterPoll() {
+			if(_queue.size() == 0) {
+				FileTools.close(_queue);
+				_queue = null;
+			}
+		}
+
+		public long size() {
+			if(_queue == null) {
+				return 0L;
+			}
+			return _queue.size();
+		}
+
+		@Override
+		public void close() throws IOException {
+			if(_queue != null) {
+				FileTools.close(_queue);
+				_queue = null;
+			}
+		}
+	}
+
+	private static class FileQueue2 implements Closeable {
 		private String _file;
 		private FileWriter _writer;
 		private FileReader _reader;
 		private long _size;
 
-		public FileQueue() {
+		public FileQueue2() {
 			_file = FileTools.makeTempPath();
 			_writer = new FileWriter(_file);
 			_reader = new FileReader(_file);
@@ -215,5 +277,19 @@ public class HugeQueue implements Closeable {
 				_reader = null;
 			}
 		}
+	}
+
+	public List<String> toStringList() {
+		List<String> ret = new ArrayList<String>();
+
+		for(; ; ) {
+			String str = pollString();
+
+			if(str == null) {
+				break;
+			}
+			ret.add(str);
+		}
+		return ret;
 	}
 }

@@ -64,6 +64,27 @@ public class FileTools {
 		writeAllText(file, StringTools.join("\r\n", lines) + "\r\n", charset);
 	}
 
+	public static void writeAllLines(String file, HugeQueue lines, String charset) throws Exception {
+		FileOutputStream os = new FileOutputStream(new File(file));
+
+		try {
+			byte[] crlf = "\r\n".getBytes(charset);
+
+			for(; ; ) {
+				String line = lines.pollString();
+
+				if(line == null) {
+					break;
+				}
+				os.write(line.getBytes(charset));
+				os.write(crlf);
+			}
+		}
+		finally {
+			close(os);
+		}
+	}
+
 	public static void writeAllText(String file, String text, String charset) throws Exception {
 		writeAllBytes(file, text.getBytes(charset));
 	}
