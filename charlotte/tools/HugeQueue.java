@@ -70,6 +70,11 @@ public class HugeQueue implements Closeable {
 		}
 	}
 
+	/**
+	 * 空にさえすれば、HugeQueue.close(); しなくて良いようにする。
+	 * -> _queue が空になった、都度、_queue を解放する。
+	 *
+	 */
 	public static class FileQueue implements Closeable {
 		private FileQueue2 _queue = null;
 
@@ -130,6 +135,10 @@ public class HugeQueue implements Closeable {
 		}
 	}
 
+	/**
+	 * 旧 FileQueue
+	 *
+	 */
 	private static class FileQueue2 implements Closeable {
 		private String _file;
 		private FileWriter _writer;
