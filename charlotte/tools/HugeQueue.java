@@ -7,6 +7,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * size() == 0 ならば、close(); しなくても良い。
+ *
+ */
 public class HugeQueue implements Closeable {
 	private FileQueue _writer;
 	private FileQueue _reader;
@@ -70,11 +74,6 @@ public class HugeQueue implements Closeable {
 		}
 	}
 
-	/**
-	 * 空にさえすれば、HugeQueue.close(); しなくて良いようにする。
-	 * -> _queue が空になった、都度、_queue を解放する。
-	 *
-	 */
 	public static class FileQueue implements Closeable {
 		private FileQueue2 _queue = null;
 
@@ -135,10 +134,6 @@ public class HugeQueue implements Closeable {
 		}
 	}
 
-	/**
-	 * 旧 FileQueue
-	 *
-	 */
 	private static class FileQueue2 implements Closeable {
 		private String _file;
 		private FileWriter _writer;
@@ -257,7 +252,7 @@ public class HugeQueue implements Closeable {
 				return new String(poll(), StringTools.CHARSET_UTF8);
 			}
 			catch(Exception e) {
-				throw new RuntimeException(e);
+				throw new RuntimeException("pollString error", e);
 			}
 		}
 
@@ -270,12 +265,12 @@ public class HugeQueue implements Closeable {
 				byte[] block = new byte[size];
 
 				if(_reader.read(block) != size) {
-					throw new Exception("read error");
+					throw new Exception("invalid return value");
 				}
 				return block;
 			}
 			catch(Exception e) {
-				throw new RuntimeException(e);
+				throw new RuntimeException("read error", e);
 			}
 		}
 
