@@ -4,7 +4,7 @@ import java.awt.Component;
 
 import javax.swing.JOptionPane;
 
-public class FaultOperation extends Exception {
+public class FaultOperation extends RuntimeException {
 	public static final FaultOperation i = new FaultOperation();
 
 	public FaultOperation() {
