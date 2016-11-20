@@ -1,6 +1,8 @@
 package charlotte.tools;
 
 import java.awt.Component;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -8,7 +10,7 @@ public class FaultOperation extends RuntimeException {
 	public static final FaultOperation i = new FaultOperation();
 
 	public FaultOperation() {
-		super();
+		super("失敗しました。");
 	}
 
 	public FaultOperation(String message) {
@@ -36,14 +38,9 @@ public class FaultOperation extends RuntimeException {
 					);
 		}
 		else if(e instanceof FaultOperation) {
-			String message = e.getMessage();
-
-			if(StringTools.isEmpty(message)) {
-				message = "失敗しました。";
-			}
 			JOptionPane.showMessageDialog(
 					parent,
-					message,
+					getMessage(e),
 					title + " - 失敗",
 					JOptionPane.WARNING_MESSAGE
 					);
@@ -51,17 +48,28 @@ public class FaultOperation extends RuntimeException {
 		else {
 			e.printStackTrace();
 
-			String message = e.getMessage();
-
-			if(StringTools.isEmpty(message)) {
-				message = e.getClass().getName();
-			}
 			JOptionPane.showMessageDialog(
 					parent,
-					message,
+					getMessage(e),
 					title + " - エラー",
 					JOptionPane.ERROR_MESSAGE
 					);
 		}
+	}
+
+	public static String getMessage(Throwable e) {
+		List<String> lines = new ArrayList<String>();
+
+		while(e != null) {
+			String line = e.getMessage();
+
+			if(StringTools.isEmpty(line)) {
+				line = e.getClass().getName();
+			}
+			lines.add(line);
+
+			e = e.getCause();
+		}
+		return StringTools.join("\n", lines);
 	}
 }

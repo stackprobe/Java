@@ -32,6 +32,9 @@ public class JDateTest {
 		for(String eyy : JDate.getEYYList()) {
 			System.out.println("EYY: " + eyy);
 		}
+		for(String e : JDate.getEList()) {
+			System.out.println("E: " + e);
+		}
 		test02("H01");
 		test02("H02/12/31");
 		test02("Puppu-!"); // -> null

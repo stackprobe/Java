@@ -163,6 +163,15 @@ public class JDate {
 		return ret;
 	}
 
+	public static List<String> getEList() {
+		List<String> ret = new ArrayList<String>();
+
+		for(Period period : getPeriods()) {
+			ret.add(period.firstDate.g);
+		}
+		return ret;
+	}
+
 	/**
 	 *
 	 * @param ggg 元号又はアルファベット
