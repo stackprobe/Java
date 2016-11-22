@@ -130,6 +130,15 @@ public class FileTools {
 		}
 	}
 
+	public static void close(AutoCloseable c) {
+		try {
+			c.close();
+		}
+		catch(Throwable e) {
+			// ignore
+		}
+	}
+
 	public static String makeTempPath() {
 		return FileTools.combine(_tmpDir, StringTools.getUUID());
 	}

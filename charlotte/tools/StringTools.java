@@ -1,6 +1,7 @@
 package charlotte.tools;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -258,6 +259,10 @@ public class StringTools {
 			buff.append(tokens.get(index));
 		}
 		return buff.toString();
+	}
+
+	public static String join(String separator, String[] tokens) {
+		return join(separator, Arrays.asList(tokens));
 	}
 
 	public static String format(String str, String... prms) {
