@@ -12,12 +12,12 @@ import java.util.List;
  *
  */
 public class HugeQueue implements Closeable {
-	private FileQueue _writer;
-	private FileQueue _reader;
+	private FileQueueAuto _writer;
+	private FileQueueAuto _reader;
 
 	public HugeQueue() {
-		_writer = new FileQueue();
-		_reader = new FileQueue();
+		_writer = new FileQueueAuto();
+		_reader = new FileQueueAuto();
 	}
 
 	public void add(String str) {
@@ -47,7 +47,7 @@ public class HugeQueue implements Closeable {
 			if(_writer.size() == 0L) {
 				return null;
 			}
-			FileQueue swap = _writer;
+			FileQueueAuto swap = _writer;
 			_writer = _reader;
 			_reader = swap;
 		}
@@ -61,8 +61,8 @@ public class HugeQueue implements Closeable {
 	public void clear() {
 		FileTools.close(_writer);
 		FileTools.close(_reader);
-		_writer = new FileQueue();
-		_reader = new FileQueue();
+		_writer = new FileQueueAuto();
+		_reader = new FileQueueAuto();
 	}
 
 	@Override
@@ -74,8 +74,8 @@ public class HugeQueue implements Closeable {
 		}
 	}
 
-	public static class FileQueue implements Closeable {
-		private FileQueue2 _queue = null;
+	public static class FileQueueAuto implements Closeable {
+		private FileQueue _queue = null;
 
 		public void add(String str) {
 			beforeAdd();
@@ -107,7 +107,7 @@ public class HugeQueue implements Closeable {
 
 		private void beforeAdd() {
 			if(_queue == null) {
-				_queue = new FileQueue2();
+				_queue = new FileQueue();
 			}
 		}
 
@@ -134,13 +134,13 @@ public class HugeQueue implements Closeable {
 		}
 	}
 
-	private static class FileQueue2 implements Closeable {
+	public static class FileQueue implements Closeable {
 		private String _file;
 		private FileWriter _writer;
 		private FileReader _reader;
 		private long _size;
 
-		public FileQueue2() {
+		public FileQueue() {
 			_file = FileTools.makeTempPath();
 			_writer = new FileWriter(_file);
 			_reader = new FileReader(_file);
@@ -176,11 +176,23 @@ public class HugeQueue implements Closeable {
 			return _size;
 		}
 
+		public void clear() {
+			FileTools.close(_writer);
+			FileTools.close(_reader);
+			_writer = new FileWriter(_file);
+			_reader = new FileReader(_file);
+		}
+
+		public void resetPoll() {
+			FileTools.close(_reader);
+			_reader = new FileReader(_file);
+		}
+
 		@Override
 		public void close() throws IOException {
 			if(_file != null) {
-				FileTools.close(_reader);
 				FileTools.close(_writer);
+				FileTools.close(_reader);
 				FileTools.delete(_file);
 				_file = null;
 			}
