@@ -12,12 +12,12 @@ import java.util.List;
  *
  */
 public class HugeQueue implements Closeable {
-	private FileQueueAuto _writer;
-	private FileQueueAuto _reader;
+	private FileQueueAC _writer;
+	private FileQueueAC _reader;
 
 	public HugeQueue() {
-		_writer = new FileQueueAuto();
-		_reader = new FileQueueAuto();
+		_writer = new FileQueueAC();
+		_reader = new FileQueueAC();
 	}
 
 	public void add(String str) {
@@ -47,7 +47,7 @@ public class HugeQueue implements Closeable {
 			if(_writer.size() == 0L) {
 				return null;
 			}
-			FileQueueAuto swap = _writer;
+			FileQueueAC swap = _writer;
 			_writer = _reader;
 			_reader = swap;
 		}
@@ -61,8 +61,8 @@ public class HugeQueue implements Closeable {
 	public void clear() {
 		FileTools.close(_writer);
 		FileTools.close(_reader);
-		_writer = new FileQueueAuto();
-		_reader = new FileQueueAuto();
+		_writer = new FileQueueAC();
+		_reader = new FileQueueAC();
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public class HugeQueue implements Closeable {
 		}
 	}
 
-	public static class FileQueueAuto implements Closeable {
+	public static class FileQueueAC implements Closeable {
 		private FileQueue _queue = null;
 
 		public void add(String str) {
