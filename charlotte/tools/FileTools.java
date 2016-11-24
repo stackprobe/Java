@@ -139,15 +139,21 @@ public class FileTools {
 		}
 	}
 
+	public static void designateTmpDir(String ident) {
+		tmpDir = combine(tmpDir, ident);
+		rm(tmpDir);
+		mkdir(tmpDir);
+	}
+
+	public static String tmpDir = System.getProperty("java.io.tmpdir", "C:/temp/");
+
 	public static String makeTempPath() {
-		return FileTools.combine(_tmpDir, StringTools.getUUID());
+		return FileTools.combine(tmpDir, StringTools.getUUID());
 	}
 
 	public static String makeTempPath(String ident) {
-		return FileTools.combine(_tmpDir, ident);
+		return FileTools.combine(tmpDir, ident);
 	}
-
-	public static final String _tmpDir = System.getProperty("java.io.tmpdir", "C:/temp/");
 
 	public static String combine(String path1, String path2) {
 		return norm(path1 + "/" + path2);
