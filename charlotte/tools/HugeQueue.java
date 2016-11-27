@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -141,7 +142,11 @@ public class HugeQueue implements Closeable {
 		private long _size;
 
 		public FileQueue() {
-			_file = FileTools.makeTempPath();
+			this(FileTools.makeTempPath());
+		}
+
+		public FileQueue(String file) {
+			_file = file;
 			_writer = new FileWriter(_file);
 			_reader = new FileReader(_file);
 		}
@@ -226,7 +231,7 @@ public class HugeQueue implements Closeable {
 			}
 		}
 
-		private void add(byte[] block) {
+		public void add(byte[] block) {
 			try {
 				_writer.write(IntTools.toBytes(block.length));
 				_writer.write(block);
@@ -307,5 +312,41 @@ public class HugeQueue implements Closeable {
 			ret.add(str);
 		}
 		return ret;
+	}
+
+	public void sort(Comparator<byte[]> comp) throws Exception {
+		new HugeQueueSorter() {
+			@Override
+			protected int comp(byte[] a, byte[] b) {
+				return comp.compare(a, b);
+			}
+		}
+		.mergeSort(this);
+	}
+
+	public void sortText(Comparator<String> comp) throws Exception {
+		new HugeQueueSorter() {
+			@Override
+			protected int comp(byte[] a, byte[] b) {
+				try {
+					return comp.compare(
+							new String(a, StringTools.CHARSET_UTF8),
+							new String(b, StringTools.CHARSET_UTF8)
+							);
+				}
+				catch(Throwable e) {
+					throw RunnableEx.re(e);
+				}
+			}
+		}
+		.mergeSort(this);
+	}
+
+	public void sortText(HugeQueue hq) throws Exception {
+		sortText(StringTools.comp);
+	}
+
+	public void sortTextIgnoreCase(HugeQueue hq) throws Exception {
+		sortText(StringTools.compIgnoreCase);
 	}
 }
