@@ -128,58 +128,58 @@ public abstract class Sorter {
 		while(isSorted(list) == false);
 	}
 
+	public static <T> Sortable<T> create(final List<T> list, final Comparator<T> comp) {
+		return new Sortable<T>() {
+			@Override
+			public int compare(T a, T b) {
+				return comp.compare(a, b);
+			}
+
+			@Override
+			public int size() {
+				return list.size();
+			}
+
+			@Override
+			public T get(int index) {
+				return list.get(index);
+			}
+
+			@Override
+			public void swap(int i, int j) {
+				ArrayTools.swap(list, i, j);
+			}
+		};
+	}
+
+	public static <T> Sortable<T> create(final T[] arr, final Comparator<T> comp) {
+		return new Sortable<T>() {
+			@Override
+			public int compare(T a, T b) {
+				return comp.compare(a, b);
+			}
+
+			@Override
+			public int size() {
+				return arr.length;
+			}
+
+			@Override
+			public T get(int index) {
+				return arr[index];
+			}
+
+			@Override
+			public void swap(int i, int j) {
+				ArrayTools.swap(arr, i, j);
+			}
+		};
+	}
+
 	public static abstract class Sortable<T> implements Comparator<T> {
 		public abstract int size();
 		public abstract T get(int index);
 		public abstract void swap(int i, int j);
-
-		public static <T> Sortable<T> create(final List<T> list, final Comparator<T> comp) {
-			return new Sortable<T>() {
-				@Override
-				public int compare(T a, T b) {
-					return comp.compare(a, b);
-				}
-
-				@Override
-				public int size() {
-					return list.size();
-				}
-
-				@Override
-				public T get(int index) {
-					return list.get(index);
-				}
-
-				@Override
-				public void swap(int i, int j) {
-					ArrayTools.swap(list, i, j);
-				}
-			};
-		}
-
-		public static <T> Sortable<T> create(final T[] arr, final Comparator<T> comp) {
-			return new Sortable<T>() {
-				@Override
-				public int compare(T a, T b) {
-					return comp.compare(a, b);
-				}
-
-				@Override
-				public int size() {
-					return arr.length;
-				}
-
-				@Override
-				public T get(int index) {
-					return arr[index];
-				}
-
-				@Override
-				public void swap(int i, int j) {
-					ArrayTools.swap(arr, i, j);
-				}
-			};
-		}
 	}
 
 	public static <T> int compare(Sortable<T> list, int i, int j) {

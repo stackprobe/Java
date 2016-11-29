@@ -96,7 +96,7 @@ public class SorterTest {
 			List<String> list2 = ArrayTools.copy(src);
 
 			ArrayTools.sort(list1, StringTools.comp);
-			Sorter.Sortable<String> list = Sorter.Sortable.<String>create(list2, StringTools.comp);
+			Sorter.Sortable<String> list = Sorter.<String>create(list2, StringTools.comp);
 
 			switch(algo) {
 			case 1:

@@ -258,6 +258,15 @@ public class DebugTools {
 		}
 	}
 
+	public static List<String> makeRandLines(String chrs, int linecnt, int chrcntMin, int chrcntMax) {
+		List<String> dest = new ArrayList<String>();
+
+		for(int index = 0; index < linecnt; index++) {
+			dest.add(makeRandString(chrs, MathTools.random(chrcntMin, chrcntMax)));
+		}
+		return dest;
+	}
+
 	public static String makeRandString(String chrs, int chrcnt) {
 		StringBuffer buff = new StringBuffer();
 

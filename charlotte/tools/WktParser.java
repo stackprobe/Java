@@ -2,6 +2,7 @@ package charlotte.tools;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 public class WktParser {
@@ -148,6 +149,28 @@ public class WktParser {
 				}
 				if(recursive) {
 					findLabelledValue(ol, label, true, dest);
+				}
+			}
+		}
+		return dest;
+	}
+
+	public static Map<String, ObjectList> findLabelledValues(ObjectList root, boolean recursive) {
+		return findLabelledValues(root, recursive, MapTools.<ObjectList>create());
+	}
+
+	public static Map<String, ObjectList> findLabelledValues(ObjectList root, boolean recursive, Map<String, ObjectList> dest) {
+		for(int index = 0; index < root.size(); index++) {
+			if(root.get(index) instanceof ObjectList) {
+				ObjectList ol = (ObjectList)root.get(index);
+
+				if(1 <= index && root.get(index - 1) instanceof Word) {
+					String olLabel = root.get(index - 1).toString();
+
+					dest.put(olLabel, ol);
+				}
+				if(recursive) {
+					findLabelledValues(ol, true, dest);
 				}
 			}
 		}

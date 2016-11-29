@@ -25,6 +25,17 @@ public class HugeQueue implements Closeable {
 		_writer.add(str);
 	}
 
+	public void add(HugeQueue hq) {
+		for(; ; ) {
+			byte[] block = hq.poll();
+
+			if(block == null) {
+				break;
+			}
+			add(block);
+		}
+	}
+
 	public void add(byte[] block) {
 		_writer.add(block);
 	}
@@ -342,11 +353,120 @@ public class HugeQueue implements Closeable {
 		.mergeSort(this);
 	}
 
-	public void sortText(HugeQueue hq) throws Exception {
+	public void sortText() throws Exception {
 		sortText(StringTools.comp);
 	}
 
-	public void sortTextIgnoreCase(HugeQueue hq) throws Exception {
+	public void sortTextIgnoreCase() throws Exception {
 		sortText(StringTools.compIgnoreCase);
+	}
+
+	/**
+	 *
+	 * @param lq
+	 * @param rq
+	 * @param both
+	 * @param both_r null ok
+	 * @param comp
+	 * @throws Exception
+	 */
+	public static void merge(
+			HugeQueue lq,
+			HugeQueue rq,
+			HugeQueue both,
+			HugeQueue both_r,
+			Comparator<byte[]> comp
+			) throws Exception {
+		HugeQueue lu = null;
+		HugeQueue ru = null;
+		try {
+			lu = new HugeQueue();
+			ru = new HugeQueue();
+
+			lu.add(lq);
+			ru.add(rq);
+
+			lu.sort(comp);
+			ru.sort(comp);
+
+			byte[] l = lu.poll();
+			byte[] r = ru.poll();
+
+			while(l != null && r != null) {
+				int ret = comp.compare(l, r);
+
+				if(ret < 0) {
+					lq.add(l);
+					l = lu.poll();
+				}
+				else if(0 < ret) {
+					rq.add(r);
+					r = ru.poll();
+				}
+				else {
+					both.add(l);
+
+					if(both_r != null) {
+						both_r.add(r);
+					}
+
+					l = lu.poll();
+					r = ru.poll();
+				}
+			}
+			if(l != null) {
+				lq.add(l);
+				lq.add(lu);
+			}
+			if(r != null) {
+				rq.add(r);
+				rq.add(ru);
+			}
+		}
+		finally {
+			FileTools.close(lu);
+			FileTools.close(ru);
+		}
+	}
+
+	public static void mergeText(
+			HugeQueue lq,
+			HugeQueue rq,
+			HugeQueue both,
+			HugeQueue both_r,
+			Comparator<String> comp
+			) throws Exception {
+		merge(lq, rq, both, both_r, new Comparator<byte[]>() {
+			@Override
+			public int compare(byte[] a, byte[] b) {
+				try {
+					return comp.compare(
+							new String(a, StringTools.CHARSET_UTF8),
+							new String(b, StringTools.CHARSET_UTF8)
+							);
+				}
+				catch(Throwable e) {
+					throw RunnableEx.re(e);
+				}
+			}
+		});
+	}
+
+	public static void mergeText(
+			HugeQueue lq,
+			HugeQueue rq,
+			HugeQueue both,
+			HugeQueue both_r
+			) throws Exception {
+		mergeText(lq, rq, both, both_r, StringTools.comp);
+	}
+
+	public static void mergeTextIgnoreCase(
+			HugeQueue lq,
+			HugeQueue rq,
+			HugeQueue both,
+			HugeQueue both_r
+			) throws Exception {
+		mergeText(lq, rq, both, both_r, StringTools.compIgnoreCase);
 	}
 }

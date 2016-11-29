@@ -798,4 +798,106 @@ public class StringTools {
 		}
 		return str;
 	}
+
+	public static class RealNumber {
+		public String value;
+		public int exponent;
+		public int sign;
+
+		public RealNumber(String str) {
+			if(str == null) {
+				str = "0";
+			}
+			str = zenToHan(str);
+
+			value = "";
+			exponent = 0;
+			sign = 1;
+
+			boolean readPeriod = false;
+
+			for(int index = 0; index < str.length(); index++) {
+				char chr = str.charAt(index);
+
+				if(chr == '-') {
+					sign = -1;
+				}
+				else if(chr == '.') {
+					readPeriod = true;
+				}
+				else {
+					int chrval = StringTools.DIGIT.indexOf(chr);
+
+					if(chrval != -1) {
+						if(readPeriod) {
+							exponent--;
+						}
+						value += chr;
+					}
+				}
+			}
+		}
+
+		public void trim() {
+			{
+				int c;
+
+				for(c = 0; c < value.length(); c++) {
+					if(value.charAt(c) != '0') {
+						break;
+					}
+				}
+				value = value.substring(c);
+			}
+
+			{
+				int c;
+
+				for(c = 0; c < value.length(); c++) {
+					if(value.charAt(value.length() - c - 1) != '0') {
+						break;
+					}
+				}
+				value = value.substring(0, value.length() - c);
+				exponent += c;
+			}
+
+			if("".equals(value)) {
+				value = "0";
+				exponent = 0;
+				sign = 1;
+			}
+		}
+
+		public void fix() {
+			if(exponent < 0) {
+				if(value.length() <= -exponent) {
+					value = "0";
+				}
+				else {
+					value = value.substring(0, value.length() + exponent);
+				}
+				exponent = 0;
+			}
+		}
+
+		@Override
+		public String toString() {
+			String ret = value;
+
+			if(exponent < 0) {
+				if(ret.length() <= -exponent) {
+					ret = repeat('0', -exponent - ret.length() + 1) + ret;
+				}
+				ret = insert(ret, ret.length() + exponent, '.');
+			}
+			else {
+				ret += repeat('0', exponent);
+			}
+			if(sign == -1) {
+				ret = "-" + ret;
+			}
+			return ret;
+		}
+	}
 }
