@@ -146,7 +146,7 @@ public class XNode {
 	}
 
 	private static final String SAVE_INDENT = "\t";
-	private static final String SAVE_NEW_LINE = "\n";
+	private static final String SAVE_NEW_LINE = "\r\n";
 
 	public void save(String file) throws Exception {
 		FileTools.writeAllBytes(file, getBytes());
@@ -154,9 +154,9 @@ public class XNode {
 
 	public byte[] getBytes() throws Exception {
 		List<String> lines = new ArrayList<String>();
-		lines.add("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+		lines.add("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
 		addTo(lines, "");
-		String text = StringTools.join(SAVE_NEW_LINE, lines);
+		String text = StringTools.join(SAVE_NEW_LINE, lines) + SAVE_NEW_LINE;
 		return text.getBytes(StringTools.CHARSET_UTF8);
 	}
 

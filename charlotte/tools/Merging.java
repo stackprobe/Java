@@ -34,25 +34,25 @@ public class Merging {
 		Reader<T> l3 = new Reader<T>(l2);
 		Reader<T> r3 = new Reader<T>(r2);
 
-		T le = l3.next();
-		T re = r3.next();
+		ValueGetter<T> le = l3.next();
+		ValueGetter<T> re = r3.next();
 
 		while(le != null && re != null) {
-			int ret = comp.compare(le, re);
+			int ret = comp.compare(le.get(), re.get());
 
 			if(ret < 0) {
-				l.add(le);
+				l.add(le.get());
 				le = l3.next();
 			}
 			else if(0 < ret) {
-				r.add(re);
+				r.add(re.get());
 				re = r3.next();
 			}
 			else {
-				both.add(le);
+				both.add(le.get());
 
 				if(both_r != null) {
-					both_r.add(re);
+					both_r.add(re.get());
 				}
 
 				le = l3.next();
@@ -60,11 +60,11 @@ public class Merging {
 			}
 		}
 		if(le != null) {
-			l.add(le);
+			l.add(le.get());
 			l3.addFollowsTo(l);
 		}
 		if(re != null) {
-			r.add(re);
+			r.add(re.get());
 			r3.addFollowsTo(r);
 		}
 	}
@@ -78,21 +78,21 @@ public class Merging {
 
 		private int _index = 0;
 
-		public T next() {
+		public ValueGetter<T> next() {
 			if(_index < _src.size()) {
-				return _src.get(_index++);
+				return new ValueBox<T>(_src.get(_index++));
 			}
 			return null;
 		}
 
 		public void addFollowsTo(List<T> dest) {
 			for(; ; ) {
-				T element = next();
+				ValueGetter<T> element = next();
 
 				if(element == null) {
 					break;
 				}
-				dest.add(element);
+				dest.add(element.get());
 			}
 		}
 	}
