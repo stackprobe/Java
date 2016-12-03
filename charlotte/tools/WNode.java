@@ -54,4 +54,26 @@ public class WNode {
 			}
 		}
 	}
+
+	public void hissunize(String path) {
+		hissunize(StringTools.tokenize(path, XNode.PATH_DLMTRS), 0);
+	}
+
+	private void hissunize(List<String> pathTokens, int ptIndex) {
+		{
+			WNode child = get(pathTokens.get(ptIndex));
+
+			if(child == null) {
+				child = new WNode();
+				child.name = pathTokens.get(ptIndex);
+				children.add(child);
+			}
+		}
+
+		if(ptIndex + 1 < pathTokens.size()) {
+			for(WNode child : children) {
+				child.hissunize(pathTokens, ptIndex + 1);
+			}
+		}
+	}
 }

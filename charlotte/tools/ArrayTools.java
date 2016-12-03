@@ -291,4 +291,15 @@ public class ArrayTools {
 	public static void copy(byte[] src, int rPos, byte[] dest, int wPos, int size) {
 		System.arraycopy(src, rPos, dest, wPos, size);
 	}
+
+	public static <T> List<T> collect(List<T> src, AcceptListener<T> al) {
+		List<T> dest = new ArrayList<T>();
+
+		for(T element : src) {
+			if(al.accept(element)) {
+				dest.add(element);
+			}
+		}
+		return dest;
+	}
 }

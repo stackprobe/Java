@@ -190,7 +190,7 @@ public class XNode {
 		}
 	}
 
-	private static final String PATH_DLMTRS = "/\\";
+	public static final String PATH_DLMTRS = "/\\";
 
 	public List<XNode> getNodes(String path) {
 		List<XNode> ret = new ArrayList<XNode>();

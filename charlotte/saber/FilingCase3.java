@@ -22,27 +22,27 @@ public class FilingCase3 implements Closeable {
 		_basePath = basePath;
 	}
 
-	public byte[] get(String path) throws Exception {
+	public byte[] get(String path) {
 		return twice(() -> { return getClient().get(path); });
 	}
 
-	public int post(String path, byte[] data) throws Exception {
+	public int post(String path, byte[] data) {
 		return twice(() -> { return getClient().post(path, data); });
 	}
 
-	public byte[] getPost(String path, byte[] data) throws Exception {
+	public byte[] getPost(String path, byte[] data) {
 		return twice(() -> { return getClient().getPost(path, data); });
 	}
 
-	public List<String> list(String path) throws Exception {
+	public List<String> list(String path) {
 		return twice(() -> { return getClient().list(path); });
 	}
 
-	public int delete(String path) throws Exception {
+	public int delete(String path) {
 		return twice(() -> { return getClient().delete(path); });
 	}
 
-	private <T> T twice(ValueGetter<T> getter) throws Exception {
+	private <T> T twice(ValueGetter<T> getter) {
 		try {
 			return getter.get();
 		}
