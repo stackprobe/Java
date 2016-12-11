@@ -2,9 +2,9 @@ package evergarden.labo.sortableTable;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.JComponent;
@@ -14,11 +14,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
-
-import charlotte.tools.ArrayTools;
-import charlotte.tools.DoubleTools;
-import charlotte.tools.StringTools;
 
 public class SortableTable extends JTable {
 	private String[] _titles;
@@ -39,6 +36,9 @@ public class SortableTable extends JTable {
 		this.getTableHeader().addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
+				if(isNearColumnBorder(e.getPoint())) {
+					return;
+				}
 				int colidx = SortableTable.this.getTableHeader().columnAtPoint(e.getPoint());
 
 				if(colidx == _orderColidx) {
@@ -49,6 +49,19 @@ public class SortableTable extends JTable {
 				}
 			}
 		});
+	}
+
+	private static final int COLUMN_BORDER_MARGIN = 5;
+
+	private boolean isNearColumnBorder(Point point) {
+		Point l = new Point(point.x - COLUMN_BORDER_MARGIN, point.y);
+		Point r = new Point(point.x + COLUMN_BORDER_MARGIN, point.y);
+
+		int colidx = SortableTable.this.getTableHeader().columnAtPoint(point);
+		int lColidx = SortableTable.this.getTableHeader().columnAtPoint(l);
+		int rColidx = SortableTable.this.getTableHeader().columnAtPoint(r);
+
+		return colidx != lColidx || colidx != rColidx;
 	}
 
 	private class ResultTableModel implements TableModel {
@@ -144,7 +157,7 @@ public class SortableTable extends JTable {
 			return -1;
 		}
 
-		public void setWidth(TableColumn column, int w) {
+		private void setWidth(TableColumn column, int w) {
 			column.setMinWidth(w);
 			column.setWidth(w);
 		}
@@ -174,48 +187,42 @@ public class SortableTable extends JTable {
 		if(_orderColidx == -1) {
 			return;
 		}
-		boolean numericColumn = isNumericColumn(_orderColidx);
-
-		ArrayTools.sort(_rows, new Comparator<String[]>() {
-			@Override
-			public int compare(String[] row1, String[] row2) {
-				String cell1 = row1[_orderColidx];
-				String cell2 = row2[_orderColidx];
-				int ret;
-
-				if(numericColumn) {
-					double val1 = Double.parseDouble(cell1.replaceAll(",", ""));
-					double val2 = Double.parseDouble(cell2.replaceAll(",", ""));
-
-					ret = DoubleTools.comp.compare(val1, val2);
-				}
-				else {
-					ret = StringTools.comp.compare(cell1, cell2);
-				}
-				return _orderAsc ? ret : -ret;
-			}
-		});
-	}
-
-	private boolean isNumericColumn(int colidx) {
-		try {
-			for(String[] row : _rows) {
-				String cell = row[colidx];
-
-				cell = cell.replace(",", "");
-
-				Double.parseDouble(cell);
-			}
-			return true;
-		}
-		catch(Throwable e) {
-			// ignore
-		}
-		return false;
+		new ColumnSorter(_rows, _orderColidx, _orderAsc).perform();
 	}
 
 	private void doRepaint() {
+		int[][] ws = getAllColumnWidth();
 		this.setModel(new ResultTableModel());
+
+		setAllColumnWidth(ws);
+
 		SortableTableDlg.self.repaint();
+	}
+
+	private int[][] getAllColumnWidth() {
+		TableColumnModel tcm = this.getColumnModel();
+		int[][] ws = new int[_titles.length][];
+
+		for(int colidx = 0; colidx < _titles.length; colidx++) {
+			TableColumn tc = tcm.getColumn(colidx);
+
+			ws[colidx] = new int[] {
+					tc.getWidth(),
+					tc.getMinWidth(),
+			};
+		}
+		return ws;
+	}
+
+	private void setAllColumnWidth(int ws[][]) {
+		TableColumnModel tcm = this.getColumnModel();
+
+		for(int colidx = 0; colidx < _titles.length; colidx++) {
+			TableColumn tc = tcm.getColumn(colidx);
+
+			tc.setMinWidth(ws[colidx][0]);
+			tc.setWidth(ws[colidx][0]);
+			tc.setMinWidth(ws[colidx][1]);
+		}
 	}
 }
