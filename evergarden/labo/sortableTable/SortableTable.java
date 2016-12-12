@@ -193,7 +193,6 @@ public class SortableTable extends JTable {
 	private void doRepaint() {
 		int[][] ws = getAllColumnWidth();
 		this.setModel(new ResultTableModel());
-
 		setAllColumnWidth(ws);
 
 		SortableTableDlg.self.repaint();

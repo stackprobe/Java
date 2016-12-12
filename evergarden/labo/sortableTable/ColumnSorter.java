@@ -6,7 +6,6 @@ import java.util.List;
 
 import charlotte.tools.ArrayTools;
 import charlotte.tools.DoubleTools;
-import charlotte.tools.LongTools;
 import charlotte.tools.StringTools;
 
 public class ColumnSorter {
@@ -34,7 +33,7 @@ public class ColumnSorter {
 
 			String cell = row[_colidx];
 
-			ri.longCell = toLong(cell);
+			//ri.longCell = toLong(cell);
 			ri.doubleCell = toDouble(cell);
 			ri.cell = cell;
 
@@ -63,21 +62,33 @@ public class ColumnSorter {
 	private static class RowInfo {
 		public int rowidx;
 		public String[] row;
-		public Long longCell;
+		//public Long longCell;
 		public Double doubleCell;
 		public String cell;
 	}
 
 	private static int compareCell(RowInfo a, RowInfo b) {
+		// old
+		/*
 		if(a.longCell != null && b.longCell != null) {
 			return LongTools.comp.compare(a.longCell, b.longCell);
 		}
+		*/
+
 		if(a.doubleCell != null && b.doubleCell != null) {
 			return DoubleTools.comp.compare(a.doubleCell, b.doubleCell);
 		}
+		if(a.doubleCell != null) {
+			return -1;
+		}
+		if(b.doubleCell != null) {
+			return 1;
+		}
+
 		return StringTools.comp.compare(a.cell, b.cell);
 	}
 
+	/*
 	private static Long toLong(String str) {
 		try {
 			str = StringTools.zenToHan(str);
@@ -91,6 +102,7 @@ public class ColumnSorter {
 		}
 		return null;
 	}
+	*/
 
 	private static Double toDouble(String str) {
 		try {
