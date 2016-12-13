@@ -1,4 +1,4 @@
-package schwarzer.shelves.shelf;
+package evergarden.schwarzer.shelves.shelf;
 
 import java.awt.Component;
 
@@ -6,8 +6,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import schwarzer.shelves.Shelf;
-import schwarzer.shelves.ShelvesDialog;
+import evergarden.schwarzer.shelves.Shelf;
+import evergarden.schwarzer.shelves.ShelvesDialog;
 
 public class LabelledTextField extends Shelf {
 	public String labelText = "未定義";

@@ -1,16 +1,16 @@
-package schwarzer_test.shelves;
+package evergarden.schwarzer_test.shelves;
 
-import schwarzer.shelves.Button;
-import schwarzer.shelves.Column;
-import schwarzer.shelves.Form;
-import schwarzer.shelves.Header;
-import schwarzer.shelves.Shelf;
-import schwarzer.shelves.ShelvesDialog;
-import schwarzer.shelves.ShelvesManager;
-import schwarzer.shelves.Tab;
-import schwarzer.shelves.shelf.DummyShelf;
-import schwarzer.shelves.shelf.LabelledComboBox;
-import schwarzer.shelves.shelf.LabelledTextField;
+import evergarden.schwarzer.shelves.Button;
+import evergarden.schwarzer.shelves.Column;
+import evergarden.schwarzer.shelves.Form;
+import evergarden.schwarzer.shelves.Header;
+import evergarden.schwarzer.shelves.Shelf;
+import evergarden.schwarzer.shelves.ShelvesDialog;
+import evergarden.schwarzer.shelves.ShelvesManager;
+import evergarden.schwarzer.shelves.Tab;
+import evergarden.schwarzer.shelves.shelf.DummyShelf;
+import evergarden.schwarzer.shelves.shelf.LabelledComboBox;
+import evergarden.schwarzer.shelves.shelf.LabelledTextField;
 
 public class Test01 {
 	public static void main(String[] args) {

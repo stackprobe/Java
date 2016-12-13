@@ -3,7 +3,7 @@ package charlotte_test.tools;
 import charlotte.tools.FileTools;
 import charlotte.tools.XFormat;
 import charlotte.tools.XNode;
-import schwarzer.shelves.ShelvesDialog;
+import evergarden.schwarzer.shelves.ShelvesDialog;
 
 public class XFormatTest {
 	public static void main(String[] args) {

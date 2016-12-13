@@ -1,4 +1,4 @@
-package schwarzer.shelves.shelf;
+package evergarden.schwarzer.shelves.shelf;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -7,7 +7,7 @@ import java.awt.Component;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import schwarzer.shelves.Shelf;
+import evergarden.schwarzer.shelves.Shelf;
 
 public class DummyShelf extends Shelf {
 	private JLabel label;

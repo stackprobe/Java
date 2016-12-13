@@ -1,4 +1,4 @@
-package schwarzer.shelves.shelf;
+package evergarden.schwarzer.shelves.shelf;
 
 import java.awt.Component;
 import java.util.ArrayList;
@@ -9,8 +9,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import charlotte.tools.XNode;
-import schwarzer.shelves.Shelf;
-import schwarzer.shelves.ShelvesDialog;
+import evergarden.schwarzer.shelves.Shelf;
+import evergarden.schwarzer.shelves.ShelvesDialog;
 
 public class LabelledComboBox extends Shelf {
 	public String labelText = "未定義";

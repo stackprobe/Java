@@ -1,9 +1,9 @@
-package schwarzer_test.shelves;
+package evergarden.schwarzer_test.shelves;
 
 import charlotte.tools.XNode;
 import charlotte.tools.XResource;
-import schwarzer.shelves.ShelvesDesign;
-import schwarzer.shelves.ShelvesDialog;
+import evergarden.schwarzer.shelves.ShelvesDesign;
+import evergarden.schwarzer.shelves.ShelvesDialog;
 
 public class Test02 {
 	public static void main(String[] args) {

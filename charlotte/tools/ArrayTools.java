@@ -75,6 +75,19 @@ public class ArrayTools {
 		list.remove(list.size() - 1);
 	}
 
+	public static <T> void removeNull(List<T> list) {
+		int w = 0;
+
+		for(T element : list) {
+			if(element != null) {
+				list.set(w++, element);
+			}
+		}
+		while(w < list.size()) {
+			list.remove(list.size() - 1);
+		}
+	}
+
 	public static <T> void reverse(T[] array) {
 		int l = 0;
 		int r = array.length - 1;

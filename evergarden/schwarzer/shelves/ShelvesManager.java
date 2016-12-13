@@ -1,6 +1,6 @@
-package schwarzer.shelves;
+package evergarden.schwarzer.shelves;
 
-import schwarzer.shelves.shelf.DummyShelf;
+import evergarden.schwarzer.shelves.shelf.DummyShelf;
 
 public abstract class ShelvesManager {
 	public abstract Form getForm();

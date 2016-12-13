@@ -1,4 +1,4 @@
-package schwarzer.shelves.shelf;
+package evergarden.schwarzer.shelves.shelf;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -7,8 +7,8 @@ import java.awt.Graphics;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import schwarzer.shelves.Shelf;
-import schwarzer.shelves.ShelvesDialog;
+import evergarden.schwarzer.shelves.Shelf;
+import evergarden.schwarzer.shelves.ShelvesDialog;
 
 public class Heading extends Shelf {
 	public String labelText = "未定義";

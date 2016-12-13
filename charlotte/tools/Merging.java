@@ -104,4 +104,15 @@ public class Merging {
 	public static void mergeTextIgnoreCase(List<String> l, List<String> r, List<String> both, List<String> both_r) {
 		merge(l, r, both, both_r, StringTools.compIgnoreCase);
 	}
+
+	public static <T> void distinct(List<T> list, Comparator<T> comp) {
+		ArrayTools.sort(list, comp);
+
+		for(int index = list.size() - 1; 1 <= index; index--) {
+			if(comp.compare(list.get(index - 1), list.get(index)) == 0) {
+				list.set(index, null);
+			}
+		}
+		ArrayTools.removeNull(list);
+	}
 }
