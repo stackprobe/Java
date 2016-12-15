@@ -139,6 +139,22 @@ public class Test01 {
 				new XNode("a", "b").getNode("c");
 				new XNode("a", "b").getNode("c", 123);
 			}
+
+			// ----
+
+			System.out.println("" + ("1".split("[,]").length)); // 1
+			System.out.println("" + (",".split("[,]").length)); // 0
+			System.out.println("" + ("".split("[,]").length)); // 1
+
+			System.out.println("" + (",,".split("[,]").length)); // 0
+			System.out.println("" + (",,,".split("[,]").length)); // 0
+			System.out.println("" + (",,,,".split("[,]").length)); // 0
+			System.out.println("" + (",,1".split("[,]").length)); // 3
+			System.out.println("" + (",,,1".split("[,]").length)); // 4
+			System.out.println("" + (",,,,1".split("[,]").length)); // 5
+
+			System.out.println("" + (",,,1,1,1".split("[,]").length)); // 6
+			System.out.println("" + ("1,1,1,,,".split("[,]").length)); // 3
 		}
 		catch(Throwable e) {
 			e.printStackTrace();
