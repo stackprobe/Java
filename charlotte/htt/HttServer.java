@@ -70,7 +70,7 @@ public class HttServer {
 								for(String key : headerFields.keySet()) {
 									String value = headerFields.get(key);
 
-									for(String div_value : StringTools.tokenize(value, "／")) {
+									for(String div_value : StringTools.tokenize(value, "｜")) {
 										String div_key = key;
 
 										for(String line_value : StringTools.tokenize(div_value, "\n")) {
