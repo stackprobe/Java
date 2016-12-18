@@ -41,7 +41,11 @@ public abstract class HttArtoria implements HttService, Closeable {
 
 	@Override
 	public boolean interlude() throws Exception {
-		return _ended == false;
+		return batch() || _ended == false;
+	}
+
+	private boolean batch() {
+		return false; // TODO
 	}
 
 	private Object SYNCROOT = new Object();
@@ -68,20 +72,20 @@ public abstract class HttArtoria implements HttService, Closeable {
 				entry = root.entries.get(urlPathToSaberUrlPath(urlPath));
 			}
 			HttSaberResponse res;
-			List<HttSaberExtra> extraLinear = root.extras.getExtraLinear(urlPath);
+			List<HttSaberAlter> alterLinear = root.alters.getAlterLinear(urlPath);
 
-			flame(extraLinear, req);
+			flame(alterLinear, req);
 
 			if(entry == null) {
 				res = getResponse301(root, urlPath, req);
 
 				if(res == null) {
-					HttSaberAlter alter = root.alters.getAlter(urlPath);
+					HttSaberLily lily = root.lilies.getAlter(urlPath);
 
-					if(alter == null) {
-						alter = root.defAlter;
+					if(lily == null) {
+						lily = root.defLily;
 					}
-					res = alter.doRequest(req);
+					res = lily.doRequest(req);
 
 					if(res == null) {
 						throw new NullPointerException("HttSaberAlter.doRequest() returned null");
@@ -98,7 +102,7 @@ public abstract class HttArtoria implements HttService, Closeable {
 					throw new NullPointerException("HttSaber.doRequest() returned null");
 				}
 			}
-			flame(extraLinear, req, res);
+			flame(alterLinear, req, res);
 			return getHttResponse(res);
 		}
 	}
@@ -199,16 +203,16 @@ public abstract class HttArtoria implements HttService, Closeable {
 
 	public static class Root {
 		public Map<String, Entry> entries;
-		public HttSaberAlter defAlter;
+		public HttSaberLily defLily;
+		public AlterTree<HttSaberLily> lilies;
 		public AlterTree<HttSaberAlter> alters;
-		public AlterTree<HttSaberExtra> extras;
 
 		public void debugPrint() {
 			for(String urlPath : entries.keySet()) {
 				System.out.println("[" + urlPath + "]=" + entries.get(urlPath).getDebugString());
 			}
+			lilies.debugPrint("LILY");
 			alters.debugPrint("ALTER");
-			extras.debugPrint("EXTRA");
 		}
 	}
 
@@ -236,9 +240,9 @@ public abstract class HttArtoria implements HttService, Closeable {
 		Root root = new Root();
 
 		root.entries = MapTools.<Entry>createIgnoreCase();
-		root.defAlter = getDefAlter();
+		root.defLily = getDefLily();
+		root.lilies = new AlterTree<HttSaberLily>();
 		root.alters = new AlterTree<HttSaberAlter>();
-		root.extras = new AlterTree<HttSaberExtra>();
 
 		for(String path : FileTools.lss(dir)) {
 			path = FileTools.norm(path);
@@ -257,13 +261,13 @@ public abstract class HttArtoria implements HttService, Closeable {
 				String className = getClassName(path);
 				Class<?> classObj = Class.forName(className);
 
-				if(ReflecTools.typeOf(classObj, HttSaberExtra.class)) {
-					HttSaberExtra extra = (HttSaberExtra)ReflecTools.invokeDeclaredCtor(classObj, new Object[0]);
-					root.extras.add(urlPath, extra);
+				if(ReflecTools.typeOf(classObj, HttSaberAlter.class)) {
+					HttSaberAlter extra = (HttSaberAlter)ReflecTools.invokeDeclaredCtor(classObj, new Object[0]);
+					root.alters.add(urlPath, extra);
 				}
-				else if(ReflecTools.typeOf(classObj, HttSaberAlter.class)) {
-					HttSaberAlter alter = (HttSaberAlter)ReflecTools.invokeDeclaredCtor(classObj, new Object[0]);
-					root.alters.add(urlPath, alter);
+				else if(ReflecTools.typeOf(classObj, HttSaberLily.class)) {
+					HttSaberLily alter = (HttSaberLily)ReflecTools.invokeDeclaredCtor(classObj, new Object[0]);
+					root.lilies.add(urlPath, alter);
 				}
 				else if(ReflecTools.typeOf(classObj, HttSaber.class)) {
 					HttSaber saber = (HttSaber)ReflecTools.invokeDeclaredCtor(classObj, new Object[0]);
@@ -399,8 +403,8 @@ public abstract class HttArtoria implements HttService, Closeable {
 		return ExtToContentType.getContentType(FileTools.getExt(file.getCanonicalPath()));
 	}
 
-	public HttSaberAlter getDefAlter() {
-		return new HttSaberAlter() {
+	public HttSaberLily getDefLily() {
+		return new HttSaberLily() {
 			@Override
 			public HttSaberResponse doRequest(HttSaberRequest req) throws Exception {
 				HttSaberResponse res = createResponse();
@@ -463,8 +467,8 @@ public abstract class HttArtoria implements HttService, Closeable {
 		for(Entry entry : root.entries.values()) {
 			FileTools.close(entry.saber);
 		}
+		root.lilies.clear();
 		root.alters.clear();
-		root.extras.clear();
 	}
 
 	public static class AlterTree<T> {
@@ -516,13 +520,13 @@ public abstract class HttArtoria implements HttService, Closeable {
 			return leafs.get(leafs.size() - 1);
 		}
 
-		public List<T> getExtraLinear(String urlPath) {
+		public List<T> getAlterLinear(String urlPath) {
 			List<T> dest = new ArrayList<T>();
-			getExtraLinear(urlPathToLDirs(urlPath), 0, dest);
+			getAlterLinear(urlPathToLDirs(urlPath), 0, dest);
 			return dest;
 		}
 
-		private void getExtraLinear(List<String> lDirs, int index, List<T> dest) {
+		private void getAlterLinear(List<String> lDirs, int index, List<T> dest) {
 			dest.addAll(leafs);
 
 			if(index < lDirs.size()) {
@@ -530,7 +534,7 @@ public abstract class HttArtoria implements HttService, Closeable {
 				AlterTree<T> child = children.get(lDir);
 
 				if(child != null) {
-					child.getExtraLinear(lDirs, index + 1, dest);
+					child.getAlterLinear(lDirs, index + 1, dest);
 				}
 			}
 		}
@@ -564,15 +568,15 @@ public abstract class HttArtoria implements HttService, Closeable {
 		}
 	}
 
-	public void flame(List<HttSaberExtra> extraLinear, HttSaberRequest req) {
-		for(HttSaberExtra extra : extraLinear) {
+	public void flame(List<HttSaberAlter> alterLinear, HttSaberRequest req) {
+		for(HttSaberAlter extra : alterLinear) {
 			extra.flame(req);
 		}
 	}
 
-	public void flame(List<HttSaberExtra> extraLinear, HttSaberRequest req, HttSaberResponse res) {
-		for(int index = extraLinear.size() - 1; 0 <= index; index--) {
-			extraLinear.get(index).flame(req);
+	public void flame(List<HttSaberAlter> alterLinear, HttSaberRequest req, HttSaberResponse res) {
+		for(int index = alterLinear.size() - 1; 0 <= index; index--) {
+			alterLinear.get(index).flame(req);
 		}
 	}
 }

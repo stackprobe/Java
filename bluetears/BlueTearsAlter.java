@@ -3,12 +3,12 @@ package bluetears;
 import java.io.IOException;
 
 import charlotte.saber.htt.HttArtoria;
-import charlotte.saber.htt.HttSaberAlter;
+import charlotte.saber.htt.HttSaberLily;
 import charlotte.saber.htt.HttSaberRequest;
 import charlotte.saber.htt.HttSaberResponse;
 import charlotte.tools.StringTools;
 
-public class BlueTearsAlter implements HttSaberAlter {
+public class BlueTearsAlter implements HttSaberLily {
 	@Override
 	public HttSaberResponse doRequest(HttSaberRequest req) throws Exception {
 		HttSaberResponse res = HttArtoria.i().createResponse();

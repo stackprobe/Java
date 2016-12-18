@@ -1,7 +1,7 @@
 PUSHD "%~dp0..\.."
 
-set JAVA_EXE="C:\Program Files\Java\jre1.8.0_51\bin\java.exe"
-set JAVA_ARGS=-Xmx1024M
+set JAVA_EXE="C:\pleiades\java\8\jre\bin\java.exe"
+set JAVA_ARGS=-Xmx1500M
 set JAR_FILES=bin
 rem set JAR_FILES=bin;libs\*.jar
 set MAIN_CLASS=cecilia.StartHttAlcott

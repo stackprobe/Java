@@ -128,7 +128,7 @@ public class HTTPChunkedClient {
 					write(ws, chunkSz2String(nextSize) + "\r\n");
 				}
 				else {
-					write(ws, chunkSz2String(nextSize) + "; dummy-chunked-extension; dummy-chunke-key = 'dummy-chunked-value'\r\n");
+					write(ws, chunkSz2String(nextSize) + "; dummy-chunked-extension; dummy-chunked-key = 'dummy-chunked-value'\r\n");
 				}
 				for(int c = 0; c < nextSize; c++) {
 					ws.write(nextDummyChar());

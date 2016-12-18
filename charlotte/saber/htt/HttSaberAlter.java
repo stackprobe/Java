@@ -1,5 +1,8 @@
 package charlotte.saber.htt;
 
-public interface HttSaberAlter extends HttSaber {
-	// empty
+import java.io.Closeable;
+
+public interface HttSaberAlter extends Closeable {
+	public void flame(HttSaberRequest req);
+	public void flame(HttSaberRequest req, HttSaberResponse res);
 }

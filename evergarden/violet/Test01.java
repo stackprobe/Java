@@ -144,7 +144,7 @@ public class Test01 {
 
 			System.out.println("" + ("1".split("[,]").length)); // 1
 			System.out.println("" + (",".split("[,]").length)); // 0
-			System.out.println("" + ("".split("[,]").length)); // 1
+			System.out.println("" + ("".split("[,]").length)); // 1 ***
 
 			System.out.println("" + (",,".split("[,]").length)); // 0
 			System.out.println("" + (",,,".split("[,]").length)); // 0
@@ -155,6 +155,11 @@ public class Test01 {
 
 			System.out.println("" + (",,,1,1,1".split("[,]").length)); // 6
 			System.out.println("" + ("1,1,1,,,".split("[,]").length)); // 3
+
+			System.out.println("" + ("1,1,1,,,".split("[,]", 6).length)); // 6
+			System.out.println("" + ("1,1,1,,,".split("[,]", 9).length)); // 6 ***
+			System.out.println("" + ("1,1,1,,,,,,".split("[,]", 6).length)); // 6
+			System.out.println("" + ("1,1,1,,,,,,".split("[,]", 9).length)); // 9
 		}
 		catch(Throwable e) {
 			e.printStackTrace();
