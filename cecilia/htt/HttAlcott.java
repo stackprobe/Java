@@ -1,6 +1,5 @@
 package cecilia.htt;
 
-import bluetears.BlueTearsAlter;
 import charlotte.saber.htt.HttArtoria;
 import charlotte.saber.htt.HttSaberRequest;
 
@@ -9,6 +8,6 @@ public class HttAlcott extends HttArtoria {
 
 	@Override
 	protected Package getRoot(HttSaberRequest req) throws Exception {
-		return BlueTearsAlter.class.getPackage();
+		return bluetears.R.class.getPackage();
 	}
 }
