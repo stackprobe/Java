@@ -2,6 +2,8 @@ package charlotte.saber.htt;
 
 import java.util.Map;
 
+import charlotte.tools.ObjectMap;
+
 public class HttSaberRequest {
 	private String _method;
 	private String _urlString;
@@ -47,5 +49,14 @@ public class HttSaberRequest {
 
 	public void setBody(byte[] body) {
 		_body = body;
+	}
+
+	private ObjectMap _arguments = null;
+
+	public ObjectMap arguments() {
+		if(_arguments == null) {
+			_arguments = ObjectMap.create();
+		}
+		return _arguments;
 	}
 }

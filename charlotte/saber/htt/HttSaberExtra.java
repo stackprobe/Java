@@ -1,5 +1,8 @@
 package charlotte.saber.htt;
 
-public class HttSaberExtra {
+import java.io.Closeable;
 
+public interface HttSaberExtra extends Closeable {
+	public boolean needToMaintenance();
+	public void maintenance();
 }

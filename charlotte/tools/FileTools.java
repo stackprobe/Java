@@ -19,7 +19,10 @@ import java.util.Set;
 
 public class FileTools {
 	public static List<String> readAllLines(String file, String charset) throws Exception {
-		String text = readAllText(file, charset);
+		return textToLines(readAllText(file, charset));
+	}
+
+	public static List<String> textToLines(String text) {
 		text = text.replace("\r", "");
 		List<String> lines = StringTools.tokenize(text, "\n");
 
@@ -27,6 +30,13 @@ public class FileTools {
 			lines.remove(lines.size() - 1);
 		}
 		return lines;
+	}
+
+	public static String linesToText(List<String> lines) {
+		if(lines.size() == 0) {
+			return "";
+		}
+		return StringTools.join("\r\n", lines) + "\r\n";
 	}
 
 	public static String readAllText(String file, String charset) throws Exception {

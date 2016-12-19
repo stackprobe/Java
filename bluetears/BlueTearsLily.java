@@ -1,5 +1,5 @@
 package bluetears;
 
-public class BlueTearsAlter {
+public class BlueTearsLily {
 	// deleted
 }

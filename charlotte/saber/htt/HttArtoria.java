@@ -12,12 +12,15 @@ import charlotte.htt.HttRequest;
 import charlotte.htt.HttResponse;
 import charlotte.htt.HttService;
 import charlotte.htt.response.HttRes404;
+import charlotte.htt.response.HttResHtml;
 import charlotte.tools.ExtToContentType;
 import charlotte.tools.FileTools;
 import charlotte.tools.MapTools;
+import charlotte.tools.QueueData;
 import charlotte.tools.ReflecTools;
 import charlotte.tools.SetTools;
 import charlotte.tools.StringTools;
+import charlotte.tools.ThreadTools;
 
 public abstract class HttArtoria implements HttService, Closeable {
 	private static HttArtoria _self;
@@ -41,18 +44,89 @@ public abstract class HttArtoria implements HttService, Closeable {
 
 	@Override
 	public boolean interlude() throws Exception {
-		return batch() || _ended == false;
-	}
-
-	private boolean batch() {
-		return false; // TODO
+		return extra() || _ended == false;
 	}
 
 	private Object SYNCROOT = new Object();
 
+	private Thread _extraTh; // null != running maintenance
+	private QueueData<HttSaberExtra> _maintenanceExtras; // null == maintenance ended
+	private int _extraCallCount;
+	private long _nextCallNeedToMaintenanceTimeMillis;
+
+	private boolean extra() {
+		synchronized(SYNCROOT) {
+			if(_extraTh != null) {
+				if(_maintenanceExtras != null) {
+					return true;
+				}
+				ThreadTools.join(_extraTh);
+				_extraTh = null;
+				return false;
+			}
+			_extraCallCount++;
+
+			// < 0-1 min
+			if(_extraCallCount < 30) {
+				return false;
+			}
+			_extraCallCount = 0;
+
+			{
+				long currTimeMillis = System.currentTimeMillis();
+
+				if(currTimeMillis < _nextCallNeedToMaintenanceTimeMillis) {
+					return false;
+				}
+				_nextCallNeedToMaintenanceTimeMillis = currTimeMillis + 60000L; // + 1 min
+			}
+
+			for(Root root : _roots.values()) {
+				for(HttSaberExtra extra : root.extras) {
+					if(extra.needToMaintenance()) {
+						if(_maintenanceExtras == null) {
+							_maintenanceExtras = new QueueData<HttSaberExtra>();
+						}
+						_maintenanceExtras.add(extra);
+					}
+				}
+			}
+			if(_maintenanceExtras == null) {
+				return false;
+			}
+			_extraTh = new Thread() {
+				@Override
+				public void run() {
+					for(; ; ) {
+					//while(_ended == false) { // needToMaintenance()が true を返した後で、maintenance()を実行しないのはマズい気がする。
+						HttSaberExtra extra = _maintenanceExtras.poll();
+
+						if(extra == null) {
+							break;
+						}
+						try {
+							extra.maintenance();
+						}
+						catch(Throwable e) {
+							e.printStackTrace();
+						}
+					}
+					synchronized(SYNCROOT) {
+						_maintenanceExtras = null;
+					}
+				}
+			};
+			_extraTh.start();
+		}
+		return true;
+	}
+
 	@Override
 	public HttResponse service(HttRequest hr) throws Exception {
 		synchronized(SYNCROOT) {
+			if(_extraTh != null) {
+				return getMaintenanceHttRes();
+			}
 			HttSaberRequest req = createRequest(hr);
 			Package p = getRoot(req);
 
@@ -105,6 +179,13 @@ public abstract class HttArtoria implements HttService, Closeable {
 			flame(alterLinear, req, res);
 			return getHttResponse(res);
 		}
+	}
+
+	public HttResponse getMaintenanceHttRes() {
+		return new HttResHtml(
+				"<html><body><h1>Sorry, we are under maintenance.</h1></body></html>",
+				StringTools.CHARSET_ASCII
+				);
 	}
 
 	public HttResponse get404() {
@@ -206,6 +287,7 @@ public abstract class HttArtoria implements HttService, Closeable {
 		public HttSaberLily defLily;
 		public AlterTree<HttSaberLily> lilies;
 		public AlterTree<HttSaberAlter> alters;
+		public List<HttSaberExtra> extras;
 
 		public void debugPrint() {
 			for(String urlPath : entries.keySet()) {
@@ -213,6 +295,10 @@ public abstract class HttArtoria implements HttService, Closeable {
 			}
 			lilies.debugPrint("LILY");
 			alters.debugPrint("ALTER");
+
+			for(HttSaberExtra extra : extras) {
+				System.out.println("[" + extra.getClass().getName() + "]EXTRA:" + extra);
+			}
 		}
 	}
 
@@ -243,6 +329,7 @@ public abstract class HttArtoria implements HttService, Closeable {
 		root.defLily = getDefLily();
 		root.lilies = new AlterTree<HttSaberLily>();
 		root.alters = new AlterTree<HttSaberAlter>();
+		root.extras = new ArrayList<HttSaberExtra>();
 
 		for(String path : FileTools.lss(dir)) {
 			path = FileTools.norm(path);
@@ -262,12 +349,12 @@ public abstract class HttArtoria implements HttService, Closeable {
 				Class<?> classObj = Class.forName(className);
 
 				if(ReflecTools.typeOf(classObj, HttSaberAlter.class)) {
-					HttSaberAlter extra = (HttSaberAlter)ReflecTools.invokeDeclaredCtor(classObj, new Object[0]);
-					root.alters.add(urlPath, extra);
+					HttSaberAlter alter = (HttSaberAlter)ReflecTools.invokeDeclaredCtor(classObj, new Object[0]);
+					root.alters.add(urlPath, alter);
 				}
 				else if(ReflecTools.typeOf(classObj, HttSaberLily.class)) {
-					HttSaberLily alter = (HttSaberLily)ReflecTools.invokeDeclaredCtor(classObj, new Object[0]);
-					root.lilies.add(urlPath, alter);
+					HttSaberLily lily = (HttSaberLily)ReflecTools.invokeDeclaredCtor(classObj, new Object[0]);
+					root.lilies.add(urlPath, lily);
 				}
 				else if(ReflecTools.typeOf(classObj, HttSaber.class)) {
 					HttSaber saber = (HttSaber)ReflecTools.invokeDeclaredCtor(classObj, new Object[0]);
@@ -275,6 +362,10 @@ public abstract class HttArtoria implements HttService, Closeable {
 					Entry entry = new Entry();
 					entry.saber = saber;
 					root.entries.put(urlPathToSaberUrlPath(urlPath), entry);
+				}
+				else if(ReflecTools.typeOf(classObj, HttSaberExtra.class)) {
+					HttSaberExtra extra = (HttSaberExtra)ReflecTools.invokeDeclaredCtor(classObj, new Object[0]);
+					root.extras.add(extra);
 				}
 			}
 			else {
@@ -293,23 +384,23 @@ public abstract class HttArtoria implements HttService, Closeable {
 	public boolean isIgnorePath(String path, String rootDir) {
 		String ext = FileTools.getExt(path);
 
-		if(ext.equalsIgnoreCase("html")) {
-			String tmp = path;
+		if(ext.equalsIgnoreCase("class")) {
+			return false;
+		}
+		String pathClass = path;
+		pathClass = FileTools.eraseExt(pathClass);
+		pathClass += ".class";
 
-			tmp = FileTools.eraseExt(tmp);
-			tmp += ".class";
-
-			if(FileTools.exists(tmp)) {
-				return true;
-			}
+		if(FileTools.exists(pathClass)) {
+			return true;
 		}
 		String relPath = path.substring(rootDir.length());
 		Set<String> lPaths = SetTools.createIgnoreCase();
 		lPaths.addAll(StringTools.tokenize(relPath, "/"));
 
 		return lPaths.contains("res") ||
-				lPaths.contains("resource") ||
-				lPaths.contains("template");
+				lPaths.contains("tools") ||
+				lPaths.contains("utils");
 	}
 
 	public String getUrlPath(String path, String rootDir) {
@@ -452,6 +543,9 @@ public abstract class HttArtoria implements HttService, Closeable {
 	 */
 	public void clear() {
 		synchronized(SYNCROOT) {
+			if(_extraTh != null) {
+				return;
+			}
 			clearAllRoot();
 		}
 	}
@@ -469,6 +563,10 @@ public abstract class HttArtoria implements HttService, Closeable {
 		}
 		root.lilies.clear();
 		root.alters.clear();
+
+		for(HttSaberExtra extra : root.extras) {
+			FileTools.close(extra);
+		}
 	}
 
 	public static class AlterTree<T> {
@@ -560,7 +658,7 @@ public abstract class HttArtoria implements HttService, Closeable {
 
 		private void debugPrint(String type, String urlPath) {
 			for(T leaf : leafs) {
-				System.out.println("[" + urlPath + "?]=" + type + ":" + leaf);
+				System.out.println("[" + urlPath + "<?>]=" + type + ":" + leaf);
 			}
 			for(String lDir : children.keySet()) {
 				children.get(lDir).debugPrint(type, urlPath + lDir + "/");
@@ -576,7 +674,7 @@ public abstract class HttArtoria implements HttService, Closeable {
 
 	public void flame(List<HttSaberAlter> alterLinear, HttSaberRequest req, HttSaberResponse res) {
 		for(int index = alterLinear.size() - 1; 0 <= index; index--) {
-			alterLinear.get(index).flame(req);
+			alterLinear.get(index).flame(req, res);
 		}
 	}
 }

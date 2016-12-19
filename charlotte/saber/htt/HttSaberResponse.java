@@ -3,6 +3,9 @@ package charlotte.saber.htt;
 import java.io.File;
 import java.util.Map;
 
+import charlotte.tools.FileTools;
+import charlotte.tools.ObjectMap;
+
 public class HttSaberResponse {
 	private String _httpVersion;
 	private int _statusCode;
@@ -49,13 +52,32 @@ public class HttSaberResponse {
 
 	public void setBodyFile(File bodyFile) {
 		_bodyFile = bodyFile;
+		_body = null;
 	}
 
 	public byte[] getBody() {
 		return _body;
 	}
 
+	public byte[] loadBody() throws Exception {
+		if(_bodyFile != null) {
+			_body = FileTools.readAllBytes(_bodyFile);
+			_bodyFile = null;
+		}
+		return _body;
+	}
+
 	public void setBody(byte[] body) {
 		_body = body;
+		_bodyFile = null;
+	}
+
+	private ObjectMap _arguments = null;
+
+	public ObjectMap arguments() {
+		if(_arguments == null) {
+			_arguments = ObjectMap.create();
+		}
+		return _arguments;
 	}
 }
