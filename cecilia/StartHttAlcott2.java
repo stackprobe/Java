@@ -9,6 +9,10 @@ import charlotte.tools.FaultOperation;
 import charlotte.tools.StringTools;
 import charlotte.tools.ThreadTools;
 
+/**
+ * don't enable 'Kill WinAPITools.exe Zombies' @ 2016.12.21
+ *
+ */
 public class StartHttAlcott2 {
 	public static void main(String[] args) {
 		try {
@@ -24,12 +28,23 @@ public class StartHttAlcott2 {
 		System.exit(0);
 	}
 
+	private void main2() throws Exception {
+		if(HttAlcott.lock()) {
+			try {
+				main3();
+			}
+			finally {
+				HttAlcott.unlock();
+			}
+		}
+	}
+
 	private static final String FORTEWAVE_IDENT = "{319a5123-066b-44fe-b754-5cb16cc9c79d}"; // shared_uuid
 
 	private HttAlcott _ha = null; // 生存確認用
 	private Thread _th;
 
-	private void main2() throws Exception {
+	private void main3() throws Exception {
 		System.out.println("Fortewave-Starting...");
 
 		Fortewave f = new Fortewave(FORTEWAVE_IDENT);

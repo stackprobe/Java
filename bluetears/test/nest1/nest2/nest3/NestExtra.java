@@ -9,7 +9,7 @@ import charlotte.tools.ThreadTools;
 public class NestExtra implements HttSaberExtra {
 	@Override
 	public boolean needToMaintenance() {
-		boolean ret = MathTools.random(5) == 0;
+		boolean ret = MathTools.random(2) == 0;
 		System.out.println("needToMaintenance: " + ret);
 		return ret;
 	}

@@ -13,14 +13,23 @@ import javax.swing.SwingConstants;
 
 import cecilia.htt.HttAlcott;
 import charlotte.htt.HttServer;
-import charlotte.satellite.MutexObject;
 import charlotte.tools.ActionListenerEx;
 import charlotte.tools.FixedLayout;
 import charlotte.tools.ThreadTools;
 
+/**
+ * don't enable 'Kill WinAPITools.exe Zombies' @ 2016.12.21
+ *
+ */
 public class StartHttAlcott {
 	public static void main(String[] args) {
 		try {
+			/*
+			UIManager.setLookAndFeel(
+					"com.sun.java.swing.plaf.windows.WindowsLookAndFeel"
+					);
+					*/
+
 			new StartHttAlcott().main2();
 		}
 		catch(Throwable e) {
@@ -30,14 +39,12 @@ public class StartHttAlcott {
 	}
 
 	private void main2() {
-		MutexObject mo = new MutexObject(HttAlcott.IDENT + "_dlg");
-
-		if(mo.waitOne(0)) {
+		if(HttAlcott.lock()) {
 			try {
 				main3();
 			}
 			finally {
-				mo.release();
+				HttAlcott.unlock();
 			}
 		}
 	}
@@ -121,7 +128,7 @@ public class StartHttAlcott {
 					);
 			t += h + yg;
 
-			lo.add(_dlgStatus = new JLabel(STATE_READY, SwingConstants.CENTER),
+			lo.add(_dlgStatus = createLabel(STATE_READY),
 					l, t, w, h
 					);
 			t += h + yg;
@@ -162,7 +169,14 @@ public class StartHttAlcott {
 	private JButton createButton(String title, ActionListenerEx al) {
 		JButton btn = new JButton(title);
 		btn.addActionListener(al.getActionListener());
+		//btn.setFont(new Font("メイリオ", Font.PLAIN, 12));
 		return btn;
+	}
+
+	private JLabel createLabel(String title) {
+		JLabel lbl = new JLabel(title, SwingConstants.CENTER);
+		//lbl.setFont(new Font("メイリオ", Font.PLAIN, 12));
+		return lbl;
 	}
 
 	private void setSize(Component comp, int w, int h) {
