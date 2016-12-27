@@ -184,10 +184,18 @@ public abstract class HTTPServer extends SockServer {
 	}
 
 	public static String encodeUrl(String str, String charset) throws Exception {
+		return encodeUrl(str, charset, ".:/?&=");
+	}
+
+	public static String encodeUrlToken(String str, String charset) throws Exception {
+		return encodeUrl(str, charset, ".");
+	}
+
+	public static String encodeUrl(String str, String charset, String extraUnencodeChrs) throws Exception {
 		ByteBuffer buff = new ByteBuffer();
 
 		for(byte chr : str.getBytes(charset)) {
-			if(isUnencodeChar(chr)) {
+			if(isUnencodeChar(chr, extraUnencodeChrs)) {
 				buff.add(chr);
 			}
 			else {
@@ -201,13 +209,16 @@ public abstract class HTTPServer extends SockServer {
 		return new String(buff.getBytes(), StringTools.CHARSET_ASCII);
 	}
 
-	private static byte[] UNENCODE_CHRS = null;
+	private static boolean isUnencodeChar(byte chr, String extraUnencodeChrs) throws Exception {
+		String sUnencodeChrs =
+				StringTools.DIGIT +
+				StringTools.ALPHA +
+				StringTools.alpha +
+				extraUnencodeChrs;
 
-	private static boolean isUnencodeChar(byte chr) throws Exception {
-		if(UNENCODE_CHRS == null) {
-			UNENCODE_CHRS = (StringTools.DIGIT + StringTools.ALPHA + StringTools.alpha + ".:/?&=").getBytes(StringTools.CHARSET_ASCII);
-		}
-		for(byte unencodeChr : UNENCODE_CHRS) {
+		byte[] unencodeChrs = sUnencodeChrs.getBytes(StringTools.CHARSET_ASCII);
+
+		for(byte unencodeChr : unencodeChrs) {
 			if(unencodeChr == chr) {
 				return true;
 			}

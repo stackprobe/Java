@@ -7,13 +7,12 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.SocketAddress;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class HTTPClient {
 	private String _url = "http://localhost/";
-	private Map<String, String> _headerFields = new HashMap<String, String>();
+	private Map<String, String> _headerFields = MapTools.<String>createIgnoreCase();
 	private byte[] _body = null; // null == GET, not null == POST
 	private int _connectTimeoutMillis = 20000;
 	private int _readTimeoutMillis = 60000;
@@ -175,7 +174,7 @@ public class HTTPClient {
 	}
 
 	private String _resFirstLine = null;
-	private Map<String, String> _resHeaderFields = new HashMap<String, String>();
+	private Map<String, String> _resHeaderFields = MapTools.<String>createIgnoreCase();
 	private byte[] _resBody = null;
 
 	public String getResFirstLine() {
