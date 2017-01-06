@@ -27,13 +27,15 @@ public class HTTPServerTest {
 					System.out.println("body_length: " + con.req.getBody().length);
 
 					{
-						ExtToContentType.Info info = ExtToContentType.contentTypeToInfo(
-								con.req.getHeaderFields().get("Content-Type")
-								);
+						String contentType = con.req.getHeaderFields().get("Content-Type");
 
-						if("txt".equals(info.ext)) {
-							System.out.println("body_charset: " + info.charset);
-							System.out.println("body_text: " + new String(con.req.getBody(), info.charset));
+						if(contentType != null) {
+							ExtToContentType.Info info = ExtToContentType.contentTypeToInfo(contentType);
+
+							if("txt".equals(info.ext)) {
+								System.out.println("body_charset: " + info.charset);
+								System.out.println("body_text: " + new String(con.req.getBody(), info.charset));
+							}
 						}
 					}
 
@@ -57,5 +59,6 @@ public class HTTPServerTest {
 		catch(Throwable e) {
 			e.printStackTrace();
 		}
+		System.exit(0);
 	}
 }

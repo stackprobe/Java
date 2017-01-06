@@ -4,6 +4,8 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.SwingUtilities;
 
@@ -27,9 +29,9 @@ public abstract class SockServer {
 		_invokeLaterFlag = flag;
 	}
 
-	private QueueData<Socket> _connections = new QueueData<Socket>();
-	private int _connectionThCount;
 	private final Object SYNCROOT = new Object();
+	private QueueData<Socket> _connections = new QueueData<Socket>();
+	private List<Thread> _connectionThs = new ArrayList<Thread>();
 	private ServerSocket _ss;
 
 	public void perform() {
@@ -46,7 +48,7 @@ public abstract class SockServer {
 	public void bind() throws Exception {
 		_ss = new ServerSocket();
 		_ss.setReuseAddress(true);
-		_ss.setSoTimeout(2000);
+		_ss.setSoTimeout(2000); // _ss.accept()のタイムアウト
 		InetSocketAddress isa = new InetSocketAddress(_portNo);
 		_ss.bind(isa);
 	}
@@ -65,7 +67,9 @@ public abstract class SockServer {
 				try {
 					Socket sock = _ss.accept();
 
-					_connections.add(sock);
+					synchronized(SYNCROOT) {
+						_connections.add(sock);
+					}
 
 					Thread connectionTh = new Thread() {
 						@Override
@@ -90,16 +94,16 @@ public abstract class SockServer {
 								sock = _connections.poll();
 
 								if(sock == null) {
+									new Exception("sock == null").printStackTrace();
 									return;
 								}
-								_connectionThCount++;
 							}
 
 							try {
 								connectionTh(sock);
 							}
 							catch(Throwable e) {
-								e.printStackTrace(System.out);
+								e.printStackTrace();
 							}
 
 							try {
@@ -108,13 +112,11 @@ public abstract class SockServer {
 							catch(Throwable e) {
 								e.printStackTrace();
 							}
-
-							synchronized(SYNCROOT) {
-								_connectionThCount--;
-							}
 						}
 					};
 					connectionTh.start();
+					collectDeadConnectionTh();
+					_connectionThs.add(connectionTh);
 				}
 				catch(SocketTimeoutException e) {
 					// ignore
@@ -127,33 +129,32 @@ public abstract class SockServer {
 		waitForAllConnectionThEnd();
 	}
 
+	private void collectDeadConnectionTh() {
+		for(int index = 0; index < _connectionThs.size(); index++) {
+			if(_connectionThs.get(index).isAlive() == false) {
+				ArrayTools.fastRemove(_connectionThs, index);
+				index--;
+			}
+		}
+	}
+
 	private void waitForAllConnectionThEnd() {
 		try {
-			synchronized(SYNCROOT) {
-				while(1 <= _connections.size()) {
-					Socket sock = _connections.poll();
-
-					try {
-						sock.close();
-					}
-					catch(Throwable e) {
-						e.printStackTrace();
-					}
-				}
-			}
-			int millis = 100;
+			long millis = 0L;
 
 			for(; ; ) {
-				synchronized(SYNCROOT) {
-					if(_connectionThCount == 0) {
-						break;
-					}
+				collectDeadConnectionTh();
+
+				if(_connectionThs.size() == 0) {
+					break;
+				}
+				if(millis < 2000L) {
+					millis++;
 				}
 				Thread.sleep(millis);
-
-				if(millis < 2000) {
-					millis += 100;
-				}
+			}
+			if(_connections.size() != 0) {
+				throw new RuntimeException("_connections is not empty");
 			}
 		}
 		catch(Throwable e) {
