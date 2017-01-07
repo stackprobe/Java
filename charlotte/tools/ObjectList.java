@@ -46,12 +46,16 @@ public class ObjectList {
 	}
 
 	public String getString(int index) {
+		return getString(index, null);
+	}
+
+	public String getString(int index, String defval) {
 		Object value = get(index);
 
-		if(value instanceof JsonValue) {
-			return value.toString();
+		if(value == null) {
+			return defval;
 		}
-		return (String)value;
+		return value.toString();
 	}
 
 	public ObjectList getList(int index) {
