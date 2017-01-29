@@ -13,7 +13,7 @@ public class CanvasTest {
 		try {
 			test01();
 			test02();
-			//test03();
+			test03();
 
 			System.out.println("OK!");
 		}
