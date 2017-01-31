@@ -1,24 +1,24 @@
 Fortewave for Java
 ==================
 
-�v���Z�X�ԒʐM���W���[���ł��B
-���̃��W���[���������������̃v���Z�X�ƒʐM�ł��܂��B
-�ʐM����� C# �łł�ok
+プロセス間通信モジュールです。
+このモジュールを実装した他のプロセスと通信できます。
+通信相手は C# 版でもok
 
 
-�ʐM�̌`��
+通信の形態
 ----------
 
-	���b�Z�[�W�E�L���[����
+	メッセージ・キュー方式
 
-		�ڑ��E�ؒf�͖����B
+		接続・切断は無い。
 
-	�ʐM�f�[�^�̓o�C�g�X�g���[���ł͂Ȃ��ȉ��̃I�u�W�F�N�g
+	通信データはバイトストリームではなく以下のオブジェクト
 
 		SERIALIZABLE_OBJECT:
 			byte[]
-			| charlotte.satellite.ObjectList # �l�� SERIALIZABLE_CHILD_OBJECT
-			| charlotte.satellite.ObjectMap  # �l�� SERIALIZABLE_CHILD_OBJECT, �L�[�� null �s��
+			| charlotte.satellite.ObjectList # 値は SERIALIZABLE_CHILD_OBJECT
+			| charlotte.satellite.ObjectMap  # 値は SERIALIZABLE_CHILD_OBJECT, キーは null 不可
 			| String
 
 		SERIALIZABLE_CHILD_OBJECT:
@@ -26,16 +26,16 @@ Fortewave for Java
 			| null
 
 
-�����
+動作環境
 --------
 
 	Windows 7
-	�m�F���Ă��܂��� Windows 8/8.1/10 �ł�������������܂���B
+	確認していませんが Windows 8/8.1/10 でも動くかもしれません。
 
 	Java
 
 
-�K�v�ȃp�b�P�[�W
+必要なパッケージ
 ----------------
 
 	charlotte.flowertact
@@ -44,80 +44,80 @@ Fortewave for Java
 	charlotte.tools
 
 
-�g�ݍ��ݕ��@
+組み込み方法
 ------------
 
-	1. �u�K�v�ȃp�b�P�[�W�v���\�[�X�i�v���W�F�N�g�j�ɑg�ݍ���
+	1. 「必要なパッケージ」をソース（プロジェクト）に組み込む
 
 
-�g�p����N���X
+使用するクラス
 --------------
 
 	charlotte.satellite.ObjectList
 
-		java.util.List<Object> �����b�v�����N���X
+		java.util.List<Object> をラップしたクラス
 
 	charlotte.satellite.ObjectMap
 
-		java.util.Map<String, Object> �����b�v�����N���X
+		java.util.Map<String, Object> をラップしたクラス
 
 	charlotte.flowertact.Fortewave
 
-		���̃��W���[���̊O���C���^�[�t�F�C�X
+		このモジュールの外部インターフェイス
 
 	charlotte.satellite.Satellizer
 
-		# Satellite_for_Java.txt ���Q�Ƃ��ĉ������B
+		# Satellite_for_Java.txt を参照して下さい。
 
 
-	������ȊO�� charlotte.flowertact, charlotte.satellite �p�b�P�[�W���̃N���X�͎g�p���Ȃ��ŉ������B
+	★これ以外の charlotte.flowertact, charlotte.satellite パッケージ内のクラスは使用しないで下さい。
 
 
-�C���^�[�t�F�C�X
+インターフェイス
 ----------------
 
 	public Fortewave(String rIdent, String wIdent) throws Exception;
 
-		�R���X�g���N�^�ł��B
-		�����̃R���X�g���N�^�̓X���b�h�Z�[�t�ł��B
+		コンストラクタです。
+		★このコンストラクタはスレッドセーフです。
 
-		rIdent ... �ǂݍ��ݐ�_���ʖ�
-		wIdent ... �������ݐ�_���ʖ�
+		rIdent ... 読み込み先_識別名
+		wIdent ... 書き込み先_識別名
 
-		�������� Fortewave ��j������O�� close ���Ăяo���ĉ������B
-		close �����Ƀv���Z�X���I������ƁA���s�����q�v���Z�X����~����܂Ŏ��Ԃ��|���邱�Ƃ�����܂��B
+		生成した Fortewave を破棄する前に close を呼び出して下さい。
+		close せずにプロセスを終了すると、実行した子プロセスが停止するまで時間が掛かることがあります。
 
 	public synchronized void clear() throws Exception;
 
-		���E����̖���M�f�[�^���폜���܂��B
-		�����̃��\�b�h�̓X���b�h�Z�[�t�ł��B
+		上り・下りの未受信データを削除します。
+		★このメソッドはスレッドセーフです。
 
 	public synchronized void send(Object sendObj) throws Exception;
 
-		�f�[�^�𑗐M���܂��B
-		�����̃��\�b�h�̓X���b�h�Z�[�t�ł��B
+		データを送信します。
+		★このメソッドはスレッドセーフです。
 
-		sendObj ... ���M�f�[�^
+		sendObj ... 送信データ
 
-		���M�f�[�^�� SERIALIZABLE_OBJECT �łȂ�΂Ȃ�܂���B
-		���̑��M�͕K���������܂��B
-		���葤���ؒf���Ă��Ă��A���葤�̎��̐ڑ��E��M�܂ŕێ�����܂��B
-		���������Ȃ����߂ɂ́A���葤����M����O�� clear ���Ăяo���ĉ������B
-		���̃��\�b�h���I���������_�ŁA���葤����M���Ă��邩�ǂ����͕�����܂���B
+		送信データは SERIALIZABLE_OBJECT でなればなりません。
+		この送信は必ず成功します。
+		相手側が切断していても、相手側の次の接続・受信まで保持されます。
+		そうさせないためには、相手側が受信する前に clear を呼び出して下さい。
+		このメソッドが終了した時点で、相手側が受信しているかどうかは分かりません。
 
 	public synchronized Object recv(long millis) throws Exception;
 
-		�f�[�^����M���܂��B
-		�����̃��\�b�h�̓X���b�h�Z�[�t�ł��B
+		データを受信します。
+		★このメソッドはスレッドセーフです。
 
-		millis ... ��M���g���C�������鎞�ԁi�~���b�j
-		�߂�l ... ��M�ɐ�������΁u��M�f�[�^�v�A�����łȂ���� null
+		millis ... 受信をトライし続ける時間（ミリ秒）
+		戻り値 ... 受信に成功すれば「受信データ」、そうでなければ null
 
-		��M�f�[�^�� SERIALIZABLE_OBJECT �̉��ꂩ�ł��B
-		��M�f�[�^�� null �ł������ꍇ�A��M���s�Ƌ�ʕt���܂���B
+		受信データは SERIALIZABLE_OBJECT の何れかです。
+		受信データが null であった場合、受信失敗と区別付きません。
 
 	public synchronized void close();
 
-		���̃I�u�W�F�N�g��j�����܂��B
-		�����̃��\�b�h�̓X���b�h�Z�[�t�ł��B
+		このオブジェクトを破棄します。
+		★このメソッドはスレッドセーフです。
 

@@ -1,31 +1,31 @@
 Satellite for Java
 ==================
 
-�v���Z�X�ԒʐM���W���[���ł��B
-���̃��W���[���������������̃v���Z�X�ƒʐM�ł��܂��B
-�ʐM����� C# �łł�ok
+プロセス間通信モジュールです。
+このモジュールを実装した他のプロセスと通信できます。
+通信相手は C# 版でもok
 
 
-�ʐM�̌`��
+通信の形態
 ----------
 
-	�N���C�A���g�E�T�[�o�[����
+	クライアント・サーバー方式
 
-		�u�N���C�A���g�ƃT�[�o�[�v�u�N���C�A���g���m�v�̐ڑ��͉\
-		�u�T�[�o�[���m�v�̐ڑ��͕s��
+		「クライアントとサーバー」「クライアント同士」の接続は可能
+		「サーバー同士」の接続は不可
 
-	�\�P�b�g���ۂ�
+	ソケットっぽい
 
-		�ڑ� -> �ʐM -> �ؒf
-		�N���C�A���g�E�T�[�o�[���ɁA����v���Z�X���ŕ����̃R�l�N�V�����𓯎��ɍ쐬�\
-		�T�[�o�[�́A����v���Z�X���ŕ����̃��X�i�i�T�[�o�[�I�u�W�F�N�g�j�𓯎��ɍ쐬�\
+		接続 -> 通信 -> 切断
+		クライアント・サーバー共に、同一プロセス内で複数のコネクションを同時に作成可能
+		サーバーは、同一プロセス内で複数のリスナ（サーバーオブジェクト）を同時に作成可能
 
-	�ʐM�f�[�^�̓o�C�g�X�g���[���ł͂Ȃ��ȉ��̃I�u�W�F�N�g
+	通信データはバイトストリームではなく以下のオブジェクト
 
 		SERIALIZABLE_OBJECT:
 			byte[]
-			| charlotte.satellite.ObjectList # �l�� SERIALIZABLE_CHILD_OBJECT
-			| charlotte.satellite.ObjectMap  # �l�� SERIALIZABLE_CHILD_OBJECT, �L�[�� null �s��
+			| charlotte.satellite.ObjectList # 値は SERIALIZABLE_CHILD_OBJECT
+			| charlotte.satellite.ObjectMap  # 値は SERIALIZABLE_CHILD_OBJECT, キーは null 不可
 			| String
 
 		SERIALIZABLE_CHILD_OBJECT:
@@ -33,16 +33,16 @@ Satellite for Java
 			| null
 
 
-�����
+動作環境
 --------
 
 	Windows 7
-	�m�F���Ă��܂��� Windows 8/8.1/10 �ł�������������܂���B
+	確認していませんが Windows 8/8.1/10 でも動くかもしれません。
 
 	Java
 
 
-�K�v�ȃp�b�P�[�W
+必要なパッケージ
 ----------------
 
 	charlotte.satellite
@@ -50,137 +50,137 @@ Satellite for Java
 	charlotte.tools
 
 
-�g�ݍ��ݕ��@
+組み込み方法
 ------------
 
-	1. �u�K�v�ȃp�b�P�[�W�v���\�[�X�i�v���W�F�N�g�j�ɑg�ݍ���
+	1. 「必要なパッケージ」をソース（プロジェクト）に組み込む
 
 
-�g�p����N���X
+使用するクラス
 --------------
 
 	charlotte.satellite.ObjectList
 
-		java.util.List<Object> �����b�v�����N���X
+		java.util.List<Object> をラップしたクラス
 
 	charlotte.satellite.ObjectMap
 
-		java.util.Map<String, Object> �����b�v�����N���X
+		java.util.Map<String, Object> をラップしたクラス
 
 	charlotte.satellite.Satellizer
 
-		���̃��W���[���̊O���C���^�[�t�F�C�X
+		このモジュールの外部インターフェイス
 
 
-	������ȊO�� charlotte.satellite �p�b�P�[�W���̃N���X�͎g�p���Ȃ��ŉ������B
+	★これ以外の charlotte.satellite パッケージ内のクラスは使用しないで下さい。
 
 
-�N���C�A���g�p�E�C���^�[�t�F�C�X
+クライアント用・インターフェイス
 --------------------------------
 
 	public Satellizer(String group, String ident) throws Exception;
 
-		�R���X�g���N�^�ł��B
-		�����̃R���X�g���N�^�̓X���b�h�Z�[�t�ł��B
+		コンストラクタです。
+		★このコンストラクタはスレッドセーフです。
 
-		group ... �O���[�v��
-		ident ... ���ʖ�
+		group ... グループ名
+		ident ... 識別名
 
-		�������� Satellizer ��j������O�� close ���Ăяo���ĉ������B
-		close �����Ƀv���Z�X���I������ƁA���s�����q�v���Z�X����~����܂Ŏ��Ԃ��|���邱�Ƃ�����܂��B
-		�܂��ڑ����ł���΁A���葤�̐ؒf�܂Ŏ��Ԃ��|���邱�Ƃ�����܂��B
+		生成した Satellizer を破棄する前に close を呼び出して下さい。
+		close せずにプロセスを終了すると、実行した子プロセスが停止するまで時間が掛かることがあります。
+		また接続中であれば、相手側の切断まで時間が掛かることがあります。
 
 	public synchronized boolean connect(long millis) throws Exception;
 
-		�ڑ������݂܂��B
-		�����̃��\�b�h�̓X���b�h�Z�[�t�ł��B
+		接続を試みます。
+		★このメソッドはスレッドセーフです。
 
-		millis ... �ڑ����g���C�������鎞�ԁi�~���b�j
-		�߂�l ... �ڑ��ɐ�������� true, �����łȂ���� false
+		millis ... 接続をトライし続ける時間（ミリ秒）
+		戻り値 ... 接続に成功すれば true, そうでなければ false
 
-		millis �͍Œ����Ԃł��B0�^�C���ŏ������Ԃ�ꍇ������܂��B
-		�^�C���A�E�g��݂���ꍇ�́A�ʓr���Ԃ��v���ĉ������B
+		millis は最長時間です。0タイムで処理が返る場合があります。
+		タイムアウトを設ける場合は、別途時間を計って下さい。
 
 	public synchronized void send(Object sendObj) throws Exception;
 
-		�f�[�^�𑗐M���܂��B
-		�����̃��\�b�h�̓X���b�h�Z�[�t�ł��B
+		データを送信します。
+		★このメソッドはスレッドセーフです。
 
-		sendObj ... ���M�f�[�^
+		sendObj ... 送信データ
 
-		���M�f�[�^�� SERIALIZABLE_OBJECT �łȂ�΂Ȃ�܂���B
-		���̑��M�͕K���������܂��B�i���葤���ؒf������ł��j
-		���̃��\�b�h���I���������_�ŁA���葤����M���Ă��邩�ǂ����͕�����܂���B
+		送信データは SERIALIZABLE_OBJECT でなればなりません。
+		この送信は必ず成功します。（相手側が切断した後でも）
+		このメソッドが終了した時点で、相手側が受信しているかどうかは分かりません。
 
 	public synchronized Object recv(long millis) throws Exception;
 
-		�f�[�^����M���܂��B
-		�����̃��\�b�h�̓X���b�h�Z�[�t�ł��B
+		データを受信します。
+		★このメソッドはスレッドセーフです。
 
-		millis ... ��M���g���C�������鎞�ԁi�~���b�j
-		�߂�l ... ��M�ɐ�������΁u��M�f�[�^�v�A�����łȂ���� null
+		millis ... 受信をトライし続ける時間（ミリ秒）
+		戻り値 ... 受信に成功すれば「受信データ」、そうでなければ null
 
-		��M�f�[�^�� SERIALIZABLE_OBJECT �̉��ꂩ�ł��B
-		��M�f�[�^�� null �ł������ꍇ�A��M���s�Ƌ�ʕt���܂���B
+		受信データは SERIALIZABLE_OBJECT の何れかです。
+		受信データが null であった場合、受信失敗と区別付きません。
 
 	public synchronized boolean isOtherSideDisconnected() throws Exception;
 
-		���葤���ؒf�������ǂ����m�F���܂��B
-		�����̃��\�b�h�̓X���b�h�Z�[�t�ł��B
+		相手側が切断したかどうか確認します。
+		★このメソッドはスレッドセーフです。
 
-		�߂�l ... ���葤���ؒf���Ă���� true, �����łȂ���� false
+		戻り値 ... 相手側が切断していれば true, そうでなければ false
 
 	public synchronized void disconnect();
 
-		�ؒf���܂��B
-		�����̃��\�b�h�̓X���b�h�Z�[�t�ł��B
+		切断します。
+		★このメソッドはスレッドセーフです。
 
 	public synchronized void close();
 
-		���̃I�u�W�F�N�g��j�����܂��B
-		�����̃��\�b�h�̓X���b�h�Z�[�t�ł��B
+		このオブジェクトを破棄します。
+		★このメソッドはスレッドセーフです。
 
 
-�T�[�o�[�p�E�C���^�[�t�F�C�X
+サーバー用・インターフェイス
 ----------------------------
 
 	public static void listen(String group, String ident, long millis, final Server server) throws Exception;
 
-		���X�i�i�T�[�o�[�Ƃ��Ď�M�҂��j���J�n���܂��B
-		�����̃��\�b�h�̓X���b�h�Z�[�t�ł��B
+		リスナ（サーバーとして受信待ち）を開始します。
+		★このメソッドはスレッドセーフです。
 
-		group  ... �O���[�v��
-		ident  ... ���ʖ�
-		millis ... 1��̐ڑ������݂鎞�ԁ��T�[�o�[��~���m�F��������i�~���b�j
-		server ... �T�[�o�[�I�u�W�F�N�g
+		group  ... グループ名
+		ident  ... 識別名
+		millis ... 1回の接続を試みる時間＝サーバー停止を確認する周期（ミリ秒）
+		server ... サーバーオブジェクト
 
-		�T�[�o�[�I�u�W�F�N�g���T�[�o�[��~��Ԃ��܂Ńu���b�N����܂��B
+		サーバーオブジェクトがサーバー停止を返すまでブロックされます。
 
 	public interface Server
 
 		public boolean interlude() throws Exception;
 
-			����I�ɌĂяo����郁�\�b�h
-			���̃��\�b�h�͕��������ɌĂяo����邱�Ƃ͖����B
-			���̃��\�b�h�� serviceTh ���s���ɌĂяo����邱�Ƃ�����B
+			定期的に呼び出されるメソッド
+			このメソッドは複数同時に呼び出されることは無い。
+			このメソッドは serviceTh 実行中に呼び出されることがある。
 
-			�߂�l ... �T�[�o�[�̎��s���p������ꍇ true, ��~����ꍇ false
+			戻り値 ... サーバーの実行を継続する場合 true, 停止する場合 false
 
 		public void serviceTh(Satellizer stllzr) throws Exception;
 
-			�N���C�A���g�Ɛڑ������x�ɌĂяo�����B
-			���̃��\�b�h�͕��������ɌĂяo����邱�Ƃ�����B
+			クライアントと接続される度に呼び出される。
+			このメソッドは複数同時に呼び出されることがある。
 
-			stllzr ... �ڑ����̃I�u�W�F�N�g
+			stllzr ... 接続中のオブジェクト
 
 
-�R�t��
+紐付け
 ------
 
-	�u�����O���[�v���ŁA���ʖ����قȂ�v���̓��m��ڑ����܂��B
+	「同じグループ名で、識別名が異なる」もの同士を接続します。
 
 
-�֑�
+蛇足
 ----
 
 	Satellizer = Satellite + Serializer
