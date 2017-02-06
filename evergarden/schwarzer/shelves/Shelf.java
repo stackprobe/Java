@@ -2,7 +2,7 @@ package evergarden.schwarzer.shelves;
 
 import java.awt.Component;
 
-import charlotte.tools.IRect;
+import charlotte.tools.IntRect;
 
 public abstract class Shelf {
 	public int height = 50;
@@ -12,7 +12,7 @@ public abstract class Shelf {
 
 	// ---- init @ ShelvesDialog.init() ----
 
-	public IRect rect;
+	public IntRect rect;
 	public Column parent;
 	public int index;
 

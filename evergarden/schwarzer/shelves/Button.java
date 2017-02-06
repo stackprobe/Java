@@ -1,6 +1,6 @@
 package evergarden.schwarzer.shelves;
 
-import charlotte.tools.IRect;
+import charlotte.tools.IntRect;
 
 public class Button {
 	public int width = 100;
@@ -11,7 +11,7 @@ public class Button {
 
 	// ---- init @ ShelvesDialog.init() ----
 
-	public IRect rect;
+	public IntRect rect;
 	public Header parent;
 	public int index;
 

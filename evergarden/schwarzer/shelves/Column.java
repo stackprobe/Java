@@ -3,7 +3,7 @@ package evergarden.schwarzer.shelves;
 import java.util.ArrayList;
 import java.util.List;
 
-import charlotte.tools.IRect;
+import charlotte.tools.IntRect;
 
 public class Column {
 	public int width = 500;
@@ -17,7 +17,7 @@ public class Column {
 
 	// ---- init @ ShelvesDialog.init() ----
 
-	public IRect rect;
+	public IntRect rect;
 	public Tab parent;
 	public int index;
 

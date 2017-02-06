@@ -19,7 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
-import charlotte.tools.IRect;
+import charlotte.tools.IntRect;
 import charlotte.tools.ReflecTools;
 
 public class ShelvesDialog extends JDialog {
@@ -34,7 +34,7 @@ public class ShelvesDialog extends JDialog {
 	private void init() {
 		Form form = mgr.getForm();
 
-		form.outernal = new IRect(0, 0, form.width, form.height);
+		form.outernal = new IntRect(0, 0, form.width, form.height);
 		form.internal = form.outernal.unextend(
 				form.marginL,
 				form.marginT,
@@ -46,7 +46,7 @@ public class ShelvesDialog extends JDialog {
 		if(form.header != null) {
 			Header header = form.header;
 
-			header.outernal = new IRect(
+			header.outernal = new IntRect(
 					form.tabRect.l,
 					form.tabRect.t,
 					form.tabRect.w,
@@ -68,7 +68,7 @@ public class ShelvesDialog extends JDialog {
 		if(form.footer != null) {
 			Header footer = form.footer;
 
-			footer.outernal = new IRect(
+			footer.outernal = new IntRect(
 					form.tabRect.l,
 					form.tabRect.getB() - footer.height,
 					form.tabRect.w,
@@ -103,7 +103,7 @@ public class ShelvesDialog extends JDialog {
 				if(1 <= colIndex) {
 					l += tab.colSpan;
 				}
-				column.rect = new IRect(
+				column.rect = new IntRect(
 						l,
 						tab.marginT,
 						column.width,
@@ -121,7 +121,7 @@ public class ShelvesDialog extends JDialog {
 					if(1 <= shelfIndex) {
 						t += column.shelfSpan;
 					}
-					shelf.rect = new IRect(
+					shelf.rect = new IntRect(
 							column.rect.l,
 							t,
 							column.rect.w,
@@ -136,7 +136,7 @@ public class ShelvesDialog extends JDialog {
 				l += column.rect.w;
 				maxH = Math.max(maxH, t - tOrig);
 			}
-			tab.internal = new IRect(
+			tab.internal = new IntRect(
 					tab.marginL,
 					tab.marginT,
 					l - lOrig,
@@ -290,7 +290,7 @@ public class ShelvesDialog extends JDialog {
 			if(1 <= btnIndex) {
 				l += header.buttonSpan;
 			}
-			button.rect = new IRect(
+			button.rect = new IntRect(
 					l,
 					header.internal.t,
 					button.width,

@@ -3,7 +3,7 @@ package evergarden.schwarzer.shelves;
 import java.util.ArrayList;
 import java.util.List;
 
-import charlotte.tools.IRect;
+import charlotte.tools.IntRect;
 import charlotte.tools.StringTools;
 
 public class Header {
@@ -23,8 +23,8 @@ public class Header {
 
 	// ---- init @ ShelvesDialog.init() ----
 
-	public IRect outernal;
-	public IRect internal;
+	public IntRect outernal;
+	public IntRect internal;
 	public Form parent;
 	public int index;
 

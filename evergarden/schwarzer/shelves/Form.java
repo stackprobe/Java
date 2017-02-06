@@ -3,7 +3,7 @@ package evergarden.schwarzer.shelves;
 import java.util.ArrayList;
 import java.util.List;
 
-import charlotte.tools.IRect;
+import charlotte.tools.IntRect;
 
 public class Form {
 	public int width = 640;
@@ -25,9 +25,9 @@ public class Form {
 
 	// ---- init @ ShelvesDialog.init() ----
 
-	public IRect outernal;
-	public IRect internal;
-	public IRect tabRect;
+	public IntRect outernal;
+	public IntRect internal;
+	public IntRect tabRect;
 
 	// ----
 }

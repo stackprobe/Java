@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.swing.JScrollPane;
 
-import charlotte.tools.IRect;
+import charlotte.tools.IntRect;
 
 public class Tab {
 	public int marginL = 10;
@@ -23,8 +23,8 @@ public class Tab {
 
 	// ---- init @ ShelvesDialog.init() ----
 
-	public IRect outernal;
-	public IRect internal;
+	public IntRect outernal;
+	public IntRect internal;
 	public Form parent;
 	public int index;
 

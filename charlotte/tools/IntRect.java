@@ -1,28 +1,28 @@
 package charlotte.tools;
 
-public class IRect {
+public class IntRect {
 	public int l;
 	public int t;
 	public int w;
 	public int h;
 
-	public IRect() {
+	public IntRect() {
 		this(0, 0, 0, 0);
 	}
 
-	public IRect(IRect rect) {
+	public IntRect(IntRect rect) {
 		this(rect.l, rect.t, rect.w, rect.h);
 	}
 
-	public IRect(int l, int t, int w, int h) {
+	public IntRect(int l, int t, int w, int h) {
 		this.l = l;
 		this.t = t;
 		this.w = w;
 		this.h = h;
 	}
 
-	public static IRect ltrb(int l, int t, int r, int b) {
-		return new IRect(l, t, r - l, b - t);
+	public static IntRect ltrb(int l, int t, int r, int b) {
+		return new IntRect(l, t, r - l, b - t);
 	}
 
 	public int getR() {
@@ -41,8 +41,8 @@ public class IRect {
 		h = b - t;
 	}
 
-	public IRect extend(int l, int t, int r, int b) {
-		IRect ret = new IRect(this);
+	public IntRect extend(int l, int t, int r, int b) {
+		IntRect ret = new IntRect(this);
 
 		ret.l -= l;
 		ret.t -= t;
@@ -52,8 +52,8 @@ public class IRect {
 		return ret;
 	}
 
-	public IRect unextend(int l, int t, int r, int b) {
-		IRect ret = new IRect(this);
+	public IntRect unextend(int l, int t, int r, int b) {
+		IntRect ret = new IntRect(this);
 
 		ret.l += l;
 		ret.t += t;
@@ -63,7 +63,7 @@ public class IRect {
 		return ret;
 	}
 
-	public IRect getClone() {
-		return new IRect(this);
+	public IntRect getClone() {
+		return new IntRect(this);
 	}
 }
