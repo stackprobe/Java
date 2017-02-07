@@ -2,8 +2,6 @@ package evergarden.schwarzer.shelves;
 
 import java.awt.Component;
 
-import charlotte.tools.IntRect;
-
 public abstract class Shelf {
 	public int height = 50;
 	public String className = "DummyShelf";

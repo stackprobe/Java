@@ -3,7 +3,6 @@ package evergarden.schwarzer.shelves;
 import java.util.ArrayList;
 import java.util.List;
 
-import charlotte.tools.IntRect;
 import charlotte.tools.StringTools;
 
 public class Header {

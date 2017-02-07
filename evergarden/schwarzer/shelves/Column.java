@@ -3,8 +3,6 @@ package evergarden.schwarzer.shelves;
 import java.util.ArrayList;
 import java.util.List;
 
-import charlotte.tools.IntRect;
-
 public class Column {
 	public int width = 500;
 	public int shelfSpan = 10;

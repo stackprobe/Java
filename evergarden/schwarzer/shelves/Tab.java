@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.swing.JScrollPane;
 
-import charlotte.tools.IntRect;
-
 public class Tab {
 	public int marginL = 10;
 	public int marginT = 10;

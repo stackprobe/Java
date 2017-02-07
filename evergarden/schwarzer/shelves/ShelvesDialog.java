@@ -19,7 +19,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
-import charlotte.tools.IntRect;
 import charlotte.tools.ReflecTools;
 
 public class ShelvesDialog extends JDialog {

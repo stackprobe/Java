@@ -1,75 +1,84 @@
 package charlotte.tools;
 
-import java.util.Arrays;
-import java.util.List;
-
+/**
+ * immutable
+ *
+ */
 public class XYPoint {
-	public double x;
-	public double y;
+	private double _x;
+	private double _y;
+
+	public XYPoint() {
+		this(0.0, 0.0);
+	}
 
 	public XYPoint(double x, double y) {
-		this.x = x;
-		this.y = y;
+		_x = x;
+		_y = y;
 	}
 
-	public static XYPoint add(XYPoint a, XYPoint b) {
+	public double getX() {
+		return _x;
+	}
+
+	public double getY() {
+		return _y;
+	}
+
+	public XYPoint changeX(double x) {
+		return new XYPoint(x, _y);
+	}
+
+	public XYPoint changeY(double y) {
+		return new XYPoint(_x, y);
+	}
+
+	public XYPoint add(XYPoint p) {
 		return new XYPoint(
-				a.x + b.x,
-				a.y + b.y
+				_x + p._x,
+				_y + p._y
 				);
 	}
 
-	public static XYPoint reduce(XYPoint a, XYPoint b) {
+	public XYPoint reduce(XYPoint p) {
 		return new XYPoint(
-				a.x - b.x,
-				a.y - b.y
+				_x - p._x,
+				_y - p._y
 				);
 	}
 
-	public static XYPoint mul(XYPoint a, double r) {
+	public static final XYPoint ORIGIN = new XYPoint();
+
+	public XYPoint mul(double r) {
 		return new XYPoint(
-				a.x * r,
-				a.y * r
+				_x * r,
+				_y * r
 				);
 	}
 
-	public static XYPoint mul(XYPoint p, double r, XYPoint origin) {
-		p = reduce(p, origin);
-		p = mul(p, r);
-		return add(p, origin);
+	public XYPoint mul(double r, XYPoint origin) {
+		return reduce(origin).mul(r);
 	}
 
-	public static XYPoint div(XYPoint a, double r) {
+	public XYPoint div(double r) {
 		return new XYPoint(
-				a.x / r,
-				a.y / r
+				_x / r,
+				_y / r
 				);
 	}
 
-	public static XYPoint div(XYPoint p, double r, XYPoint origin) {
-		p = reduce(p, origin);
-		p = div(p, r);
-		return add(p, origin);
+	public XYPoint div(double r, XYPoint origin) {
+		return reduce(origin).div(r);
 	}
 
-	/**
-	 * 加算逆元
-	 * @param p
-	 * @return
-	 */
-	public static XYPoint opposite(XYPoint p) {
-		return mul(p, -1.0);
+	public XYPoint opposite() {
+		return mul(-1.0);
 	}
 
-	/**
-	 * 乗算逆元
-	 * @param p
-	 * @return
-	 */
-	public static XYPoint reciprocal(XYPoint p) {
+	public XYPoint reciprocal(XYPoint p) {
 		return new XYPoint(
-				1.0 / p.x,
-				1.0 / p.y
+				1.0 / _x,
+				1.0 / _y
 				);
 	}
 
@@ -81,29 +90,29 @@ public class XYPoint {
 	}
 
 	public static XYPoint getPoint(double angle, double r) {
-		return mul(getPoint(angle), r);
+		return getPoint(angle).mul(r);
 	}
 
 	public static XYPoint getPoint(double angle, double r, XYPoint origin) {
-		return add(getPoint(angle, r), origin);
+		return getPoint(angle, r).add(origin);
 	}
 
-	public static double getAngle(XYPoint p) {
-		if(p.y < 0.0) {
-			return Math.PI * 2.0 - getAngle(new XYPoint(p.x, -p.y));
+	public double getAngle() {
+		if(_y < 0.0) {
+			return Math.PI * 2.0 - changeY(-_y).getAngle();
 		}
-		if(p.x < 0.0) {
-			return Math.PI - getAngle(new XYPoint(-p.x, p.y));
+		if(_x < 0.0) {
+			return Math.PI - changeX(-_x).getAngle();
 		}
-		if(p.y == 0.0) {
+		if(_y == 0.0) {
 			return 0.0;
 		}
-		if(p.x == 0.0) {
+		if(_x == 0.0) {
 			return Math.PI / 2.0;
 		}
 		double h = Math.PI / 2.0;
 		double l = 0.0;
-		double t = p.y / p.x;
+		double t = _y / _x;
 
 		for(int c = 0; c < 50; c++) {
 			double m = (h + l) / 2.0;
@@ -116,114 +125,52 @@ public class XYPoint {
 				h = m;
 			}
 		}
-		//System.out.println("d: " + (h - l)); // test
 		return (h + l) / 2.0;
 	}
 
-	public static double getAngle(XYPoint p, XYPoint origin) {
-		return getAngle(reduce(p, origin));
+	public double getAngle(XYPoint origin) {
+		return reduce(origin).getAngle();
 	}
 
-	public static double getDistance(XYPoint p) {
-		return Math.sqrt(p.x * p.x + p.y * p.y);
+	public double getDistance() {
+		return Math.sqrt(_x * _x + _y * _y);
 	}
 
-	public static double getDistance(XYPoint a, XYPoint b) {
-		return getDistance(reduce(a, b));
+	public double getDistance(XYPoint origin) {
+		return reduce(origin).getDistance();
 	}
 
-	public static XYPoint rotate(XYPoint p, double angle, double rNew) {
-		return getPoint(getAngle(p) + angle, rNew);
+	public XYPoint rotate(double angle, double r) {
+		return getPoint(getAngle() + angle, r);
 	}
 
-	public static XYPoint rotate(XYPoint p, double angle, double rNew, XYPoint origin) {
-		p = reduce(p, origin);
-		p = rotate(p, angle, rNew);
-		return add(p, origin);
+	public XYPoint rotate(double angle, double r, XYPoint origin) {
+		return reduce(origin).rotate(angle, r).add(origin);
 	}
 
-	public static XYPoint rotate(XYPoint p, double angle) {
-		return rotate(p, angle, getDistance(p));
+	public XYPoint rotate(double angle) {
+		return rotate(angle, getDistance());
 	}
 
-	public static XYPoint rotate(XYPoint p, double angle, XYPoint origin) {
-		p = reduce(p, origin);
-		p = rotate(p, angle);
-		return add(p, origin);
+	public XYPoint rotate(double angle, XYPoint origin) {
+		return reduce(origin).rotate(angle).add(origin);
 	}
 
-	public static XYPoint rotd(XYPoint p, int degree) {
+	public XYPoint rotD(int degree) {
 		degree %= 360;
 		degree += 360;
 		degree %= 360;
 
 		switch(degree) {
-		case 0: return new XYPoint(p.x, p.y);
-		case 90: return new XYPoint(-p.y, p.x);
-		case 180: return new XYPoint(-p.x, -p.y);
-		case 270: return new XYPoint(p.y, -p.x);
+		case 0: return this;
+		case 90: return new XYPoint(-_y, _x);
+		case 180: return new XYPoint(-_x, -_y);
+		case 270: return new XYPoint(_y, -_x);
 		}
-		return rotate(p, ((double)degree * Math.PI) / 180.0);
+		return rotate((double)degree * Math.PI / 180.0);
 	}
 
-	public static XYPoint rotd(XYPoint p, int degree, XYPoint origin) {
-		p = reduce(p, origin);
-		p = rotd(p, degree);
-		return add(p, origin);
-	}
-
-	public static XYPoint average(List<XYPoint> list) {
-		double x = list.get(0).x;
-		double y = list.get(0).y;
-
-		for(int index = 1; index < list.size(); index++) {
-			x += list.get(index).x;
-			y += list.get(index).y;
-		}
-		return new XYPoint(
-				x / list.size(),
-				y / list.size()
-				);
-	}
-
-	public static XYPoint average(XYPoint[] arr) {
-		return average(Arrays.asList(arr));
-	}
-
-	public static final XYPoint ORIGIN = new XYPoint(0.0, 0.0);
-
-	public static double getNearestDistance(List<XYPoint> list) {
-		return getNearestDistance(list, ORIGIN);
-	}
-
-	public static double getNearestDistance(List<XYPoint> list, XYPoint origin) {
-		return getDistance(getNearest(list, origin), origin);
-	}
-
-	public static XYPoint getNearest(List<XYPoint> list) {
-		return getNearest(list, ORIGIN);
-	}
-
-	public static XYPoint getNearest(List<XYPoint> list, XYPoint origin) {
-		return list.get(getNearestIndex(list, origin));
-	}
-
-	public static int getNearestIndex(List<XYPoint> list) {
-		return getNearestIndex(list, ORIGIN);
-	}
-
-	public static int getNearestIndex(List<XYPoint> list, XYPoint origin) {
-		int ret = 0;
-		double nearestD = getDistance(list.get(0), origin);
-
-		for(int index = 1; index < list.size(); index++) {
-			double d = getDistance(list.get(index), origin);
-
-			if(d < nearestD) {
-				ret = index;
-				nearestD = d;
-			}
-		}
-		return ret;
+	public XYPoint rotd(int degree, XYPoint origin) {
+		return reduce(origin).rotD(degree).add(origin);
 	}
 }

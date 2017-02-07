@@ -3,8 +3,6 @@ package evergarden.schwarzer.shelves;
 import java.util.ArrayList;
 import java.util.List;
 
-import charlotte.tools.IntRect;
-
 public class Form {
 	public int width = 640;
 	public int height = 480;
