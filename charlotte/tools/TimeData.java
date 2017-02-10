@@ -5,6 +5,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+/**
+ * immutable
+ *
+ */
 public class TimeData {
 	private long _t;
 
@@ -72,18 +76,11 @@ public class TimeData {
 
 	@Override
 	public String toString() {
-		try {
-			return getString("Y/M/D (W) h:m:s");
-		}
-		catch(Throwable e) {
-			// ignore
-		}
-		return "" + _t;
+		return getString("Y/M/D (W) h:m:s");
 	}
 
 	public static long getTime(int y, int m, int d, int h, int i, int s) {
-		if(
-				y < 1 ||
+		if(y < 1 ||
 				m < 1 ||
 				d < 1 ||
 				h < 0 ||
@@ -186,7 +183,7 @@ public class TimeData {
 	public static final TimeData EPOCH_TIME_ZERO = new TimeData(1970, 1, 1);
 
 	public static TimeData fromEpochTime(long sec) throws Exception {
-		return new TimeData(EPOCH_TIME_ZERO.getTime() + sec);
+		return EPOCH_TIME_ZERO.addTime(sec);
 	}
 
 	public long getEpochTime() {
@@ -431,5 +428,9 @@ public class TimeData {
 		ret = ret.replace("W", weekday);
 
 		return ret;
+	}
+
+	public TimeData addTime(long t) {
+		return new TimeData(_t + t);
 	}
 }

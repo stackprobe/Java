@@ -70,8 +70,8 @@ public class Kintai {
 			TimeData date = TimeData.fromISO8061(node.getNodeValue("WorkDate"));
 			TimeData bgnTime = TimeData.fromISO8061(node.getNodeValue("StartTime"));
 			TimeData endTime = TimeData.fromISO8061(node.getNodeValue("FinishTime"));
-			bgnTime = new TimeData(bgnTime.getTime() - 9 * 3600L); // -= JST
-			endTime = new TimeData(endTime.getTime() - 9 * 3600L); // -= JST
+			bgnTime = bgnTime.addTime(-9 * 3600L); // -= JST
+			endTime = endTime.addTime(-9 * 3600L); // -= JST
 			int d = Integer.parseInt(date.getString("YMD"));
 			//long bgn = Long.parseLong(date.getString("YMD") + bgnTime.getString("hms"));
 			//long end = Long.parseLong(date.getString("YMD") + endTime.getString("hms"));
