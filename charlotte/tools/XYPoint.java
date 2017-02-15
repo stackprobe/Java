@@ -156,7 +156,7 @@ public class XYPoint {
 		return reduce(origin).rotate(angle).add(origin);
 	}
 
-	public XYPoint rotD(int degree) {
+	public XYPoint rotdeg(int degree) {
 		degree %= 360;
 		degree += 360;
 		degree %= 360;
@@ -170,7 +170,7 @@ public class XYPoint {
 		return rotate((double)degree * Math.PI / 180.0);
 	}
 
-	public XYPoint rotd(int degree, XYPoint origin) {
-		return reduce(origin).rotD(degree).add(origin);
+	public XYPoint rotdeg(int degree, XYPoint origin) {
+		return reduce(origin).rotdeg(degree).add(origin);
 	}
 }

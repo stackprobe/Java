@@ -26,7 +26,7 @@ public class XYPointTest {
 
 		for(int x = 0; x < W; x++) {
 			for(int y = 0; y < H; y++) {
-				double angle = XYPoint.getAngle(new XYPoint(x - ORIGIN_X, y - ORIGIN_Y));
+				double angle = new XYPoint(x, y).getAngle(new XYPoint(ORIGIN_X, ORIGIN_Y));
 				angle /= 7.0;
 				int v = IntTools.toInt(angle * 255.0);
 				bmp.setDot(x, y, new Bmp.Dot(255, v, v, v));

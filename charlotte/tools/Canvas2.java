@@ -189,8 +189,8 @@ public class Canvas2 {
 		int[] ys = new int[size];
 
 		for(int index = 0; index < size; index++) {
-			xs[index] = DoubleTools.toInt(points.get(index).x);
-			ys[index] = DoubleTools.toInt(points.get(index).y);
+			xs[index] = DoubleTools.toInt(points.get(index).getX());
+			ys[index] = DoubleTools.toInt(points.get(index).getY());
 		}
 		_g.setColor(color);
 		_g.fillPolygon(xs, ys, size);

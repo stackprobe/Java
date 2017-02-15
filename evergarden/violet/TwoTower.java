@@ -29,8 +29,8 @@ public class TwoTower {
 		for(int x = 0; x < 700; x++) {
 			for(int y = 0; y < 600; y++) {
 				XYPoint curr = new XYPoint(x, y);
-				double d1 = XYPoint.getDistance(curr, tower1);
-				double d2 = XYPoint.getDistance(curr, tower2);
+				double d1 = curr.getDistance(tower1);
+				double d2 = curr.getDistance(tower2);
 				double rate = d1 / d2;
 
 				//rate -= 0.25; // -= TARGET_RATE
