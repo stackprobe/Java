@@ -34,6 +34,16 @@ public class MkSaiseiTeishiBtn {
 		expand();
 
 		_bmp.writeToFile("C:/temp/button_teishi.png");
+		_bmp = new Bmp(1000, 1000);
+
+		for(int x = 0; x < 1000; x++) {
+			for(int y = 0; y < 1000; y++) {
+				_bmp.setDot(x, y, x + y < 1000 ? new Bmp.Dot(255, 255, 255, 255) : new Bmp.Dot(0, 0, 0, 0));
+			}
+		}
+		_bmp = _bmp.expand(95, 30);
+
+		_bmp.writeToFile("C:/temp/volume_mask.png");
 	}
 
 	private void clear() {
