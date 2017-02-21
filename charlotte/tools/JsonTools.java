@@ -3,33 +3,43 @@ package charlotte.tools;
 public class JsonTools {
 	public static String encode(Object src) throws Exception {
 		Encoder e = new Encoder();
-		e.add(src);
+		e.add(src, "");
+		e.addNewLine();
 		return e.get();
 	}
+
+	private static final String INDENT = "\t";
+	private static final String NEW_LINE = "\r\n";
 
 	private static class Encoder {
 		private StringBuffer _buff = new StringBuffer();
 
-		public void add(Object src) {
+		public void add(Object src, String indent) {
 			if(src instanceof ObjectMap) {
 				ObjectMap om = (ObjectMap)src;
 				boolean secondOrLater = false;
 
 				_buff.append("{");
+				_buff.append(NEW_LINE);
 
-				for(String key : om.keySet()) {
+				for(String key : om.keyOrder()) {
 					Object value = om.get(key);
 
 					if(secondOrLater) {
 						_buff.append(",");
+						_buff.append(NEW_LINE);
 					}
+					_buff.append(indent);
+					_buff.append(INDENT);
 					_buff.append("\"");
 					_buff.append(key);
-					_buff.append("\":");
-					add(value);
+					_buff.append("\" : ");
+					add(value, indent + INDENT);
 
 					secondOrLater = true;
 				}
+				_buff.append(NEW_LINE);
+				_buff.append(indent);
 				_buff.append("}");
 			}
 			else if(src instanceof ObjectList) {
@@ -37,15 +47,21 @@ public class JsonTools {
 				boolean secondOrLater = false;
 
 				_buff.append("[");
+				_buff.append(NEW_LINE);
 
 				for(Object value : ol.getList()) {
 					if(secondOrLater) {
 						_buff.append(",");
+						_buff.append(NEW_LINE);
 					}
-					add(value);
+					_buff.append(indent);
+					_buff.append(INDENT);
+					add(value, indent + INDENT);
 
 					secondOrLater = true;
 				}
+				_buff.append(NEW_LINE);
+				_buff.append(indent);
 				_buff.append("]");
 			}
 			else if(src instanceof String) {
@@ -60,9 +76,11 @@ public class JsonTools {
 					else if(chr == '\\') {
 						_buff.append("\\\\");
 					}
+					/*
 					else if(chr == '/') {
 						_buff.append("\\/");
 					}
+					*/
 					else if(chr == '\b') {
 						_buff.append("\\b");
 					}
@@ -87,6 +105,10 @@ public class JsonTools {
 			else {
 				_buff.append(src);
 			}
+		}
+
+		public void addNewLine() {
+			_buff.append(NEW_LINE);
 		}
 
 		public String get() {
@@ -226,7 +248,8 @@ public class JsonTools {
 
 					if(chr == '}' ||
 							chr == ']' ||
-							chr == ','
+							chr == ',' ||
+							chr == ':'
 							) {
 						_rPos--;
 						break;

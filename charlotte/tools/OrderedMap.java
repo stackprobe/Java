@@ -4,86 +4,65 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeMap;
 
 public class OrderedMap<K, V> {
-	private List<K> _keys = new ArrayList<K>();
-	private List<V> _values = new ArrayList<V>();
+	private Map<K, Integer> _keyOrder;
+	private int _keySerial;
+	private Map<K, V> _map;
 
-	public void clear() {
-		_keys.clear();
-		_values.clear();
+	public OrderedMap(Comparator<K> comp) {
+		_keyOrder = new TreeMap<K, Integer>(comp);
+		_keySerial = 0;
+		_map = new TreeMap<K, V>(comp);
 	}
 
-	public void add(K key, V value) {
-		_keys.add(key);
-		_values.add(value);
-	}
-
-	public void add(Map<K, V> src) {
-		for(K key : src.keySet()) {
-			add(key, src.get(key));
+	public void put(K key, V value) {
+		if(_keyOrder.containsKey(key) == false) {
+			_keyOrder.put(key, _keySerial);
+			_keySerial++;
 		}
+		_map.put(key, value);
 	}
 
-	public List<K> keys() {
-		return _keys;
+	public void remove(K key) {
+		_keyOrder.remove(key);
+		_map.remove(key);
 	}
 
-	public List<V> values() {
-		return _values;
+	public int size() {
+		return _map.size();
 	}
 
-	public void swap(int i, int j) {
-		ArrayTools.swap(_keys, i, j);
-		ArrayTools.swap(_values, i, j);
+	public Set<K> keySet() {
+		return _map.keySet();
 	}
 
-	public List<Pair> getPairs() {
-		List<Pair> dest = new ArrayList<Pair>();
+	public List<K> keyOrder() {
+		List<Map.Entry<K, Integer>> pairs = new ArrayList<Map.Entry<K, Integer>>();
 
-		for(int index = 0; index < _keys.size(); index++) {
-			Pair pair = new Pair();
-
-			pair.key = _keys.get(index);
-			pair.value = _values.get(index);
-
-			dest.add(pair);
+		for(Map.Entry<K, Integer> pair : _keyOrder.entrySet()) {
+			pairs.add(pair);
 		}
-		return dest;
-	}
 
-	public void overwritePairs(List<Pair> src) {
-		clear();
-		add(src);
-	}
-
-	private void add(List<Pair> src) {
-		for(Pair pair : src) {
-			add(pair);
-		}
-	}
-
-	private void add(Pair src) {
-		add(src.key, src.value);
-	}
-
-	public class Pair {
-		public K key;
-		public V value;
-	}
-
-	public void sort(Comparator<Pair> comp) {
-		List<Pair> pairs = getPairs();
-		ArrayTools.sort(pairs, comp);
-		overwritePairs(pairs);
-	}
-
-	public void sortByKey(final Comparator<K> comp) {
-		sort(new Comparator<Pair>() {
+		ArrayTools.sort(pairs, new Comparator<Map.Entry<K, Integer>>() {
 			@Override
-			public int compare(Pair a, Pair b) {
-				return comp.compare(a.key, b.key);
+			public int compare(Entry<K, Integer> a, Entry<K, Integer> b) {
+				return IntTools.comp.compare(a.getValue(), b.getValue());
 			}
 		});
+
+		List<K> ret = new ArrayList<K>();
+
+		for(Map.Entry<K, Integer> pair : pairs) {
+			ret.add(pair.getKey());
+		}
+		return ret;
+	}
+
+	public V get(K key) {
+		return _map.get(key);
 	}
 }

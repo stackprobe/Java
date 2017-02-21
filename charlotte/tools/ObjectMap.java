@@ -1,12 +1,12 @@
 package charlotte.tools;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 public class ObjectMap {
-	private Map<String, Object> _map;
+	private OrderedMap<String, Object> _map;
 
 	public static ObjectMap create() {
 		return new ObjectMap(StringTools.comp);
@@ -21,7 +21,7 @@ public class ObjectMap {
 	}
 
 	public ObjectMap(Comparator<String> comp) {
-		_map = new TreeMap<String, Object>(comp);
+		_map = new OrderedMap<String, Object>(comp);
 	}
 
 	public static ObjectMap create(Map<?, ?> map) {
@@ -52,6 +52,10 @@ public class ObjectMap {
 
 	public Set<String> keySet() {
 		return _map.keySet();
+	}
+
+	public List<String> keyOrder() {
+		return _map.keyOrder();
 	}
 
 	public Object get(String key) {
