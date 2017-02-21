@@ -2,44 +2,60 @@ package charlotte.tools;
 
 public class JsonTools {
 	public static String encode(Object src) throws Exception {
-		Encoder e = new Encoder();
-		e.add(src, "");
-		e.addNewLine();
+		return encode(src, false);
+	}
+
+	public static String encode(Object src, boolean noBlank) throws Exception {
+		Encoder e = new Encoder(
+				noBlank ? "" : " ",
+				noBlank ? "" : "\t",
+				noBlank ? "" : "\r\n"
+				);
+		e.add(src, 0);
 		return e.get();
 	}
 
-	private static final String INDENT = "\t";
-	private static final String NEW_LINE = "\r\n";
-
 	private static class Encoder {
+		private String _blank;
+		private String _indent;
+		private String _newLine;
+
+		public Encoder(String blank, String indent, String newLine) {
+			_blank = blank;
+			_indent = indent;
+			_newLine = newLine;
+		}
+
 		private StringBuffer _buff = new StringBuffer();
 
-		public void add(Object src, String indent) {
+		public void add(Object src, int indent) {
 			if(src instanceof ObjectMap) {
 				ObjectMap om = (ObjectMap)src;
 				boolean secondOrLater = false;
 
 				_buff.append("{");
-				_buff.append(NEW_LINE);
+				_buff.append(_newLine);
 
 				for(String key : om.keyOrder()) {
 					Object value = om.get(key);
 
 					if(secondOrLater) {
 						_buff.append(",");
-						_buff.append(NEW_LINE);
+						_buff.append(_newLine);
 					}
-					_buff.append(indent);
-					_buff.append(INDENT);
+					addIndent(indent + 1);
 					_buff.append("\"");
 					_buff.append(key);
-					_buff.append("\" : ");
-					add(value, indent + INDENT);
+					_buff.append("\"");
+					_buff.append(_blank);
+					_buff.append(":");
+					_buff.append(_blank);
+					add(value, indent + 1);
 
 					secondOrLater = true;
 				}
-				_buff.append(NEW_LINE);
-				_buff.append(indent);
+				_buff.append(_newLine);
+				addIndent(indent);
 				_buff.append("}");
 			}
 			else if(src instanceof ObjectList) {
@@ -47,21 +63,20 @@ public class JsonTools {
 				boolean secondOrLater = false;
 
 				_buff.append("[");
-				_buff.append(NEW_LINE);
+				_buff.append(_newLine);
 
 				for(Object value : ol.getList()) {
 					if(secondOrLater) {
 						_buff.append(",");
-						_buff.append(NEW_LINE);
+						_buff.append(_newLine);
 					}
-					_buff.append(indent);
-					_buff.append(INDENT);
-					add(value, indent + INDENT);
+					addIndent(indent + 1);
+					add(value, indent + 1);
 
 					secondOrLater = true;
 				}
-				_buff.append(NEW_LINE);
-				_buff.append(indent);
+				_buff.append(_newLine);
+				addIndent(indent);
 				_buff.append("]");
 			}
 			else if(src instanceof String) {
@@ -107,8 +122,11 @@ public class JsonTools {
 			}
 		}
 
-		public void addNewLine() {
-			_buff.append(NEW_LINE);
+		public void addIndent(int count) {
+			while(0 < count) {
+				_buff.append(_indent);
+				count--;
+			}
 		}
 
 		public String get() {

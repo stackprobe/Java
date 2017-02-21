@@ -46,6 +46,10 @@ public class ObjectMap {
 		_map.put("" + key, value);
 	}
 
+	public void remove(Object key) {
+		_map.remove("" + key);
+	}
+
 	public int size() {
 		return _map.size();
 	}
