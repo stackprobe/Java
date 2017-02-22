@@ -2,49 +2,93 @@ package charlotte.tools;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Stack;
 
 public class WktParser {
-	private Stack<ObjectList> _rootStack = new Stack<ObjectList>();
-	private ObjectList _root = new ObjectList();
+	public static final int KIND_BLANK = 1;
+	public static final int KIND_L = 2;
+	public static final int KIND_R = 3;
+	public static final int KIND_COMMA = 4;
+	public static final int KIND_STRING = 5;
+	public static final int KIND_WORD = 6;
+
+	public class Token {
+		public int kind;
+		public String value;
+
+		public Token(int kind, String value) {
+			this.kind = kind;
+			this.value = value;
+		}
+
+		public String getWkt() {
+			if(kind == KIND_STRING) {
+				return "\"" + encodeString(value) + "\"";
+			}
+			return value;
+		}
+	}
+
+	private List<Token> _tokens = new ArrayList<Token>();
 	private String _src;
 	private int _rPos;
 
+	private boolean hasNext() {
+		return _rPos < _src.length();
+	}
+
 	private char next() {
 		return _src.charAt(_rPos++);
+	}
+
+	private void back() {
+		_rPos--;
 	}
 
 	public void add(String src) throws Exception {
 		_src = src;
 		_rPos = 0;
 
-		while(_rPos < _src.length()) {
+		while(hasNext()) {
 			char chr = next();
 
 			if(chr <= ' ') {
-				// noop
+				back();
+				_tokens.add(new Token(KIND_BLANK, readBlank()));
 			}
 			else if(chr == '(') {
-				_rootStack.add(_root);
-				_root = new ObjectList();
+				_tokens.add(new Token(KIND_L, "("));
 			}
 			else if(chr == ')') {
-				ObjectList parent = _rootStack.pop();
-				parent.add(_root);
-				_root = parent;
+				_tokens.add(new Token(KIND_R, ")"));
 			}
 			else if(chr == ',') {
-				_root.add(comma);
+				_tokens.add(new Token(KIND_COMMA, ","));
 			}
 			else if(chr == '"') {
-				_root.add(readString());
+				_tokens.add(new Token(KIND_STRING, readString()));
 			}
 			else {
-				_root.add(readWord());
+				back();
+				_tokens.add(new Token(KIND_WORD, readWord()));
 			}
 		}
 		_src = null;
+		_rPos = -1;
+	}
+
+	private String readBlank() {
+		StringBuffer buff = new StringBuffer();
+
+		while(hasNext()) {
+			char chr = next();
+
+			if(' ' < chr) {
+				back();
+				break;
+			}
+			buff.append(chr);
+		}
+		return buff.toString();
 	}
 
 	private String readString() {
@@ -76,194 +120,150 @@ public class WktParser {
 		return buff.toString();
 	}
 
-	private Word readWord() {
+	private String readWord() {
 		StringBuffer buff = new StringBuffer();
 
-		_rPos--;
-
-		while(_rPos < _src.length()) {
+		while(hasNext()) {
 			char chr = next();
 
-			if(chr <= ' ') {
-				break;
-			}
-			if(chr == '(' ||
+			if(chr <= ' ' ||
+					chr == '(' ||
 					chr == ')' ||
-					chr == ','
+					chr == ',' ||
+					chr == '"'
 					) {
-				_rPos--;
+				back();
 				break;
 			}
 			buff.append(chr);
 		}
-		return new Word(buff.toString());
-	}
-
-	public static final Comma comma = new Comma();
-
-	public static class Comma {
-		@Override
-		public String toString() {
-			return ",";
-		}
-	}
-
-	public static class Word {
-		private String _value;
-
-		public Word(String value) {
-			_value = value;
-		}
-
-		@Override
-		public String toString() {
-			return _value;
-		}
-	}
-
-	public ObjectList getRoot() {
-		return _root;
-	}
-
-	public static ObjectList parse(String src) throws Exception {
-		WktParser p = new WktParser();
-		p.add(src);
-		return p.getRoot();
-	}
-
-	public static List<ObjectList> findLabelledValue(ObjectList root, String label, boolean recursive) {
-		return findLabelledValue(root, label, recursive, new ArrayList<ObjectList>());
-	}
-
-	public static List<ObjectList> findLabelledValue(ObjectList root, String label, boolean recursive, List<ObjectList> dest) {
-		for(int index = 0; index < root.size(); index++) {
-			if(root.get(index) instanceof ObjectList) {
-				ObjectList ol = (ObjectList)root.get(index);
-
-				if(1 <= index && root.get(index - 1) instanceof Word) {
-					String olLabel = root.get(index - 1).toString();
-
-					if(olLabel.equals(label)) {
-						dest.add(ol);
-					}
-				}
-				if(recursive) {
-					findLabelledValue(ol, label, true, dest);
-				}
-			}
-		}
-		return dest;
-	}
-
-	public static Map<String, ObjectList> findLabelledValues(ObjectList root, boolean recursive) {
-		return findLabelledValues(root, recursive, MapTools.<ObjectList>create());
-	}
-
-	public static Map<String, ObjectList> findLabelledValues(ObjectList root, boolean recursive, Map<String, ObjectList> dest) {
-		for(int index = 0; index < root.size(); index++) {
-			if(root.get(index) instanceof ObjectList) {
-				ObjectList ol = (ObjectList)root.get(index);
-
-				if(1 <= index && root.get(index - 1) instanceof Word) {
-					String olLabel = root.get(index - 1).toString();
-
-					dest.put(olLabel, ol);
-				}
-				if(recursive) {
-					findLabelledValues(ol, true, dest);
-				}
-			}
-		}
-		return dest;
-	}
-
-	public static String getLabelledValue(ObjectList root, String label, boolean recursive) {
-		try {
-			return findLabelledValue(root, label, recursive).get(0).get(0).toString();
-		}
-		catch(Throwable e) {
-			// ignore
-		}
-		return null;
-	}
-
-	public static void putLabelledValue(ObjectList root, String label, ObjectList value) {
-		removeLabelledValue(root, label);
-		addLabelledValue(root, label, value);
-	}
-
-	public static void removeLabelledValue(ObjectList root, String label) {
-		for(int index = 0; index + 1 < root.size(); index++) {
-			if(root.get(index) instanceof Word &&
-					root.get(index).toString().equals(label) &&
-					root.get(index + 1) instanceof ObjectList
-					) {
-				root.getList().remove(index + 1);
-				root.getList().remove(index);
-				index--;
-			}
-		}
-		trimComma(root);
-	}
-
-	public static void addLabelledValue(ObjectList root, String label, ObjectList value) {
-		root.add(comma);
-		root.add(new Word(label));
-		root.add(value);
-		trimComma(root);
-	}
-
-	private static void trimComma(ObjectList root) {
-		for(int index = 0; index + 1 < root.size(); index++) {
-			if(root.get(index) instanceof Comma && root.get(index + 1) instanceof Comma) {
-				root.getList().remove(index + 1);
-				index--;
-			}
-		}
-		if(1 <= root.size() && root.get(0) instanceof Comma) {
-			root.getList().remove(0);
-		}
-		if(1 <= root.size() && root.get(root.size() - 1) instanceof Comma) {
-			root.getList().remove(root.size() - 1);
-		}
-	}
-
-	public static String getWkt(ObjectList root) {
-		StringBuffer buff = new StringBuffer();
-		add(buff, root);
 		return buff.toString();
 	}
 
-	private static void add(StringBuffer buff, ObjectList root) {
-		boolean ndSpc = false;
+	public String getWkt() {
+		StringBuffer buff = new StringBuffer();
 
-		for(Object token : root.getList()) {
-			if(token instanceof ObjectList) {
-				buff.append("(");
-				add(buff, (ObjectList)token);
-				buff.append(")");
-				ndSpc = false;
-			}
-			else if(token instanceof Comma) {
-				buff.append(",");
-				ndSpc = false;
-			}
-			else if(token instanceof Word) {
-				if(ndSpc) {
-					buff.append(" ");
+		for(Token token : _tokens) {
+			buff.append(token.getWkt());
+		}
+		return buff.toString();
+	}
+
+	public SubEntities getEntities() {
+		return new SubEntities(new Entities());
+	}
+
+	public class Entities {
+		private List<Token> _entities;
+
+		public Entities() {
+			_entities = new ArrayList<Token>();
+
+			for(Token token : _tokens) {
+				if(token.kind != KIND_BLANK) {
+					_entities.add(token);
 				}
-				buff.append(token);
-				ndSpc = true;
 			}
-			else {
-				if(ndSpc) {
-					buff.append(" ");
+		}
+
+		public int size() {
+			return _entities.size();
+		}
+
+		public Token get(int index) {
+			return _entities.get(index);
+		}
+	}
+
+	public class SubEntities {
+		private Entities _entities;
+		private int _start;
+		private int _count;
+
+		public SubEntities(Entities entities) {
+			this(entities, 0, entities.size());
+		}
+
+		public SubEntities(Entities entities, int start, int count) {
+			_entities = entities;
+			_start = start;
+			_count = count;
+		}
+
+		public int size() {
+			return _count;
+		}
+
+		public Token get(int index) {
+			if(index < 0 || _count <= index) {
+				return null;
+			}
+			return _entities.get(_start + index);
+		}
+
+		public int getLabel(String label) {
+			return getLabel(label, 0);
+		}
+
+		public int getLabel(String label, int fromIndex) {
+			for(int index = fromIndex; index + 1 < size(); index++) {
+				if(get(index).kind == KIND_WORD &&
+						get(index).value.equals(label) &&
+						get(index + 1).kind == KIND_L
+						) {
+					return index;
 				}
-				buff.append('"');
-				buff.append(encodeString(token.toString()));
-				buff.append('"');
-				ndSpc = true;
 			}
+			return -1; // not found
+		}
+
+		private int getR(int fromIndex) {
+			int deep = 1;
+
+			for(int index = fromIndex; index < size(); index++) {
+				if(get(index).kind == KIND_L) {
+					deep++;
+				}
+				else if(get(index).kind == KIND_R) {
+					deep--;
+
+					if(deep == 0) {
+						return index;
+					}
+				}
+			}
+			return -1; // not found
+		}
+
+		public List<SubEntities> getBlocks(String label) {
+			List<SubEntities> dest = new ArrayList<SubEntities>();
+
+			for(int index = 0; ; ) {
+				index = getLabel(label, index);
+
+				if(index == -1) {
+					break;
+				}
+				index += 2;
+				int end = getR(index);
+
+				if(end == -1) {
+					System.err.println("may be wkt broken !");
+					break;
+				}
+				dest.add(new SubEntities(_entities, _start + index, end - index));
+				index = end + 1;
+			}
+			return dest;
+		}
+
+		public SubEntities getBlock(String label) {
+			List<SubEntities> ret = getBlocks(label);
+
+			if(ret.size() == 0) {
+				return null;
+			}
+			return ret.get(0);
 		}
 	}
 }
