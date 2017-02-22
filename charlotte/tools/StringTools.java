@@ -662,6 +662,13 @@ public class StringTools {
 		return indexOfIgnoreCase(str, ptn) != -1;
 	}
 
+	public static String replaceIgnoreCase(String str, String ptn, String ptnNew) {
+		for(int index = 0; (index = indexOfIgnoreCase(str, ptn, index)) != -1; index += ptnNew.length()) {
+			str = str.substring(0, index) + ptnNew + str.substring(index + ptn.length());
+		}
+		return str;
+	}
+
 	public static String decodeUrl(String str, String charset) throws Exception {
 		return HTTPServer.decodeUrl(str, charset);
 	}

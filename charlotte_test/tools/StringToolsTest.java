@@ -83,6 +83,9 @@ public class StringToolsTest {
 			System.out.println(mmToM("あいう012えお000"));
 			System.out.println(mmToM("あいう012えお000かき000"));
 			System.out.println(mmToM("あいう012えお000かき123"));
+
+			System.out.println(StringTools.replaceIgnoreCase("Id = '${id}'", "${ID}", "123"));
+			System.out.println(StringTools.replaceIgnoreCase("abc", "ABC", "123"));
 		}
 		catch(Throwable e) {
 			e.printStackTrace();
