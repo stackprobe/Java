@@ -248,8 +248,8 @@ public class WktParser {
 				int end = getR(index);
 
 				if(end == -1) {
-					System.err.println("may be wkt broken !");
-					break;
+					throw new RuntimeException("wkt label '" + label + "' not closed");
+					//break;
 				}
 				dest.add(new SubEntities(_entities, _start + index, end - index));
 				index = end + 1;
@@ -261,7 +261,8 @@ public class WktParser {
 			List<SubEntities> ret = getBlocks(label);
 
 			if(ret.size() == 0) {
-				return null;
+				throw new RuntimeException("wkt label '" + label + "' does not exist");
+				//return null;
 			}
 			return ret.get(0);
 		}
