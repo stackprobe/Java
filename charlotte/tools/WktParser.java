@@ -44,7 +44,7 @@ public class WktParser {
 		_rPos--;
 	}
 
-	public void add(String src) throws Exception {
+	public void add(String src) {
 		_src = src;
 		_rPos = 0;
 
