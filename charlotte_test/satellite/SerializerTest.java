@@ -200,7 +200,7 @@ public class SerializerTest {
 		StringBuffer buff = new StringBuffer();
 		boolean added = false;
 
-		for(Object eObj : list.getList()) {
+		for(Object eObj : list.asList()) {
 			if(added) {
 				buff.append(",");
 			}

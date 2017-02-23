@@ -40,7 +40,7 @@ public class Resource {
 	public List<Resource> getList() {
 		List<Resource> ret = new ArrayList<Resource>();
 
-		for(Object src : cList().getList()) {
+		for(Object src : cList().asList()) {
 			ret.add(new Resource(src));
 		}
 		return ret;

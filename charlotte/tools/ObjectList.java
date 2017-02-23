@@ -37,7 +37,7 @@ public class ObjectList {
 		return _list.size();
 	}
 
-	public List<Object> getList() {
+	public List<Object> asList() {
 		return _list;
 	}
 

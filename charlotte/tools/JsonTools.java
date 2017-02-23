@@ -65,7 +65,7 @@ public class JsonTools {
 				_buff.append("[");
 				_buff.append(_newLine);
 
-				for(Object value : ol.getList()) {
+				for(Object value : ol.asList()) {
 					if(secondOrLater) {
 						_buff.append(",");
 						_buff.append(_newLine);
@@ -276,7 +276,7 @@ public class JsonTools {
 				}
 				String str = buff.toString();
 				str = str.trim();
-				return new JsonValue(str);
+				return new JsonWord(str);
 			}
 		}
 	}

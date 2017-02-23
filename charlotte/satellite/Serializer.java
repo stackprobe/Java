@@ -44,7 +44,7 @@ public class Serializer {
 			ObjectList ol = (ObjectList)obj;
 			addInt(ol.size());
 
-			for(Object value : ol.getList()) {
+			for(Object value : ol.asList()) {
 				add(value);
 			}
 		}

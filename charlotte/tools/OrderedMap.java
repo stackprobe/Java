@@ -40,4 +40,8 @@ public class OrderedMap<K, V> {
 	public V get(K key) {
 		return _map.get(key);
 	}
+
+	public boolean containsKey(K key) {
+		return _map.containsKey(key);
+	}
 }

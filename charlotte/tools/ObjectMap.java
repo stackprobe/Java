@@ -62,6 +62,10 @@ public class ObjectMap {
 		return _map.keyOrder();
 	}
 
+	public boolean containsKey(String key) {
+		return _map.containsKey(key);
+	}
+
 	public Object get(String key) {
 		return _map.get(key);
 	}
