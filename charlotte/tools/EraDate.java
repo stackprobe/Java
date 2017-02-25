@@ -352,7 +352,7 @@ public class EraDate {
 		String code = _info.code;
 
 		if(name == null) {
-			name = "不明";
+			name = "****";
 		}
 		if(code == null) {
 			code = "#";

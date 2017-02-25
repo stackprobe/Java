@@ -85,6 +85,7 @@ public class Logger implements Closeable {
 
 						if(file.equalsIgnoreCase(_file) == false) {
 							_file = file;
+							FileTools.close(_writer);
 							_writer = FileTools.writeOpenTextFile(_file, StringTools.CHARSET_UTF8, true);
 						}
 					}

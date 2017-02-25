@@ -56,7 +56,7 @@ public class OrderedSetTest {
 				throw null;
 			}
 
-			//System.out.println(c + ", " + set_d.size());
+			System.out.println(c + ", " + set_d.size());
 
 			if(set.size() != set_d.size()) {
 				throw null;
