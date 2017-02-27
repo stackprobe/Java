@@ -113,11 +113,24 @@ public class StringTools {
 		return format.equals(toFormat(ptn));
 	}
 
+	public static boolean formatIs(String format, String ptn, boolean antiRepeat) {
+		return format.equals(toFormat(ptn, antiRepeat));
+	}
+
 	public static String toFormat(String str) {
+		return toFormat(str, false);
+	}
+
+	public static String toFormat(String str, boolean antiRepeat) {
 		str = replaceChar(str, DIGIT, '9');
 		str = replaceChar(str, ALPHA, 'A');
 		str = replaceChar(str, alpha, 'a');
 
+		if(antiRepeat) {
+			str = replace(str, "99", "9", 20);
+			str = replace(str, "AA", "A", 20);
+			str = replace(str, "aa", "a", 20);
+		}
 		return str;
 	}
 
@@ -125,12 +138,25 @@ public class StringTools {
 		return format.equals(toHexFormat(ptn));
 	}
 
+	public static boolean hexFormatIs(String format, String ptn, boolean antiRepeat) {
+		return format.equals(toHexFormat(ptn, antiRepeat));
+	}
+
 	public static String toHexFormat(String str) {
+		return toHexFormat(str, false);
+	}
+
+	public static String toHexFormat(String str, boolean antiRepeat) {
 		str = replaceChar(str, HEXADECIMAL, 'f');
 		str = replaceChar(str, hexadecimal, 'f');
 		str = replaceChar(str, ALPHA, 'A');
 		str = replaceChar(str, alpha, 'a');
 
+		if(antiRepeat) {
+			str = replace(str, "ff", "f", 20);
+			str = replace(str, "AA", "A", 20);
+			str = replace(str, "aa", "a", 20);
+		}
 		return str;
 	}
 
