@@ -44,6 +44,13 @@ public class MkSaiseiTeishiBtn {
 		_bmp = _bmp.expand(95, 30);
 
 		_bmp.writeToFile("C:/temp/volume_mask.png");
+		_bmp = new Bmp(1000, 1000);
+
+		drawSquare();
+		drawBatsu();
+		expand();
+
+		_bmp.writeToFile("C:/temp/button_x.png");
 	}
 
 	private void clear() {
@@ -102,6 +109,34 @@ public class MkSaiseiTeishiBtn {
 		Canvas canvas = new Canvas(_bmp);
 
 		canvas.fillRect(300, 300, 400, 400, new Bmp.Dot(255, 255, 255, 255));
+	}
+
+	private void drawSquare() {
+		Canvas canvas = new Canvas(_bmp);
+
+		canvas.fillRect(100, 100, 800, 100, new Bmp.Dot(255, 255, 255, 255));
+		canvas.fillRect(100, 100, 100, 800, new Bmp.Dot(255, 255, 255, 255));
+		canvas.fillRect(100, 800, 800, 100, new Bmp.Dot(255, 255, 255, 255));
+		canvas.fillRect(800, 100, 100, 800, new Bmp.Dot(255, 255, 255, 255));
+	}
+
+	private void drawBatsu() {
+		Canvas canvas = new Canvas(_bmp);
+
+		for(int c = 0; c < 700; c++) {
+			canvas.fillRect(100 + c, 100 + c, 70, 70, new Bmp.Dot(255, 255, 255, 255));
+			canvas.fillRect(830 - c, 100 + c, 70, 70, new Bmp.Dot(255, 255, 255, 255));
+
+			/*
+			canvas.fillRect(100 + c, 100 + c, 100, 100, new Bmp.Dot(255, 255, 255, 255));
+			canvas.fillRect(800 - c, 100 + c, 100, 100, new Bmp.Dot(255, 255, 255, 255));
+			*/
+
+			/*
+			canvas.fillRect(100 + c, 100 + c, 50, 50, new Bmp.Dot(255, 255, 255, 255));
+			canvas.fillRect(850 - c, 100 + c, 50, 50, new Bmp.Dot(255, 255, 255, 255));
+			*/
+		}
 	}
 
 	private void expand() {
