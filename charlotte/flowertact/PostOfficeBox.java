@@ -11,7 +11,7 @@ import charlotte.tools.SecurityTools;
 import charlotte.tools.StringTools;
 
 public class PostOfficeBox {
-	private final String IDENT_PREFIX = "Fortewave_{d8600f7d-1ff4-47f3-b1c9-4b5aa15b6461}_"; // shared_uuid
+	private final String IDENT_PREFIX = "Fortewave_{d8600f7d-1ff4-47f3-b1c9-4b5aa15b6461}_"; // shared_uuid@g
 	private String _ident;
 	private MutexObject _mutex;
 	private NamedEventObject _messagePostEvent;

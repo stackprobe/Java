@@ -18,7 +18,7 @@ public class WinAPITools {
 		return _i;
 	}
 
-	private static final String WIN_API_TOOLS_FILE_ID = "{b46c0dfc-6df3-45e3-9b78-38e3b4f2cd9b}"; // shared_uuid
+	private static final String WIN_API_TOOLS_FILE_ID = "{b46c0dfc-6df3-45e3-9b78-38e3b4f2cd9b}"; // shared_uuid@g -- HTT_RPC から監視されるため、global指定
 	private String _winAPIToolsFile;
 	private String _monitorName;
 

@@ -39,7 +39,7 @@ public class StartHttAlcott2 {
 		}
 	}
 
-	private static final String FORTEWAVE_IDENT = "{319a5123-066b-44fe-b754-5cb16cc9c79d}"; // shared_uuid
+	private static final String FORTEWAVE_IDENT = "{319a5123-066b-44fe-b754-5cb16cc9c79d}"; // shared_uuid@g
 
 	private HttAlcott _ha = null; // 生存確認用
 	private Thread _th;

@@ -15,7 +15,7 @@ import charlotte.tools.ObjectList;
 import charlotte.tools.StringTools;
 
 public class HttServer {
-	private static final String COMMON_ID = "{7da01163-efa3-4941-a5a6-be0800720d8e}"; // shared_uuid
+	private static final String COMMON_ID = "{7da01163-efa3-4941-a5a6-be0800720d8e}"; // shared_uuid@g
 	private static final String EXCL_ID = COMMON_ID + "_e";
 	private static final String MUTEX_ID = COMMON_ID + "_m";
 	private static final String HTT_ID = COMMON_ID + "_h";
