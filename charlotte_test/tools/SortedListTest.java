@@ -17,6 +17,7 @@ public class SortedListTest {
 		catch(Throwable e) {
 			e.printStackTrace();
 		}
+		System.exit(0);
 	}
 
 	private static void main2() throws Exception {
