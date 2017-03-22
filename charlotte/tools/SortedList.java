@@ -111,15 +111,15 @@ public class SortedList<T> {
 	}
 
 	public int[] getRange(T ferret) {
-		return new int[] { leftIndexOf(ferret) - 1, rightIndexOf(ferret) + 1 };
-	}
-
-	public int[] getRangeWithoutEdge(T ferret) {
 		return new int[] { leftIndexOf(ferret), rightIndexOf(ferret) };
 	}
 
+	public int[] getRangeWithEdge(T ferret) {
+		return new int[] { leftIndexOf(ferret) - 1, rightIndexOf(ferret) + 1 };
+	}
+
 	public SubList<T> getMatch(T ferret) {
-		final int[] range = getRangeWithoutEdge(ferret);
+		final int[] range = getRange(ferret);
 
 		return new SubList<T>() {
 			@Override
@@ -135,7 +135,7 @@ public class SortedList<T> {
 	}
 
 	public SubList<T> getMatchWithEdge(T ferret) {
-		final int[] range = getRange(ferret);
+		final int[] range = getRangeWithEdge(ferret);
 
 		return new SubList<T>() {
 			@Override

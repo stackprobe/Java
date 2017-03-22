@@ -43,7 +43,7 @@ public class SortedListTest {
 		for(int c = 0; c < 20; c++) {
 			int value = MathTools.random(minval, maxval);
 
-			int[] r1 = sl.getRange(value);
+			int[] r1 = sl.getRangeWithEdge(value);
 			int[] r2 = psl.getRange(value);
 
 			System.out.println(r1[0] + ", " + r1[1] + ", " + (r1[1] - r1[0])); // test
