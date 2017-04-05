@@ -5,17 +5,18 @@ import java.io.IOException;
 import charlotte.saber.htt.HttSaberAlter;
 import charlotte.saber.htt.HttSaberRequest;
 import charlotte.saber.htt.HttSaberResponse;
+import charlotte.saber.htt.HttSaberX;
 import charlotte.tools.BlockBuffer;
 import charlotte.tools.StringTools;
 
 public class NestAlter implements HttSaberAlter {
 	@Override
-	public void flame(HttSaberRequest req) {
+	public void flame(HttSaberRequest req) throws HttSaberX {
 		// noop
 	}
 
 	@Override
-	public void flame(HttSaberRequest req, HttSaberResponse res) {
+	public void flame(HttSaberRequest req, HttSaberResponse res) throws HttSaberX {
 		try {
 			BlockBuffer buff = new BlockBuffer();
 

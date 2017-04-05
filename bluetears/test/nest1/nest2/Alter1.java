@@ -7,12 +7,13 @@ import java.util.List;
 import charlotte.saber.htt.HttSaberAlter;
 import charlotte.saber.htt.HttSaberRequest;
 import charlotte.saber.htt.HttSaberResponse;
+import charlotte.saber.htt.HttSaberX;
 import charlotte.tools.FileTools;
 import charlotte.tools.StringTools;
 
 public class Alter1 implements HttSaberAlter {
 	@Override
-	public void flame(HttSaberRequest req) {
+	public void flame(HttSaberRequest req) throws HttSaberX {
 		String alters = req.getHeaderFields().get("Alters");
 
 		if(alters == null) {
@@ -24,7 +25,7 @@ public class Alter1 implements HttSaberAlter {
 	}
 
 	@Override
-	public void flame(HttSaberRequest req, HttSaberResponse res) {
+	public void flame(HttSaberRequest req, HttSaberResponse res) throws HttSaberX {
 		try {
 			String text = new String(res.getBody(), StringTools.CHARSET_ASCII);
 			List<String> lines = FileTools.textToLines(text);

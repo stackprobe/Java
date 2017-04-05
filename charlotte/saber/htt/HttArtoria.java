@@ -42,6 +42,9 @@ public abstract class HttArtoria implements HttService, Closeable {
 		_ended = true;
 	}
 
+	/**
+	 * call by HttServer.perform()
+	 */
 	@Override
 	public boolean interlude() throws Exception {
 		return extra() || _ended == false;
@@ -148,35 +151,44 @@ public abstract class HttArtoria implements HttService, Closeable {
 			HttSaberResponse res;
 			List<HttSaberAlter> alterLinear = root.alters.getAlterLinear(urlPath);
 
-			flame(alterLinear, req);
+			try {
+				flame(alterLinear, req);
 
-			if(entry == null) {
-				res = getResponse301(root, urlPath, req);
-
-				if(res == null) {
-					HttSaberLily lily = root.lilies.getAlter(urlPath);
-
-					if(lily == null) {
-						lily = root.defLily;
-					}
-					res = lily.doRequest(req);
+				if(entry == null) {
+					res = getResponse301(root, urlPath, req);
 
 					if(res == null) {
-						throw new NullPointerException("HttSaberAlter.doRequest() returned null");
+						HttSaberLily lily = root.lilies.getAlter(urlPath);
+
+						if(lily == null) {
+							lily = root.defLily;
+						}
+						res = lily.doRequest(req);
+
+						if(res == null) {
+							throw new NullPointerException("HttSaberAlter.doRequest() returned null");
+						}
 					}
 				}
+				else if(entry.saber == null) {
+					res = download(entry.file);
+				}
+				else {
+					res = entry.saber.doRequest(req);
+
+					if(res == null) {
+						throw new NullPointerException("HttSaber.doRequest() returned null");
+					}
+				}
+				flame(alterLinear, req, res);
 			}
-			else if(entry.saber == null) {
-				res = download(entry.file);
-			}
-			else {
-				res = entry.saber.doRequest(req);
+			catch(HttSaberX e) {
+				res = e.getRes();
 
 				if(res == null) {
-					throw new NullPointerException("HttSaber.doRequest() returned null");
+					throw new NullPointerException("HttSaberX.getRes() returned null");
 				}
 			}
-			flame(alterLinear, req, res);
 			return getHttResponse(res);
 		}
 	}
@@ -497,7 +509,7 @@ public abstract class HttArtoria implements HttService, Closeable {
 	public HttSaberLily getDefLily() {
 		return new HttSaberLily() {
 			@Override
-			public HttSaberResponse doRequest(HttSaberRequest req) throws Exception {
+			public HttSaberResponse doRequest(HttSaberRequest req) throws Exception, HttSaberX {
 				HttSaberResponse res = createResponse();
 				res.setStatusCode(404);
 				return res;
@@ -666,13 +678,13 @@ public abstract class HttArtoria implements HttService, Closeable {
 		}
 	}
 
-	public void flame(List<HttSaberAlter> alterLinear, HttSaberRequest req) {
+	public void flame(List<HttSaberAlter> alterLinear, HttSaberRequest req) throws HttSaberX {
 		for(HttSaberAlter extra : alterLinear) {
 			extra.flame(req);
 		}
 	}
 
-	public void flame(List<HttSaberAlter> alterLinear, HttSaberRequest req, HttSaberResponse res) {
+	public void flame(List<HttSaberAlter> alterLinear, HttSaberRequest req, HttSaberResponse res) throws HttSaberX {
 		for(int index = alterLinear.size() - 1; 0 <= index; index--) {
 			alterLinear.get(index).flame(req, res);
 		}
