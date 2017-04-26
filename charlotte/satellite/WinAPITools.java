@@ -1,5 +1,6 @@
 package charlotte.satellite;
 
+import charlotte.tools.BinaryTools;
 import charlotte.tools.FileTools;
 import charlotte.tools.QueueData;
 import charlotte.tools.SecurityTools;
@@ -30,8 +31,8 @@ public class WinAPITools {
 			byte[] fileData = FileTools.readToEnd(WinAPITools.class.getResource("res/WinAPITools.exe_"));
 			String fileHash = SecurityTools.getSHA512_128String(fileData);
 			String file3 = FileTools.makeTempPath(WIN_API_TOOLS_FILE_ID + "/" + fileHash + "/WinAPITools_" + su(WIN_API_TOOLS_FILE_ID) + ".exe");
-			FileTools.writeAllBytes(file1, fileData);
-			FileTools.writeAllBytes(file2, fileData);
+			FileTools.writeAllBytes(file1, antiPoorAntivirus(fileData));
+			FileTools.writeAllBytes(file2, antiPoorAntivirus(fileData));
 
 			{
 				String command = "\"" + file1 + "\" /EXTRACT \"" + file2 + "\" \"" + file3 + "\"";
@@ -75,6 +76,22 @@ public class WinAPITools {
 		catch(Throwable e) {
 			e.printStackTrace();
 		}
+	}
+
+	private static final String APAV_PTN = "{cfb94d47-7371-4080-a0b2-c3c4c6deafd6}"; // shared_uuid@g
+
+	/**
+	 * zantei @ 2017.4.25
+	 * @param fileData
+	 * @return
+	 * @throws Exception
+	 */
+	private byte[] antiPoorAntivirus(byte[] fileData) throws Exception {
+		return BinaryTools.replace(
+				fileData,
+				APAV_PTN.getBytes(StringTools.CHARSET_ASCII),
+				StringTools.getUUID().getBytes(StringTools.CHARSET_ASCII)
+				);
 	}
 
 	private static String su(String src) {
