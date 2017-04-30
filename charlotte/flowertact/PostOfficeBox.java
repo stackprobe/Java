@@ -96,13 +96,13 @@ public class PostOfficeBox {
 	private void getMessageRange() {
 		String[] files = new File(_messageDir).list();
 
-		if(files == null) {
+		if(files == null || files.length == 0) {
 			_firstNo = -1;
 			_lastNo = -1;
 		}
 		else {
 			_firstNo = Integer.MAX_VALUE;
-			_lastNo = 0;
+			_lastNo = -1;
 
 			for(String file : files) {
 				int no = Integer.parseInt(file);
