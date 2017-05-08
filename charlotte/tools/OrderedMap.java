@@ -1,7 +1,6 @@
 package charlotte.tools;
 
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -33,8 +32,8 @@ public class OrderedMap<K, V> {
 		return _map.keySet();
 	}
 
-	public List<K> keyOrder() {
-		return _keyOrder.getList();
+	public Iterable<K> keyOrder() {
+		return _keyOrder.getIterable();
 	}
 
 	public V get(K key) {

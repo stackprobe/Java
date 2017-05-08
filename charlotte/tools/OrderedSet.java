@@ -2,6 +2,7 @@ package charlotte.tools;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -57,6 +58,45 @@ public class OrderedSet<T> {
 		return _map.size();
 	}
 
+	public Iterable<T> getIterable () {
+		return new Iterable<T>() {
+			@Override
+			public Iterator<T> iterator() {
+				return new Iterator<T>() {
+					private Link _curr;
+
+					private Iterator<T> init() {
+						_curr = _head.next;
+						return this;
+					}
+
+					@Override
+					public boolean hasNext() {
+						return _curr != _tail;
+					}
+
+					@Override
+					public T next() {
+						Link ret = _curr;
+						_curr = _curr.next;
+						return ret.element;
+					}
+				}
+				.init();
+			}
+		};
+	}
+
+	public List<T> getList() {
+		List<T> dest = new ArrayList<T>();
+
+		for(T element : getIterable()) {
+			dest.add(element);
+		}
+		return dest;
+	}
+	// old_same
+	/*
 	public List<T> getList() {
 		List<T> dest = new ArrayList<T>();
 
@@ -65,4 +105,5 @@ public class OrderedSet<T> {
 		}
 		return dest;
 	}
+	*/
 }

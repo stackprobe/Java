@@ -1,7 +1,6 @@
 package charlotte.tools;
 
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -58,7 +57,7 @@ public class ObjectMap {
 		return _map.keySet();
 	}
 
-	public List<String> keyOrder() {
+	public Iterable<String> keyOrder() {
 		return _map.keyOrder();
 	}
 
