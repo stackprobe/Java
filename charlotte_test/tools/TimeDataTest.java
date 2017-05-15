@@ -12,10 +12,17 @@ public class TimeDataTest {
 			test01("00010101000000");
 			test01("19990715131515");
 			test01("20040401090000");
+
+			System.out.println("" + TimeData.fromString("20000101000000").getEpochTime());
+			System.out.println("" + TimeData.fromString("30000101000000").getEpochTime());
+
+			System.out.println("" + TimeData.fromEpochTime(1000000000L).getString());
+			System.out.println("" + TimeData.fromEpochTime(32500000000L).getString());
 		}
 		catch(Throwable e) {
 			e.printStackTrace();
 		}
+		System.exit(0);
 	}
 
 	private static void test01(String src) throws Exception {
