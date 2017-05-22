@@ -39,9 +39,23 @@ public class DateTimeToSecTest {
 			//System.out.println("40000000000->" + DateTimeToSec.toDateTime(40000000000L));
 			//System.out.println("90000000000->" + DateTimeToSec.toDateTime(90000000000L));
 			//System.out.println("99999999999->" + DateTimeToSec.toDateTime(99999999999L));
+
+			{
+				long a = 63630399881L;
+				long b = 63630641801L;
+
+				long t = a + ((b - a) * 2) / 3;
+
+				long epoch = DateTimeToSec.toSec(19700101000000L);
+
+				//t += epoch; // posixじゃなかった...
+
+				System.out.println(DateTimeToSec.toDateTime(t));
+			}
 		}
 		catch(Throwable e) {
 			e.printStackTrace();
 		}
+		System.exit(0);
 	}
 }
