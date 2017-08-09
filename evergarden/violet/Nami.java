@@ -47,7 +47,7 @@ public class Nami {
 	 */
 	private static void doHako2() throws Exception {
 		{
-			Bmp bmp = Bmp.fromFile("C:/Dev/Game/Hako2/Resource/ぱくたそ/140726167640~1000.jpg");
+			Bmp bmp = Bmp.fromFile("C:/Dev/Game/Hako2/Resource/pakutaso/140726167640~1000.jpg");
 			bmp.expand(600, 400);
 			bmp.writeToFile("C:/temp/hako2.png");
 		}
@@ -60,7 +60,7 @@ public class Nami {
 
 		doNami2(
 				"C:/temp/hako2.png",
-				"C:/Dev/Game/Hako2/Resource/ぱくたそ/floor2_nami/floor2_nami_", ".png",
+				"C:/Dev/Game/Hako2/Resource/pakutaso/floor2_nami/floor2_nami_", ".png",
 				24, 1, 1,
 				0.0, 0.013, 13.0,
 				0.0, 0.017, 11.0,
@@ -69,7 +69,7 @@ public class Nami {
 		/*
 		doNami2(
 				"C:/temp/hako2.png",
-				"C:/Dev/Game/Hako2/Resource/ぱくたそ/floor2_nami/floor2_nami_", ".png",
+				"C:/Dev/Game/Hako2/Resource/pakutaso/floor2_nami/floor2_nami_", ".png",
 				16, 1, 1,
 				0.0, 0.003, 7.0,
 				0.0, 0.007, 7.0,
