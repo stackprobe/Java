@@ -1,10 +1,10 @@
 Java codes
 ==========
 
-Java�ŏ������R�[�h�̊񂹏W�߂ł��B
+Javaで書いたコードの寄せ集めです。
 
 
-�J����
+開発環境
 --------
 
 	Windows 7 Home Premium
