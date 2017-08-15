@@ -274,6 +274,14 @@ public class Bmp {
 		}
 	}
 
+	public void simplePaste(Bmp surface, int l, int t) {
+		for(int x = 0; x < surface.getWidth(); x++) {
+			for(int y = 0; y < surface.getHeight(); y++) {
+				setDot(l + x, t + y, surface.getDot(x, y));
+			}
+		}
+	}
+
 	public Bmp extend(int l, int t, int r, int b) {
 		return extend(l, t, r, b, new Dot(DUMMY_R, DUMMY_G, DUMMY_B, DUMMY_A));
 	}
