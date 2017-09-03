@@ -11,6 +11,9 @@ import charlotte.tools.ThreadTools;
 
 /**
  * don't enable 'Kill WinAPITools.exe Zombies' @ 2016.12.21
+ * -- 停止中(END実行後)に HttAlcott._mo などの WinAPITools が Kill されてしまうからじゃないかと思う。
+ *
+ * 操作は C:\Factory\Program\StartHttAlcott2\Client.c から行う。
  *
  */
 public class StartHttAlcott2 {
