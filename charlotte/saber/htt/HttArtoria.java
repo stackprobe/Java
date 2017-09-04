@@ -496,7 +496,15 @@ public abstract class HttArtoria implements HttService, Closeable {
 	public HttSaberResponse download(File file) throws Exception {
 		HttSaberResponse res = createResponse();
 
-		res.getHeaderFields().put("Content-Type", getContentType(file));
+		String contentType = getContentType(file);
+
+		// zantei >
+		if(contentType.equals("text/html")) {
+			contentType += "; charset=" + StringTools.CHARSET_UTF8;
+		}
+		// < zantei
+
+		res.getHeaderFields().put("Content-Type", contentType);
 		res.setBodyFile(file);
 
 		return res;
