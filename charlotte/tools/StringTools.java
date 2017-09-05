@@ -1,5 +1,6 @@
 package charlotte.tools;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -931,6 +932,24 @@ public class StringTools {
 				ret = "-" + ret;
 			}
 			return ret;
+		}
+	}
+
+	public static String toString(byte[] block, String charset) {
+		try {
+			return new String(block, charset);
+		}
+		catch(UnsupportedEncodingException e) {
+			throw RunnableEx.re(e);
+		}
+	}
+
+	public static byte[] getBytes(String str, String charset) {
+		try {
+			return str.getBytes(charset);
+		}
+		catch(UnsupportedEncodingException e) {
+			throw RunnableEx.re(e);
 		}
 	}
 }
