@@ -18,7 +18,7 @@ public class Black implements HttSaber {
 			HttSaberResponse res = HttArtoria.i().createResponse();
 
 			res.getHeaderFields().put("Content-Type", "text/html; charset=UTF-8");
-			res.setBody(StringTools.getBytes("<html><body>throw @ Black</body></html>", StringTools.CHARSET_UTF8));
+			res.setBody("<html><body>throw @ Black</body></html>".getBytes(StringTools.CHARSET_UTF8));
 
 			throw new HttSaberX(res); // OrangeAlfter.frame(req, res); は呼ばれないよ。
 		}
@@ -26,7 +26,7 @@ public class Black implements HttSaber {
 		HttSaberResponse res = HttArtoria.i().createResponse();
 
 		res.getHeaderFields().put("Content-Type", "text/html; charset=UTF-8");
-		res.setBody(StringTools.getBytes("<html><body><h1>makoto-kun works!</h1></body></html>", StringTools.CHARSET_UTF8));
+		res.setBody("<html><body><h1>makoto-kun works!</h1></body></html>".getBytes(StringTools.CHARSET_UTF8));
 
 		return res;
 	}
