@@ -601,9 +601,14 @@ public class Bmp {
 		return bmp;
 	}
 
+	private static boolean _trimCheckLW_Alert;
+
 	private void trimCheckLW(String title, int l, int w) {
 		double rate = (double)l / w;
-		(rate < 0.1 ? System.err : System.out).println(title + l + " (" + rate + ") " + w);
+		if(rate < 0.1) {
+			_trimCheckLW_Alert = true;
+		}
+		(_trimCheckLW_Alert ? System.err : System.out).println(title + l + " (" + rate + ") " + w);
 	}
 
 	public int trimmed_l = -1;
