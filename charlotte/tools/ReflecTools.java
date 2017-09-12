@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ReflecTools {
 	/**
@@ -273,6 +274,21 @@ public class ReflecTools {
 		return FileTools.combine(getBinDir(critClassObj), classObj.getName().replace('.', '/')) + ".class";
 	}
 
+	public static Class<?> getClass(Class<?> critClassObj, String file) throws Exception {
+		file = FileTools.eraseRoot(file, getBinDir(critClassObj));
+		file = StringTools.removeEndsWithIgnoreCase(file, ".class");
+		file = file.replace('/', '.');
+		System.out.println("getClass_name: " + file); // test
+		return Class.forName(file);
+	}
+
+	public static Package getPackage(Class<?> critClassObj, String dir) throws Exception {
+		dir = FileTools.eraseRoot(dir, getBinDir(critClassObj));
+		dir = dir.replace('/', '.');
+		System.out.println("getPackage_name: " + dir); // test
+		return Package.getPackage(dir);
+	}
+
 	public static String getBinDir(Class<?> critClassObj) {
 		String className = critClassObj.getSimpleName();
 		URL url = critClassObj.getResource(className + ".class");
@@ -290,5 +306,22 @@ public class ReflecTools {
 			path = FileTools.eraseLocal(path);
 		}
 		return path;
+	}
+
+	public static List<Class<?>> getClasses(Class<?> critClassObj, Package p) {
+		return FileTools.ls(ReflecTools.getDir(critClassObj, p))
+				.stream()
+				.filter(file -> FileTools.getExt(file).equalsIgnoreCase("class"))
+				.filter(file -> file.indexOf("$") == -1)
+				.map(file -> RunnableEx.call(() -> getClass(critClassObj, file)))
+				.collect(Collectors.<Class<?>>toList());
+	}
+
+	public static List<Package> getPackages(Class<?> critClassObj, Package p) {
+		return FileTools.ls(ReflecTools.getDir(critClassObj, p))
+				.stream()
+				.filter(dir -> FileTools.isDirectory(dir))
+				.map(dir -> RunnableEx.call(() -> getPackage(critClassObj, dir)))
+				.collect(Collectors.<Package>toList());
 	}
 }

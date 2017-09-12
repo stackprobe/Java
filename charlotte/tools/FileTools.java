@@ -506,6 +506,17 @@ public class FileTools {
 		return path;
 	}
 
+	public static String eraseRoot(String path, String oldRootPath) throws Exception {
+		path = FileTools.norm(path);
+		oldRootPath = FileTools.norm(oldRootPath + "/");
+
+		if(StringTools.startsWith(path, oldRootPath) == false) {
+			throw new Exception("path is not starts with old-root-path.");
+		}
+		path = path.substring(oldRootPath.length());
+		return path;
+	}
+
 	public static String toCreatable(String path) {
 		if(FileTools.exists(path)) {
 			String prefix = FileTools.eraseExt(path) + "~";

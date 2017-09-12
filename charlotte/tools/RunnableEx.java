@@ -1,5 +1,7 @@
 package charlotte.tools;
 
+import java.util.concurrent.Callable;
+
 public abstract class RunnableEx {
 	public abstract void run() throws Exception;
 
@@ -57,5 +59,14 @@ public abstract class RunnableEx {
 			return (RuntimeException)e;
 		}
 		return new RuntimeException(e);
+	}
+
+	public static <T> T call(Callable<T> action) {
+		try {
+			return action.call();
+		}
+		catch(Throwable e) {
+			throw re(e);
+		}
 	}
 }
