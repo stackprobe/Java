@@ -56,6 +56,10 @@ public class BmpTools {
 			_spcW = _bmps.get("-").getWidth();
 		}
 
+		public void setSpaceWidth(int spcW) {
+			_spcW = spcW;
+		}
+
 		public Bmp getStringBmp(String str) {
 			List<Bmp> bmps = new ArrayList<Bmp>();
 			int w = -1;
