@@ -5,7 +5,7 @@ import javax.swing.UIManager;
 import cecilia.htt.HttAlcott;
 import charlotte.flowertact.Fortewave;
 import charlotte.htt.HttServer;
-import charlotte.tools.FaultOperation;
+import charlotte.tools.FailedOperation;
 import charlotte.tools.StringTools;
 import charlotte.tools.ThreadTools;
 
@@ -26,7 +26,7 @@ public class StartHttAlcott2 {
 			new StartHttAlcott2().main2();
 		}
 		catch(Throwable e) {
-			FaultOperation.caught(null, e, "StartHttAlcott2");//e.printStackTrace();
+			FailedOperation.caught(null, e, "StartHttAlcott2");//e.printStackTrace();
 		}
 		System.exit(0);
 	}

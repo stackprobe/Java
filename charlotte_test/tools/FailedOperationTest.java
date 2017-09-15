@@ -4,9 +4,9 @@ import javax.swing.UIManager;
 
 import charlotte.tools.Cancelled;
 import charlotte.tools.Completed;
-import charlotte.tools.FaultOperation;
+import charlotte.tools.FailedOperation;
 
-public class FaultOperationTest {
+public class FailedOperationTest {
 	public static void main(String[] args) {
 		try {
 			UIManager.setLookAndFeel(
@@ -26,8 +26,8 @@ public class FaultOperationTest {
 	private static void test01() {
 		test01(Completed.i);
 		test01(Cancelled.i);
-		test01(FaultOperation.i);
-		test01(new FaultOperation("ぎねすびあ0"));
+		test01(FailedOperation.i);
+		test01(new FailedOperation("ぎねすびあ0"));
 		test01(new Exception());
 		test01(new Exception("ぎねすびあ"));
 		test01(new RuntimeException());
@@ -43,10 +43,10 @@ public class FaultOperationTest {
 			throw e;
 		}
 		catch(Throwable ex) {
-			FaultOperation.caught(null, ex, "ほっとわいん");
+			FailedOperation.caught(null, ex, "ほっとわいん");
 		}
 		/*/
-		FaultOperation.caught(null, e, "ほっとわいん");
+		FailedOperation.caught(null, e, "ほっとわいん");
 		//*/
 	}
 }

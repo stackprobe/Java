@@ -6,14 +6,14 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-public class FaultOperation extends RuntimeException {
-	public static final FaultOperation i = new FaultOperation();
+public class FailedOperation extends RuntimeException {
+	public static final FailedOperation i = new FailedOperation();
 
-	public FaultOperation() {
+	public FailedOperation() {
 		super("失敗しました。");
 	}
 
-	public FaultOperation(String message) {
+	public FailedOperation(String message) {
 		super(message);
 	}
 
@@ -37,7 +37,7 @@ public class FaultOperation extends RuntimeException {
 					JOptionPane.WARNING_MESSAGE
 					);
 		}
-		else if(e instanceof FaultOperation) {
+		else if(e instanceof FailedOperation) {
 			JOptionPane.showMessageDialog(
 					parent,
 					getMessage(e),

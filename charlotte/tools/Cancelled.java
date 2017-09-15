@@ -1,5 +1,5 @@
 package charlotte.tools;
 
-public class Cancelled extends FaultOperation {
+public class Cancelled extends FailedOperation {
 	public static final Cancelled i = new Cancelled();
 }
