@@ -16,6 +16,7 @@ public abstract class Threader<T> implements ValueSetter<T>, Closeable {
 		if(entry == null) {
 			throw new IllegalArgumentException("entry is null");
 		}
+
 		try {
 			synchronized(SYNCROOT) {
 				_entries.set(entry);

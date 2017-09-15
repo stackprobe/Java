@@ -260,7 +260,7 @@ public class ArrayTools {
 		return true;
 	}
 
-	private static <T> boolean isSame(T a, T b, Comparator<T> comp) {
+	public static <T> boolean isSame(T a, T b, Comparator<T> comp) {
 		if(a == null && b == null) {
 			return true;
 		}
@@ -268,6 +268,58 @@ public class ArrayTools {
 			return false;
 		}
 		return comp.compare(a, b) == 0;
+	}
+
+	/**
+	 * any < null
+	 * @param list1
+	 * @param list2
+	 * @param comp
+	 * @return
+	 */
+	public static <T> int comp(List<T> list1, List<T> list2, Comparator<T> comp) {
+		if(list1 == null && list2 == null) {
+			return 0;
+		}
+		if(list1 == null) {
+			return 1;
+		}
+		if(list2 == null) {
+			return -1;
+		}
+		int size = Math.min(list1.size(), list2.size());
+
+		for(int index = 0; index < size; index++) {
+			T a = list1.get(index);
+			T b = list2.get(index);
+
+			int ret = comp(a, b, comp);
+
+			if(ret != 0) {
+				return ret;
+			}
+		}
+		return list1.size() - list2.size();
+	}
+
+	/**
+	 * any < null
+	 * @param a
+	 * @param b
+	 * @param comp
+	 * @return
+	 */
+	public static <T> int comp(T a, T b, Comparator<T> comp) {
+		if(a == null && b == null) {
+			return 0;
+		}
+		if(a == null) {
+			return 1;
+		}
+		if(b == null) {
+			return -1;
+		}
+		return comp.compare(a, b);
 	}
 
 	public static int[] toArray(List<Integer> src) {
