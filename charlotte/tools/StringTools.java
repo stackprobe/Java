@@ -933,4 +933,13 @@ public class StringTools {
 			return ret;
 		}
 	}
+
+	public static String[] toStrings(int[] src) {
+		String[] dest = new String[src.length];
+
+		for(int index = 0; index < src.length; index++) {
+			dest[index] = "" + src[index];
+		}
+		return dest;
+	}
 }
