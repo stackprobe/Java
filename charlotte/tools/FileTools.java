@@ -521,14 +521,14 @@ public class FileTools {
 		return toCreatable(path, 1);
 	}
 
-	public static String toCreatable(String path, int zeroPaddingMinLen) {
+	public static String toCreatable(String path, int zPadMinLen) {
 		if(FileTools.exists(path)) {
 			String prefix = FileTools.eraseExt(path) + "~";
 			String suffix = FileTools.getExtWithDot(path);
 			int c = 2;
 
 			do {
-				path = prefix + StringTools.zPad(c, zeroPaddingMinLen) + suffix;
+				path = prefix + StringTools.zPad(c, zPadMinLen) + suffix;
 				c++;
 			}
 			while(FileTools.exists(path));
