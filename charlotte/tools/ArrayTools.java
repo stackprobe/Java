@@ -239,7 +239,7 @@ public class ArrayTools {
 		if(block1.size() != block2.size()) {
 			return false;
 		}
-		return isSame(block1.getMaster(), block1.getStartPos(), block2.getMaster(), block2.getStartPos(), block1.size());
+		return isSame(block1.getBlock(), block1.getStartPos(), block2.getBlock(), block2.getStartPos(), block1.size());
 	}
 
 	public static <T> boolean isSame(List<T> list1, List<T> list2, Comparator<T> comp) {

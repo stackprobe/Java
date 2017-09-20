@@ -57,7 +57,7 @@ public class SecurityTools {
 
 	public static byte[] getSHA512(SubBytes block) throws Exception {
 		MessageDigest md = MessageDigest.getInstance("SHA-512");
-		md.update(block.getMaster(), block.getStartPos(), block.size());
+		md.update(block.getBlock(), block.getStartPos(), block.size());
 		byte[] ret = md.digest();
 		return ret;
 	}
