@@ -64,6 +64,10 @@ public class SecurityTools {
 
 	private static Random _cRandom = new SecureRandom();
 
+	public static int cRandom() {
+		return _cRandom.nextInt();
+	}
+
 	public static int cRandom(int modulo) {
 		return _cRandom.nextInt(modulo);
 	}

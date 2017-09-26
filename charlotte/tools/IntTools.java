@@ -145,11 +145,11 @@ public class IntTools {
 		return value;
 	}
 
-	public static int toUnsignedInt(String str, int defval) {
-		return toUnsignedInt(str, 10, defval);
+	public static int toUInt(String str, int defval) {
+		return toUInt(str, 10, defval);
 	}
 
-	public static int toUnsignedInt(String str, int radix, int defval) {
+	public static int toUInt(String str, int radix, int defval) {
 		try {
 			return (int)(Long.parseLong(str, radix) & 0xffffffffL);
 		}
@@ -264,5 +264,21 @@ public class IntTools {
 
 	public static String toBin(int value) {
 		return toString(value, 2);
+	}
+
+	public static String toUString(int value, int radix, int minlen) {
+		return StringTools.zPad(Long.toString(value & 0xffffffffL, radix), minlen);
+	}
+
+	public static String toUHex(int value) {
+		return toUString(value, 16, 8); // 00000000 - ffffffff
+	}
+
+	public static String toUOct(int value) {
+		return toUString(value, 8, 11); // 00000000000 - 37777777777
+	}
+
+	public static String toUBin(int value) {
+		return toUString(value, 2, 32); // 00000000000000000000000000000000 - 11111111111111111111111111111111
 	}
 }

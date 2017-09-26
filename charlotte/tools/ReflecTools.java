@@ -324,4 +324,10 @@ public class ReflecTools {
 				.map(dir -> RunnableEx.call(() -> getPackage(critClassObj, dir)))
 				.collect(Collectors.<Package>toList());
 	}
+
+	public static String getLocal(Package pkg) {
+		String name = pkg.getName();
+		name = name.substring(name.lastIndexOf('.') + 1);
+		return name;
+	}
 }

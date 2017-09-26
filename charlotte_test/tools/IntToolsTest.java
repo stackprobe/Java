@@ -15,9 +15,14 @@ public class IntToolsTest {
 	}
 
 	private static void test01() throws Exception {
-		System.out.println("" + IntTools.toUnsignedInt("00000000", 16, -9999));
-		System.out.println("" + IntTools.toUnsignedInt("7fffffff", 16, -9999));
-		System.out.println("" + IntTools.toUnsignedInt("80000000", 16, -9999));
-		System.out.println("" + IntTools.toUnsignedInt("ffffffff", 16, -9999));
+		System.out.println("" + IntTools.toUInt("00000000", 16, -9999));
+		System.out.println("" + IntTools.toUInt("7fffffff", 16, -9999));
+		System.out.println("" + IntTools.toUInt("80000000", 16, -9999));
+		System.out.println("" + IntTools.toUInt("ffffffff", 16, -9999));
+
+		System.out.println(IntTools.toUHex(0));
+		System.out.println(IntTools.toUHex(0x7fffffff));
+		System.out.println(IntTools.toUHex(0x80000000));
+		System.out.println(IntTools.toUHex(-1));
 	}
 }
