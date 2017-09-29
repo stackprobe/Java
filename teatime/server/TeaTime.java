@@ -18,7 +18,7 @@ public class TeaTime {
 			@Override
 			public void run() {
 				try {
-					_service.dead = false;
+					_service.alive = true;
 					HttServer.perform(_service);
 				}
 				catch(Throwable e) {
@@ -30,7 +30,7 @@ public class TeaTime {
 	}
 
 	public void end() {
-		_service.dead = true;
+		_service.alive = false;
 		ThreadTools.join(_th);
 		_th = null;
 	}
