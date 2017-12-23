@@ -268,6 +268,7 @@ public class EraDate {
 			new EraInfo(19120730, "大正", "T"),
 			new EraInfo(19261225, "昭和", "S"),
 			new EraInfo(19890108, "平成", "H"),
+			new EraInfo(20190501, null),
 			// ここへ追加..
 	};
 

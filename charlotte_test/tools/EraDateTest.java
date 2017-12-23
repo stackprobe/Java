@@ -18,5 +18,6 @@ public class EraDateTest {
 		catch(Throwable e) {
 			e.printStackTrace();
 		}
+		System.exit(0);
 	}
 }
