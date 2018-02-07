@@ -2,6 +2,10 @@ package charlotte.tools;
 
 import java.util.TimeZone;
 
+/**
+ * 1000/1/1 00:00:00 ～ 9999/12/31 23:59:59
+ *
+ */
 public class DateTimeToSec {
 	public static long toSec(long dateTime) {
 		if(dateTime < 10000101000000L || 99991231235959L < dateTime) {

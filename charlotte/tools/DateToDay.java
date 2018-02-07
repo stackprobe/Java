@@ -2,6 +2,10 @@ package charlotte.tools;
 
 import java.util.TimeZone;
 
+/**
+ * 1000/1/1 ～ 9999/12/31
+ *
+ */
 public class DateToDay {
 	public static int toDay(int date) {
 		if(date < 10000101 || 99991231 < date) {
