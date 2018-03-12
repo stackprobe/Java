@@ -35,7 +35,7 @@ public class WinAPITools {
 			FileTools.writeAllBytes(file2, antiPoorAntivirus(fileData));
 
 			{
-				String command = "\"" + file1 + "\" /EXTRACT \"" + file2 + "\" \"" + file3 + "\"";
+				String command = "\"" + file1 + "\" /EXTRACT \"" + file2 + "\" \"" + file3 + "\" \"" + file3 + ".delay\"";
 				//System.out.println(command); // test
 				Runtime.getRuntime().exec(command).waitFor();
 			}
@@ -152,7 +152,7 @@ public class WinAPITools {
 	}
 
 	public void deleteDelayUntilReboot(String targetPath) {
-		go("/DELETE-DELAY-UNTIL-REBOOT \"" + targetPath + "\"");
+		go("/DELETE-DELAY-UNTIL-REBOOT \"" + targetPath + "\" \"" + _winAPIToolsFile + ".delay\"");
 	}
 
 	public boolean isProcessAlive(int pid) {
