@@ -62,33 +62,33 @@ public class SortedListTest {
 			this.comp = comp;
 		}
 
-		public int[] getRange(T ferret) {
+		public int[] getRange(T target) {
 			ArrayTools.sort(list, comp);
 
 			return new int[] {
-					getLowest(ferret),
-					getHighest(ferret)
+					getLowest(target),
+					getHighest(target)
 			};
 		}
 
-		private int getLowest(T ferret) {
+		private int getLowest(T target) {
 			int index;
 
 			for(index = 0;
 					index < list.size() &&
-					comp.compare(list.get(index), ferret) < 0;
+					comp.compare(list.get(index), target) < 0;
 					index++
 					) {
 			}
 			return index;
 		}
 
-		private int getHighest(T ferret) {
+		private int getHighest(T target) {
 			int index;
 
 			for(index = list.size() - 1;
 					0 <= index &&
-					0 < comp.compare(list.get(index), ferret);
+					0 < comp.compare(list.get(index), target);
 					index--
 					) {
 			}

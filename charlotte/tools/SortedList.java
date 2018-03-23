@@ -43,11 +43,11 @@ public class SortedList<T> {
 		ArrayTools.<T>sort(_list, _comp);
 	}
 
-	public boolean contains(T ferret) {
-		return indexOf(ferret) != -1;
+	public boolean contains(T target) {
+		return indexOf(target) != -1;
 	}
 
-	public int indexOf(T ferret) {
+	public int indexOf(T target) {
 		sortIfNeed();
 
 		int l = -1;
@@ -55,7 +55,7 @@ public class SortedList<T> {
 
 		while (l + 1 < r) {
 			int m = (l + r) / 2;
-			int ret = _comp.compare(_list.get(m), ferret);
+			int ret = _comp.compare(_list.get(m), target);
 
 			if (ret < 0) {
 				l = m;
@@ -70,7 +70,7 @@ public class SortedList<T> {
 		return -1; // not found
 	}
 
-	public int leftIndexOf(T ferret) {
+	public int leftIndexOf(T target) {
 		sortIfNeed();
 
 		int l = 0;
@@ -78,7 +78,7 @@ public class SortedList<T> {
 
 		while (l < r) {
 			int m = (l + r) / 2;
-			int ret = _comp.compare(_list.get(m), ferret);
+			int ret = _comp.compare(_list.get(m), target);
 
 			if (ret < 0) {
 				l = m + 1;
@@ -90,7 +90,7 @@ public class SortedList<T> {
 		return l;
 	}
 
-	public int rightIndexOf(T ferret) {
+	public int rightIndexOf(T target) {
 		sortIfNeed();
 
 		int l = -1;
@@ -98,7 +98,7 @@ public class SortedList<T> {
 
 		while (l < r) {
 			int m = (l + r + 1) / 2;
-			int ret = _comp.compare(_list.get(m), ferret);
+			int ret = _comp.compare(_list.get(m), target);
 
 			if (0 < ret) {
 				r = m - 1;
@@ -110,16 +110,16 @@ public class SortedList<T> {
 		return r;
 	}
 
-	public int[] getRange(T ferret) {
-		return new int[] { leftIndexOf(ferret), rightIndexOf(ferret) };
+	public int[] getRange(T target) {
+		return new int[] { leftIndexOf(target), rightIndexOf(target) };
 	}
 
-	public int[] getRangeWithEdge(T ferret) {
-		return new int[] { leftIndexOf(ferret) - 1, rightIndexOf(ferret) + 1 };
+	public int[] getRangeWithEdge(T target) {
+		return new int[] { leftIndexOf(target) - 1, rightIndexOf(target) + 1 };
 	}
 
-	public SubList<T> getMatch(T ferret) {
-		final int[] range = getRange(ferret);
+	public SubList<T> getMatch(T target) {
+		final int[] range = getRange(target);
 
 		return new SubList<T>() {
 			@Override
@@ -134,8 +134,8 @@ public class SortedList<T> {
 		};
 	}
 
-	public SubList<T> getMatchWithEdge(T ferret) {
-		final int[] range = getRangeWithEdge(ferret);
+	public SubList<T> getMatchWithEdge(T target) {
+		final int[] range = getRangeWithEdge(target);
 
 		return new SubList<T>() {
 			@Override
@@ -164,10 +164,10 @@ public class SortedList<T> {
 		_comp = _lastComp;
 	}
 
-	public SubList<T> getMatch(T ferret, Comparator<T> comp) {
+	public SubList<T> getMatch(T target, Comparator<T> comp) {
 		setComp(comp);
 		try {
-			return getMatch(ferret);
+			return getMatch(target);
 		}
 		finally {
 			restoreComp();
