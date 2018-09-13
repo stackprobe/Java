@@ -33,7 +33,13 @@ public class XStruct {
 			branch.min = Math.min(branch.min, count);
 			branch.max = Math.max(branch.max, count);
 		}
-		this.values.add(root.getValue());
+
+		// values を valueLiestMax + 1 個以下にする。
+		if(this.values.size() < valueListMax + 1) {
+			this.values.add(root.getValue());
+		}
+
+		//this.values.add(root.getValue());
 	}
 
 	private int getCount(List<XNode> nodes, String name) {
