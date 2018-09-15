@@ -38,8 +38,6 @@ public class XStruct {
 		if(this.values.size() < valueListMax + 1) {
 			this.values.add(root.getValue());
 		}
-
-		//this.values.add(root.getValue());
 	}
 
 	private int getCount(List<XNode> nodes, String name) {
