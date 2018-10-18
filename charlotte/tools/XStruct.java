@@ -7,6 +7,7 @@ import java.util.Set;
 
 public class XStruct {
 	public static int valueListMax = 10;
+	public static int valueLenMax = 10000;
 
 	public int min = 1;
 	public int max = 1;
@@ -34,9 +35,20 @@ public class XStruct {
 			branch.max = Math.max(branch.max, count);
 		}
 
-		// values を valueLiestMax + 1 個以下にする。
 		if(this.values.size() < valueListMax + 1) {
-			this.values.add(root.getValue());
+			String value;
+
+			if(this.values.size() < valueListMax) {
+				value = root.getValue();
+
+				if(valueLenMax < value.length()) {
+					value = value.substring(0, valueLenMax) + " ...";
+				}
+			}
+			else {
+				value = ""; // dummy
+			}
+			this.values.add(value);
 		}
 	}
 
