@@ -111,69 +111,69 @@ public class Canvas2 {
 		chr = Character.toUpperCase(chr);
 
 		switch(chr) {
-		case '.': drPtn = 0x0000100; break;
-		case '-': drPtn = 0x0001000; break;
-		case '=': drPtn = 0x0001100; break;
-		case '0': drPtn = 0x1110111; break;
-		case '1': drPtn = 0x0000011; break;
-		case '2': drPtn = 0x0111110; break;
-		case '3': drPtn = 0x0011111; break;
-		case '4': drPtn = 0x1001011; break;
-		case '5': drPtn = 0x1011101; break;
-		case '6': drPtn = 0x1111101; break;
-		case '7': drPtn = 0x1010011; break;
-		case '8': drPtn = 0x1111111; break;
-		case '9': drPtn = 0x1011111; break;
-		case 'A': drPtn = 0x1111011; break;
-		case 'B': drPtn = 0x1101101; break;
-		case 'C': drPtn = 0x1110100; break;
-		case 'D': drPtn = 0x0101111; break;
-		case 'E': drPtn = 0x1111100; break;
-		case 'F': drPtn = 0x1111000; break;
-		case 'G': drPtn = 0x1110101; break;
-		case 'H': drPtn = 0x1101001; break;
-		case 'I': drPtn = 0x0110100; break;
-		case 'J': drPtn = 0x0100111; break;
-		case 'K': drPtn = 0x1111001; break;
-		case 'L': drPtn = 0x1100100; break;
-		case 'M': drPtn = 0x0111001; break;
-		case 'N': drPtn = 0x0101001; break;
-		case 'O': drPtn = 0x0101101; break;
-		case 'P': drPtn = 0x1111010; break;
-		case 'Q': drPtn = 0x1011011; break;
-		case 'R': drPtn = 0x0101000; break;
-		case 'S': drPtn = 0x1001101; break;
-		case 'T': drPtn = 0x1101100; break;
-		case 'U': drPtn = 0x0100101; break;
-		case 'V': drPtn = 0x1101010; break;
-		case 'W': drPtn = 0x0110101; break;
-		case 'X': drPtn = 0x1101011; break;
-		case 'Y': drPtn = 0x1001111; break;
-		case 'Z': drPtn = 0x0110110; break;
+		case '.': drPtn = 0b0000100; break;
+		case '-': drPtn = 0b0001000; break;
+		case '=': drPtn = 0b0001100; break;
+		case '0': drPtn = 0b1110111; break;
+		case '1': drPtn = 0b0000011; break;
+		case '2': drPtn = 0b0111110; break;
+		case '3': drPtn = 0b0011111; break;
+		case '4': drPtn = 0b1001011; break;
+		case '5': drPtn = 0b1011101; break;
+		case '6': drPtn = 0b1111101; break;
+		case '7': drPtn = 0b1010011; break;
+		case '8': drPtn = 0b1111111; break;
+		case '9': drPtn = 0b1011111; break;
+		case 'A': drPtn = 0b1111011; break;
+		case 'B': drPtn = 0b1101101; break;
+		case 'C': drPtn = 0b1110100; break;
+		case 'D': drPtn = 0b0101111; break;
+		case 'E': drPtn = 0b1111100; break;
+		case 'F': drPtn = 0b1111000; break;
+		case 'G': drPtn = 0b1110101; break;
+		case 'H': drPtn = 0b1101001; break;
+		case 'I': drPtn = 0b0110100; break;
+		case 'J': drPtn = 0b0100111; break;
+		case 'K': drPtn = 0b1111001; break;
+		case 'L': drPtn = 0b1100100; break;
+		case 'M': drPtn = 0b0111001; break;
+		case 'N': drPtn = 0b0101001; break;
+		case 'O': drPtn = 0b0101101; break;
+		case 'P': drPtn = 0b1111010; break;
+		case 'Q': drPtn = 0b1011011; break;
+		case 'R': drPtn = 0b0101000; break;
+		case 'S': drPtn = 0b1001101; break;
+		case 'T': drPtn = 0b1101100; break;
+		case 'U': drPtn = 0b0100101; break;
+		case 'V': drPtn = 0b1100111; break;
+		case 'W': drPtn = 0b0110101; break;
+		case 'X': drPtn = 0b1101011; break;
+		case 'Y': drPtn = 0b1001111; break;
+		case 'Z': drPtn = 0b0110110; break;
 
 		default:
-			drPtn = 0x0111010;
+			drPtn = 0b0111010;
 			break;
 		}
-		if((drPtn & 0x1000000) != 0) {
+		if((drPtn & 0b1000000) != 0) {
 			drawLine(l, t, l, t + span, color);
 		}
-		if((drPtn & 0x100000) != 0) {
+		if((drPtn & 0b100000) != 0) {
 			drawLine(l, t + span, l, t + dSpan, color);
 		}
-		if((drPtn & 0x10000) != 0) {
+		if((drPtn & 0b10000) != 0) {
 			drawLine(l, t, l + span, t, color);
 		}
-		if((drPtn & 0x1000) != 0) {
+		if((drPtn & 0b1000) != 0) {
 			drawLine(l, t + span, l + span, t + span, color);
 		}
-		if((drPtn & 0x100) != 0) {
+		if((drPtn & 0b100) != 0) {
 			drawLine(l, t + dSpan, l + span, t + dSpan, color);
 		}
-		if((drPtn & 0x10) != 0) {
+		if((drPtn & 0b10) != 0) {
 			drawLine(l + span, t, l + span, t + span, color);
 		}
-		if((drPtn & 0x1) != 0) {
+		if((drPtn & 0b1) != 0) {
 			drawLine(l + span, t + span, l + span, t + dSpan, color);
 		}
 		return span + 1;
