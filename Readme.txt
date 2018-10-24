@@ -8,5 +8,5 @@ Javaで書いたコードの寄せ集めです。
 --------
 
 Windows 10 Pro | Windows 7 Professional
-Java 1.8.0_172
+Java 1.8.0_181
 
