@@ -103,7 +103,7 @@ public class SorterTest {
 				Sorter.sort(list);
 				break;
 			case 2:
-				Sorter.insertSort(list);
+				Sorter.selectionSort(list);
 				break;
 			case 3:
 				Sorter.combSort(list);

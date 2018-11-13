@@ -16,7 +16,7 @@ public abstract class Sorter {
 			int begin = ranges.pop();
 
 			if(end - begin < 16) {
-				insertSort(list, begin, end);
+				selectionSort(list, begin, end);
 				continue;
 			}
 			if(100 <= ranges.size()) {
@@ -69,11 +69,11 @@ public abstract class Sorter {
 		}
 	}
 
-	public static <T> void insertSort(Sortable<T> list) {
-		insertSort(list, 0, list.size());
+	public static <T> void selectionSort(Sortable<T> list) {
+		selectionSort(list, 0, list.size());
 	}
 
-	public static <T> void insertSort(Sortable<T> list, int begin, int end) {
+	public static <T> void selectionSort(Sortable<T> list, int begin, int end) {
 		for(int l = begin; l + 1 < end; l++) {
 			int minPos = l;
 
