@@ -41,7 +41,7 @@ public class WinAPITools {
 			}
 
 			FileTools.delete(file1);
-			FileTools.delete(file2); // 無いこともある。
+			FileTools.delete(file2); //	無いこともある。
 			_winAPIToolsFile = file3;
 			_monitorName = StringTools.getUUID();
 
