@@ -1,13 +1,21 @@
 ----
 WinAPITools.exe
 
+
 source code:
 	https://github.com/stackprobe/Factory/blob/master/Satellite/extern/WinAPITools.c
+
 
 newest binary code:
 	http://stackprobe.dip.jp/_kit/Factory
 
 	http://stackprobe.dip.jp/_kit/Factory/Factory.zip
 
-		<Factory.zip>/Satellite/extern/WinAPITools.exe
+		<Factory.zip>\Satellite\extern\WinAPITools.exe
+
+
+conversion:
+	COPY C:\Factory\Satellite\extern\WinAPITools.exe .\WinAPITools.exe_
+	C:\Factory\SubTools\EmbedConfig.exe --factory-dir-disabled .\WinAPITools.exe_
+
 
