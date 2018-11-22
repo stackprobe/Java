@@ -9,6 +9,7 @@ public class SatellizerTest {
 		try {
 			//test01();
 			test02();
+			//test02_2();
 			//test03_client();
 		}
 		catch(Throwable e) {
@@ -113,6 +114,81 @@ public class SatellizerTest {
 		th.join();
 		System.out.println("e2");
 	}
+
+	// ng
+	/*
+	private static void test02_2() throws Exception {
+		final boolean[] deadFlagBox = new boolean[]{ false };
+
+		Thread th = new Thread(){
+			@Override
+			public void run() {
+				System.out.println("s1");
+
+				try {
+					Thread.sleep(100);
+
+					Satellizer.listen("AAA", "BBB", 2000, new Satellizer.Server() {
+						@Override
+						public boolean interlude() throws Exception {
+							return deadFlagBox[0] == false;
+						}
+
+						@Override
+						public void serviceTh(Satellizer stllzr) throws Exception {
+							Object obj = stllzr.recv(2000);
+
+							if(obj != null) {
+								stllzr.send("[" + obj + "]");
+							}
+						}
+					});
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				System.out.println("s2");
+			}
+		};
+		th.start();
+
+		Thread[] ths = new Thread[20];
+
+		for(int d = 0; d < ths.length; d++) {
+			final int f_d = d;
+
+			ths[d] = new Thread(() -> {
+				try {
+					for(int c = 0; c < 20; c++) {
+						Satellizer client = new Satellizer("AAA", "CCC");
+
+						client.connect(2000);
+						client.send("TEST_" + f_d + "_" + c);
+						Object obj = client.recv(2000);
+						System.out.println("recvObj_" + f_d + "_" + c + ": " + obj);
+
+						client.close();
+					}
+				}
+				catch(Throwable e) {
+					e.printStackTrace();
+				}
+			});
+		}
+		for(int d = 0; d < ths.length; d++) {
+			ths[d].start();
+		}
+		for(int d = 0; d < ths.length; d++) {
+			ths[d].join();
+		}
+
+		System.out.println("e1");
+		deadFlagBox[0] = true;
+		th.join();
+		System.out.println("e2");
+	}
+	*/
 
 	private static void test03_client() throws Exception {
 		{

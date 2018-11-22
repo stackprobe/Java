@@ -7,11 +7,10 @@ source code:
 
 
 newest binary code:
-	http://stackprobe.dip.jp/_kit/Factory
-
+	http://stackprobe.dip.jp/_kit/Factory  --->  download Factory.zip
 	http://stackprobe.dip.jp/_kit/Factory/Factory.zip
 
-		<Factory.zip>\Satellite\extern\WinAPITools.exe
+	<Factory.zip>\Satellite\extern\WinAPITools.exe
 
 
 conversion:
