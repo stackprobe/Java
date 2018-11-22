@@ -6,6 +6,9 @@ public class Satellizer {
 	private boolean _connected;
 
 	public Satellizer(String group, String ident) throws Exception {
+		if(1 == 1) {
+			throw new UnsupportedOperationException("Sorry, This class works improperly !!!"); // ★★★★★★★★★★★★★★★★★★★★
+		}
 		if(group == null) {
 			throw new NullPointerException("group");
 		}
@@ -26,6 +29,9 @@ public class Satellizer {
 	}
 
 	public static void listen(String group, String ident, long millis, final Server server) throws Exception {
+		if(1 == 1) {
+			throw new UnsupportedOperationException("Sorry, This method works improperly !!!"); // ★★★★★★★★★★★★★★★★★★★★
+		}
 		if(group == null) {
 			throw new NullPointerException("group");
 		}

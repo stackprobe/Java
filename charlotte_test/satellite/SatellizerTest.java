@@ -7,8 +7,8 @@ import charlotte.tools.ObjectMap;
 public class SatellizerTest {
 	public static void main(String[] args) {
 		try {
-			//test01();
-			test02();
+			test01();
+			//test02();
 			//test02_2();
 			//test03_client();
 		}
@@ -115,8 +115,10 @@ public class SatellizerTest {
 		System.out.println("e2");
 	}
 
-	// ng
-	/*
+	/**
+	 * ng!
+	 *
+	 */
 	private static void test02_2() throws Exception {
 		final boolean[] deadFlagBox = new boolean[]{ false };
 
@@ -188,7 +190,6 @@ public class SatellizerTest {
 		th.join();
 		System.out.println("e2");
 	}
-	*/
 
 	private static void test03_client() throws Exception {
 		{
