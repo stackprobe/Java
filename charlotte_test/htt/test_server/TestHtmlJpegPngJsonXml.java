@@ -94,7 +94,7 @@ public class TestHtmlJpegPngJsonXml implements HttService {
 			ImageIO.write(bi, "jpeg", new BufferedOutputStream(mem));
 			byte[] jpegImage = mem.toByteArray();
 
-			return new HttResFileImage(jpegImage, "*.jpeg");
+			return new HttResFileImage(jpegImage, "$.jpeg");
 		}
 		else if("/test0003.png".equals(path)) {
 			BufferedImage bi = new BufferedImage(800, 600, BufferedImage.TYPE_3BYTE_BGR);
@@ -124,7 +124,7 @@ public class TestHtmlJpegPngJsonXml implements HttService {
 			ImageIO.write(bi, "png", new BufferedOutputStream(mem));
 			byte[] pngImage = mem.toByteArray();
 
-			return new HttResFileImage(pngImage, "*.png");
+			return new HttResFileImage(pngImage, "$.png");
 		}
 		else if("/test0004.json".equals(path)) {
 			String[] lines = new String[] {
@@ -135,7 +135,7 @@ public class TestHtmlJpegPngJsonXml implements HttService {
 
 			String text = String.join("\r\n", lines) + "\r\n";
 
-			return new HttResFileImage(text.getBytes("UTF-8"), "*.json");
+			return new HttResFileImage(text.getBytes("UTF-8"), "$.json");
 		}
 		else if("/test0005.xml".equals(path)) {
 			String[] lines = new String[] {
@@ -148,7 +148,7 @@ public class TestHtmlJpegPngJsonXml implements HttService {
 
 			String text = String.join("\r\n", lines) + "\r\n";
 
-			return new HttResFileImage(text.getBytes("UTF-8"), "*.xml");
+			return new HttResFileImage(text.getBytes("UTF-8"), "$.xml");
 		}
 
 		{
