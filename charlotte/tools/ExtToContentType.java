@@ -234,6 +234,10 @@ public class ExtToContentType {
 			"m4v", "video/mp4",
 			"mp4", "video/mp4",
 			"ogv", "video/ogg",
+
+			// 2018.11.28 追加
+
+			"json", "application/json",
 	};
 
 	public static final String DEF_EXT = "bin";
