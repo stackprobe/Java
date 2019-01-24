@@ -1,0 +1,123 @@
+Fortewave for Java
+==================
+
+プロセス間通信モジュールです。
+このモジュールを実装した他のプロセスと通信できます。
+通信相手は C# 版でもok
+
+
+通信の形態
+----------
+
+	メッセージ・キュー方式
+
+		接続・切断は無い。
+
+	通信データはバイトストリームではなく以下のオブジェクト
+
+		SERIALIZABLE_OBJECT:
+			byte[]
+			| charlotte.satellite.ObjectList # 値は SERIALIZABLE_CHILD_OBJECT
+			| charlotte.satellite.ObjectMap  # 値は SERIALIZABLE_CHILD_OBJECT, キーは null 不可
+			| String
+
+		SERIALIZABLE_CHILD_OBJECT:
+			SERIALIZABLE_OBJECT
+			| null
+
+
+動作環境
+--------
+
+	Windows 7
+	確認していませんが Windows 8/8.1/10 でも動くかもしれません。
+
+	Java
+
+
+必要なパッケージ
+----------------
+
+	charlotte.flowertact
+	charlotte.satellite
+	charlotte.satellite.res
+	charlotte.tools
+
+
+組み込み方法
+------------
+
+	1. 「必要なパッケージ」をソース（プロジェクト）に組み込む
+
+
+使用するクラス
+--------------
+
+	charlotte.satellite.ObjectList
+
+		java.util.List<Object> をラップしたクラス
+
+	charlotte.satellite.ObjectMap
+
+		java.util.Map<String, Object> をラップしたクラス
+
+	charlotte.flowertact.Fortewave
+
+		このモジュールの外部インターフェイス
+
+	charlotte.satellite.Satellizer
+
+		# Satellite_for_Java.txt を参照して下さい。
+
+
+	★これ以外の charlotte.flowertact, charlotte.satellite パッケージ内のクラスは使用しないで下さい。
+
+
+インターフェイス
+----------------
+
+	public Fortewave(String rIdent, String wIdent) throws Exception;
+
+		コンストラクタです。
+		★このコンストラクタはスレッドセーフです。
+
+		rIdent ... 読み込み先_識別名
+		wIdent ... 書き込み先_識別名
+
+		生成した Fortewave を破棄する前に close を呼び出して下さい。
+		close せずにプロセスを終了すると、実行した子プロセスが停止するまで時間が掛かることがあります。
+
+	public synchronized void clear() throws Exception;
+
+		上り・下りの未受信データを削除します。
+		★このメソッドはスレッドセーフです。
+
+	public synchronized void send(Object sendObj) throws Exception;
+
+		データを送信します。
+		★このメソッドはスレッドセーフです。
+
+		sendObj ... 送信データ
+
+		送信データは SERIALIZABLE_OBJECT でなればなりません。
+		この送信は必ず成功します。
+		相手側が切断していても、相手側の次の接続・受信まで保持されます。
+		そうさせないためには、相手側が受信する前に clear を呼び出して下さい。
+		このメソッドが終了した時点で、相手側が受信しているかどうかは分かりません。
+
+	public synchronized Object recv(long millis) throws Exception;
+
+		データを受信します。
+		★このメソッドはスレッドセーフです。
+
+		millis ... 受信をトライし続ける時間（ミリ秒）
+		戻り値 ... 受信に成功すれば「受信データ」、そうでなければ null
+
+		受信データは SERIALIZABLE_OBJECT の何れかです。
+		受信データが null であった場合、受信失敗と区別付きません。
+
+	public synchronized void close();
+
+		このオブジェクトを破棄します。
+		★このメソッドはスレッドセーフです。
+

@@ -1,0 +1,15 @@
+Blue Fortewave
+==============
+
+Fortewave for Java の高速版です。
+
+送信は非同期で行われます。
+sendメソッド終了時に送信が完了していない可能性があることに注意して下さい。
+
+送信、受信共にバッファを使用します。
+プログラム終了時、バッファに残ったデータは破棄されることに注意して下さい。
+
+使用するクラス
+--------------
+
+	charlotte.flowertact.Fortewave の代わりに charlotte.flowertact.BlueFortewave を使う。
