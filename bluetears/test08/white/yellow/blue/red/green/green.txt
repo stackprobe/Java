@@ -1,1 +1,0 @@
-ここは green.txt -- WhiteAlter.java が charset=UTF-8 を付けてくれるはず。
