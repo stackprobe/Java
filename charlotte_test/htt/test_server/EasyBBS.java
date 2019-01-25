@@ -137,7 +137,7 @@ public class EasyBBS implements HttService {
 			String text = format;
 
 			text = text.replace("${DATE-TIME}", TimeData.fromTimeStamp(remark.dateTime).getString("Y/M/D (W) h:m:s"));
-			text = text.replace("${IP}", encode(remark.ipAddress));
+			text = text.replace("${IP}", remark.ipAddress);
 			text = text.replace("${USER}", encode(remark.user));
 			text = text.replace("${E-MAIL}", encode(remark.eMailAddress));
 			text = text.replace("${MESSAGE}", encodeMultiLineText(remark.message));
