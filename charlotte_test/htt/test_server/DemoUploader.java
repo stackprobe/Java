@@ -288,12 +288,9 @@ public class DemoUploader implements HttService {
 			byte b = data[index];
 			int i = b & 0xff;
 
-			if(index == 4020) {
+			if(index == 1000) {
 				buff.append("...");
 				break;
-			}
-			if(index % 40 == 0 && index != 0) {
-				buff.append("<br/>");
 			}
 			buff.append(StringTools.hexadecimal.charAt(i / 16));
 			buff.append(StringTools.hexadecimal.charAt(i % 16));
