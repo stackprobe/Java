@@ -13,10 +13,18 @@ import charlotte.htt.HttServer;
 import charlotte.htt.HttService;
 import charlotte.htt.response.HttResFileImage;
 import charlotte.htt.response.HttResHtml;
+import charlotte.tools.ExtToContentType;
 import charlotte.tools.FileTools;
+import charlotte.tools.HTTPServer;
 import charlotte.tools.MapTools;
 import charlotte.tools.StringTools;
 
+/**
+ * 大きなファイルをアップロードしようとすると、HTT_RPC の制限によって失敗するかもしれません。
+ * タスクトレイの HTT_RPC アイコンを右クリック -> 設定 -> 詳細設定から Request Content-Length Max を十分大きな値にして下さい。
+ * 但し(当たり前ですが)大きくするほど負荷も増大します。
+ *
+ */
 public class DemoUploader implements HttService {
 	public static void main(String[] args) {
 		try {
@@ -63,11 +71,12 @@ public class DemoUploader implements HttService {
 	}
 
 	private byte[] _lastUploadedFileData;
+	private String _lastUploadedFile;
 
 	@Override
 	public HttResponse service(HttRequest req) throws Exception {
-		if(req.getUrl().getPath().equals("/uploaded-file.bin")) {
-			return new HttResFileImage(_lastUploadedFileData, "$.bin");
+		if(req.getUrl().getPath().startsWith("/uploaded-file/")) {
+			return new HttResFileImage(_lastUploadedFileData, _lastUploadedFile);
 		}
 
 		if(req.getUrl().getPath().equals("/upload")) {
@@ -81,13 +90,21 @@ public class DemoUploader implements HttService {
 
 			String html = new String(FileTools.readToEnd(this.getClass().getResource("res/DemoUploader_Uploaded.html")), StringTools.CHARSET_UTF8);
 
-			html = html.replace("${OVERVIEW}", getOverview(getFileType(uploadFile.data)));
+			String htmlFileName = uploadFile.fileName();
+			int i = htmlFileName.lastIndexOf('/');
+			htmlFileName = htmlFileName.substring(i + 1);
+			i = htmlFileName.lastIndexOf('\\');
+			htmlFileName = htmlFileName.substring(i + 1);
+			htmlFileName = HTTPServer.encodeUrl(htmlFileName, StringTools.CHARSET_UTF8);
+
+			html = html.replace("${OVERVIEW}", getOverview(htmlFileName, getFileType(uploadFile.fileName())));
 			html = html.replace("${FILE-NAME}", uploadFile.fileName());
 			html = html.replace("${FILE-SIZE}", "" + uploadFile.data.length);
 			html = html.replace("${SUPPLEMENT}", new String(supplement.data, StringTools.CHARSET_UTF8));
 			html = html.replace("${FILE-DATA-HEX}", toHex(uploadFile.data));
 
 			_lastUploadedFileData = uploadFile.data;
+			_lastUploadedFile = uploadFile.fileName();
 
 			return new HttResHtml(html);
 		}
@@ -231,47 +248,36 @@ public class DemoUploader implements HttService {
 		return true;
 	}
 
-	private String getOverview(String fileType) {
+	private String getOverview(String fileName, String fileType) {
 		if("image".equals(fileType)) {
-			return "<img src='/uploaded-file.bin'/>";
+			return "<a href='/uploaded-file/" + fileName + "'><img src='/uploaded-file/" + fileName + "' style='max-height: 75vh;'/></a>";
 		}
-		if("movie".equals(fileType)) {
-			return "<video src='/uploaded-file.bin'/>";
+		if("video".equals(fileType)) {
+			return "<video src='/uploaded-file/" + fileName + "' controls style='max-height: 75vh;'></video>";
 		}
 		if("audio".equals(fileType)) {
-			return "<audio src='/uploaded-file.bin'/>";
+			return "<audio src='/uploaded-file/" + fileName + "' controls></audio>";
 		}
-		return "<a href='/uploaded-file.bin'>Download</a>";
+		return "<a href='/uploaded-file/" + fileName + "'>Download</a>";
 	}
 
-	private String getFileType(byte[] data) throws Exception {
-		if(equals(data, 0, "BM".getBytes(StringTools.CHARSET_ASCII), 0, 2)) { // ? bmp
-			return "image";
-		}
-		if(equals(data, 0, "GIF87a".getBytes(StringTools.CHARSET_ASCII), 0, 6)) { // ? gif(1)
-			return "image";
-		}
-		if(equals(data, 0, "GIF89a".getBytes(StringTools.CHARSET_ASCII), 0, 6)) { // ? gif(2)
-			return "image";
-		}
-		if(equals(data, 0, StringTools.hex("ffd8"), 0, 2)) { // ? jpeg
-			return "image";
-		}
-		if(equals(data, 0, StringTools.hex("89504e470d0a1a0a"), 0, 8)) { // ? png
-			return "image";
-		}
+	private String getFileType(String fileName) throws Exception {
+		String ext = fileName;
+		int i = ext.lastIndexOf('.');
+		ext = ext.substring(i + 1);
+		ext = ext.toLowerCase();
 
-		if(equals(data, 0, "RIFF".getBytes(StringTools.CHARSET_ASCII), 0, 2)) { // ? avi
+		String contentType = ExtToContentType.getContentType(ext);
+
+		if(contentType.startsWith("image/")) {
+			return "image";
+		}
+		if(contentType.startsWith("video/")) {
 			return "video";
 		}
-		if(equals(data, 0, StringTools.hex("000000206674797069736f6d00000200"), 0, 16)) { // ? mp4
-			return "video";
-		}
-
-		if(equals(data, 0, StringTools.hex("fff340c0"), 0, 4)) { // ? mp3
+		if(contentType.startsWith("audio/")) {
 			return "audio";
 		}
-
 		return null;
 	}
 
