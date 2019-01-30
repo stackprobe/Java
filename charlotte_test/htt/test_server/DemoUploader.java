@@ -20,9 +20,9 @@ import charlotte.tools.MapTools;
 import charlotte.tools.StringTools;
 
 /**
- * 大きなファイルをアップロードしようとすると、HTT_RPC の制限によって失敗するかもしれません。
- * タスクトレイの HTT_RPC アイコンを右クリック -> 設定 -> 詳細設定から Request Content-Length Max を十分大きな値にして下さい。
- * 但し(当たり前ですが)大きくするほど負荷も増大します。
+ *	大きなファイルをアップロードしようとすると、HTT_RPC の制限によって失敗するかもしれません。
+ *	タスクトレイの HTT_RPC アイコンを右クリック -> 設定 -> 詳細設定から Request Content-Length Max を十分大きな値にして下さい。
+ *	但し(当たり前ですが)値を大きくするほど負荷も増大します。
  *
  */
 public class DemoUploader implements HttService {
