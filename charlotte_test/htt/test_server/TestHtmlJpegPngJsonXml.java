@@ -68,11 +68,17 @@ public class TestHtmlJpegPngJsonXml implements HttService {
 			StringBuffer buff = new StringBuffer();
 
 			buff.append("<html>");
-			buff.append("<body>");
+			buff.append("<body style='font-size: 50px;'>");
 			buff.append("This is test0001.html<br/>");
-			buff.append("<h1>☃☃☃☃☃</h1>");
-			buff.append("<h1>☃☃☃☃☃</h1>");
-			buff.append("<h1>☃☃☃☃☃</h1>");
+			buff.append("<marquee>TEST</marquee>");
+			buff.append("<marquee>TEST ☃ TEST</marquee>");
+			buff.append("<marquee>TEST ☃ TEST ☃ TEST</marquee>");
+			buff.append("<marquee>TEST ☃ TEST ☃ TEST ☃ TEST</marquee>");
+			buff.append("<marquee>TEST ☃ TEST ☃ TEST ☃ TEST ☃ TEST</marquee>");
+			buff.append("<marquee>TEST ☃ TEST ☃ TEST ☃ TEST ☃ TEST ☃ TEST</marquee>");
+			buff.append("<marquee>TEST ☃ TEST ☃ TEST ☃ TEST ☃ TEST ☃ TEST ☃ TEST</marquee>");
+			buff.append("<marquee>TEST ☃ TEST ☃ TEST ☃ TEST ☃ TEST ☃ TEST ☃ TEST ☃ TEST</marquee>");
+			buff.append("<marquee>TEST ☃ TEST ☃ TEST ☃ TEST ☃ TEST ☃ TEST ☃ TEST ☃ TEST ☃ TEST</marquee>");
 			buff.append("<a href=\"/\">return</a>");
 			buff.append("</body>");
 			buff.append("</html>");

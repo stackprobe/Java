@@ -236,7 +236,10 @@ public class DemoUploader implements HttService {
 			return "<img src='/uploaded-file.bin'/>";
 		}
 		if("movie".equals(fileType)) {
-			// TODO
+			return "<video src='/uploaded-file.bin'/>";
+		}
+		if("audio".equals(fileType)) {
+			return "<audio src='/uploaded-file.bin'/>";
 		}
 		return "<a href='/uploaded-file.bin'>Download</a>";
 	}
@@ -258,7 +261,16 @@ public class DemoUploader implements HttService {
 			return "image";
 		}
 
-		// TODO
+		if(equals(data, 0, "RIFF".getBytes(StringTools.CHARSET_ASCII), 0, 2)) { // ? avi
+			return "video";
+		}
+		if(equals(data, 0, StringTools.hex("000000206674797069736f6d00000200"), 0, 16)) { // ? mp4
+			return "video";
+		}
+
+		if(equals(data, 0, StringTools.hex("fff340c0"), 0, 4)) { // ? mp3
+			return "audio";
+		}
 
 		return null;
 	}
@@ -270,6 +282,10 @@ public class DemoUploader implements HttService {
 			byte b = data[index];
 			int i = b & 0xff;
 
+			if(index == 4020) {
+				buff.append("...");
+				break;
+			}
 			if(index % 40 == 0 && index != 0) {
 				buff.append("<br/>");
 			}
