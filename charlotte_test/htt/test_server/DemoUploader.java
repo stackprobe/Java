@@ -19,12 +19,6 @@ import charlotte.tools.HTTPServer;
 import charlotte.tools.MapTools;
 import charlotte.tools.StringTools;
 
-/**
- *	大きなファイルをアップロードしようとすると、HTT_RPC の制限によって失敗するかもしれません。
- *	タスクトレイの HTT_RPC アイコンを右クリック -> 設定 -> 詳細設定から Request Content-Length Max を十分大きな値にして下さい。
- *	但し(当たり前ですが)値を大きくするほど負荷も増大します。
- *
- */
 public class DemoUploader implements HttService {
 	public static void main(String[] args) {
 		try {
@@ -258,7 +252,9 @@ public class DemoUploader implements HttService {
 		if("audio".equals(fileType)) {
 			return "<audio src='/uploaded-file/" + fileName + "' controls></audio>";
 		}
-		return "<a href='/uploaded-file/" + fileName + "'>Download</a>";
+		return
+				"<a href='/uploaded-file/" + fileName + "'>Open</a>&nbsp;" +
+				"<a href='/uploaded-file/" + fileName + "' download>Download</a>";
 	}
 
 	private String getFileType(String fileName) throws Exception {
