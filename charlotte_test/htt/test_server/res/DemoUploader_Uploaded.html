@@ -5,7 +5,23 @@
 <body>
 uploaded file:<br/>
 
-${OVERVIEW}
+<_overview>
+	<_image>
+		<a href="/uploaded-file/${FILE-NAME}">
+			<img src="/uploaded-file/${FILE-NAME}" style="max-height: 75vh;" />
+		</a>
+	</_image>
+	<_video>
+		<video src="/uploaded-file/${FILE-NAME}" controls style="max-height: 75vh;"></video>
+	</_video>
+	<_audio>
+		<audio src="/uploaded-file/${FILE-NAME}" controls></audio>
+	</_audio>
+	<_default>
+		<a href="/uploaded-file/${FILE-NAME}">Open</a>&nbsp;
+		<a href="/uploaded-file/${FILE-NAME}" download>Download</a>
+	</_default>
+</_overview>
 
 <hr/>
 file-name: ${FILE-NAME}<br/>

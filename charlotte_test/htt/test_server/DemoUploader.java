@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import javax.swing.JOptionPane;
 
@@ -90,8 +91,9 @@ public class DemoUploader implements HttService {
 			i = htmlFileName.lastIndexOf('\\');
 			htmlFileName = htmlFileName.substring(i + 1);
 			htmlFileName = HTTPServer.encodeUrl(htmlFileName, StringTools.CHARSET_UTF8);
+			final String f_htmlFileName = htmlFileName;
 
-			html = html.replace("${OVERVIEW}", getOverview(htmlFileName, getFileType(uploadFile.fileName())));
+			html = processTag(html, "_overview", innerHtml -> getOverview(innerHtml, f_htmlFileName, getFileType(uploadFile.fileName())));
 			html = html.replace("${FILE-NAME}", uploadFile.fileName());
 			html = html.replace("${FILE-SIZE}", "" + uploadFile.data.length);
 			html = html.replace("${SUPPLEMENT}", new String(supplement.data, StringTools.CHARSET_UTF8));
@@ -242,22 +244,32 @@ public class DemoUploader implements HttService {
 		return true;
 	}
 
-	private String getOverview(String fileName, String fileType) {
-		if("image".equals(fileType)) {
-			return "<a href='/uploaded-file/" + fileName + "'><img src='/uploaded-file/" + fileName + "' style='max-height: 75vh;'/></a>";
-		}
-		if("video".equals(fileType)) {
-			return "<video src='/uploaded-file/" + fileName + "' controls style='max-height: 75vh;'></video>";
-		}
-		if("audio".equals(fileType)) {
-			return "<audio src='/uploaded-file/" + fileName + "' controls></audio>";
-		}
-		return
-				"<a href='/uploaded-file/" + fileName + "'>Open</a>&nbsp;" +
-				"<a href='/uploaded-file/" + fileName + "' download>Download</a>";
+	private String processTag(String html, String tagName, Function<String, String> processor) {
+		String openTag = String.format("<%s>", tagName);
+		String closeTag = String.format("</%s>", tagName);
+
+		StringTools.Enclosed encl = StringTools.getEnclosed(html, openTag, closeTag);
+		String innerHtml = encl.innerText;
+
+		innerHtml = processor.apply(innerHtml);
+
+		html = html.substring(0, encl.bgnBgn) + innerHtml + html.substring(encl.endEnd);
+		return html;
 	}
 
-	private String getFileType(String fileName) throws Exception {
+	private String getOverview(String innerHtml, String fileName, String fileType) {
+		String openTag = String.format("<%s>", fileType);
+		String closeTag = String.format("</%s>", fileType);
+
+		StringTools.Enclosed encl = StringTools.getEnclosed(innerHtml, openTag, closeTag);
+		innerHtml = encl.innerText;
+
+		innerHtml = innerHtml.replace("${FILE-NAME}", fileName);
+
+		return innerHtml;
+	}
+
+	private String getFileType(String fileName) {
 		String ext = fileName;
 		int i = ext.lastIndexOf('.');
 		ext = ext.substring(i + 1);
@@ -266,15 +278,15 @@ public class DemoUploader implements HttService {
 		String contentType = ExtToContentType.getContentType(ext);
 
 		if(contentType.startsWith("image/")) {
-			return "image";
+			return "_image";
 		}
 		if(contentType.startsWith("video/")) {
-			return "video";
+			return "_video";
 		}
 		if(contentType.startsWith("audio/")) {
-			return "audio";
+			return "_audio";
 		}
-		return null;
+		return "_default";
 	}
 
 	private static String toHex(byte[] data) {
