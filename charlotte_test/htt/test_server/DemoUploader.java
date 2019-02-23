@@ -171,7 +171,7 @@ public class DemoUploader implements HttService {
 
 			// FIXME This code is inadequate
 
-			String line = new String(Arrays.copyOf(body, index)); // maybe Content-Disposition:
+			String line = new String(Arrays.copyOf(body, index), StringTools.CHARSET_UTF8); // maybe Content-Disposition:
 
 			for(String entry : line.split("[:]", 2)[1].split("[;]")) {
 				String[] tokens = entry.split("[=]", 2);
