@@ -266,7 +266,7 @@ public class Bmp {
 					int valg = getC(l + x, t + y, col);
 					int val = vals * as + valg * ag;
 
-					val = (int)LongTools.divRndOff(val, 255);
+					val = (int)LongTools.divRndOff(val, as + ag);
 
 					setC(l + x, t + y, col, val);
 				}
