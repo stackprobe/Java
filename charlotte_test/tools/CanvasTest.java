@@ -203,14 +203,14 @@ public class CanvasTest {
 		test03_0(canvas, 900, Color.WHITE);
 		test03_0(canvas, 850, new Color(100, 100, 255));
 
-		test03_4(canvas,  0, new Color(0, 0, 100));
-		test03_4(canvas, 20, Color.WHITE);
+		test03_5(canvas,  0, new Color(0, 0, 100));
+		test03_5(canvas, 20, Color.WHITE);
 
 		bmp.DUMMY_A = 0;
 		bmp.DUMMY_R = 255;
 		bmp.DUMMY_G = 255;
 		bmp.DUMMY_B = 255;
-		bmp = bmp.rotate(0.2 - 0.05, ROT_DIV);
+		bmp = bmp.rotate(Math.PI / 4.0 + 0.2, ROT_DIV);
 
 		test03_3(bmp);
 
@@ -254,6 +254,13 @@ public class CanvasTest {
 		canvas.drawCircle(500, 765, 150 - minus, color);
 		canvas.fillSameColor(500, 765, color);
 		canvas.fillRectCenter(500, 360, 280 - minus * 2, 490 - minus * 2, color);
+	}
+
+	private static void test03_5(Canvas canvas, int minus, Color color) {
+		canvas.drawCircle(500, 470, 385 - minus, color);
+		canvas.drawCircle(500, 500, 200 + minus, color);
+		canvas.fillSameColor(500, 150, color);
+		canvas.fillRectCenter(500, 700, 270 - minus * 2, 400 - minus * 2, color);
 	}
 
 	private static void test03_write(Bmp bmp, String kind) throws Exception {
