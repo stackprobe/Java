@@ -193,6 +193,34 @@ public class CanvasTest {
 		bmp = bmp.rotate(-0.2, ROT_DIV);
 
 		test03_write(bmp, "Information");
+
+		// ----
+
+		bmp = new Bmp(1000, 1000, new Color(255, 255, 255, 0));
+		canvas = new Canvas(bmp);
+
+		test03_0(canvas, 950, new Color(120, 150, 120));
+		test03_0(canvas, 900, Color.WHITE);
+		test03_0(canvas, 850, new Color(100, 100, 255));
+
+		test03_4(canvas,  0, new Color(0, 0, 100));
+		test03_4(canvas, 20, Color.WHITE);
+
+		bmp.DUMMY_A = 0;
+		bmp.DUMMY_R = 255;
+		bmp.DUMMY_G = 255;
+		bmp.DUMMY_B = 255;
+		bmp = bmp.rotate(0.2 - 0.05, ROT_DIV);
+
+		test03_3(bmp);
+
+		bmp.DUMMY_A = 0;
+		bmp.DUMMY_R = 255;
+		bmp.DUMMY_G = 255;
+		bmp.DUMMY_B = 255;
+		bmp = bmp.rotate(-0.2, ROT_DIV);
+
+		test03_write(bmp, "Question");
 	}
 
 	private static void test03_0(Canvas canvas, int wh, Color color) {
