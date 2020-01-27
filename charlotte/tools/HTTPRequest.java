@@ -145,7 +145,7 @@ public class HTTPRequest {
 			if(_proxyDomain == null) {
 				write(ws, _path);
 			}
-			else if(_proxyPortNo == 80) {
+			else if(_portNo == 80) {
 				write(ws, "http://" + _domain + _path);
 			}
 			else {
