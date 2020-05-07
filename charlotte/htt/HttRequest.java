@@ -98,6 +98,10 @@ public class HttRequest {
 		}
 	}
 
+	public long getBodyPartLength() {
+		return getBodyPartFile().length();
+	}
+
 	/**
 	 * @deprecated
 	 */
