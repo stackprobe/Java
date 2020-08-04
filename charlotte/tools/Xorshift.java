@@ -55,6 +55,6 @@ public class Xorshift {
 
 	public int nextInt(int modulo) {
 		if(modulo < 1) throw null;
-		return (int)((next() & 0xffffffffL) % modulo); // FIXME
+		return (int)((next() & 0xffffffffL) % modulo); // HACK
 	}
 }

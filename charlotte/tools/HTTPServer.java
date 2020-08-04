@@ -57,7 +57,7 @@ public abstract class HTTPServer extends SockServer {
 		private void sendPrep() {
 			resHeaderFields.put("Server", HTTPServer.class.getName());
 			resHeaderFields.put("Connection", "close");
-			resHeaderFields.remove("Transfer-Encoding"); // FIXME iruka...?
+			resHeaderFields.remove("Transfer-Encoding"); // HACK iruka...?
 
 			if(resBody != null) {
 				resHeaderFields.put("Content-Length", "" + resBody.length);

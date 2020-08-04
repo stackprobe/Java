@@ -137,9 +137,9 @@ public class XNode {
 
 		// old
 		/*
-		value = value.replace("　", StringTools.S_ESCAPE); // XXX
+		value = value.replace("　", StringTools.S_ESCAPE); // HACK
 		value = value.trim();
-		value = value.replace(StringTools.S_ESCAPE, "　"); // XXX
+		value = value.replace(StringTools.S_ESCAPE, "　"); // HACK
 		*/
 
 		return value;

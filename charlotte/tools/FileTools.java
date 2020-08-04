@@ -492,7 +492,7 @@ public class FileTools {
 	public static String eraseExt(String path) {
 		int index;
 
-		// XXX Urlのクエリ対策
+		// HACK Urlのクエリ対策
 		index = path.lastIndexOf('?');
 		if(index != -1) {
 			path = path.substring(0, index);
@@ -707,7 +707,7 @@ public class FileTools {
 			wrf.add("COM" + c);
 			wrf.add("LPT" + c);
 		}
-		// XXX グレーゾーン {
+		// HACK グレーゾーン {
 		wrf.add("COM0");
 		wrf.add("LPT0");
 		wrf.add("CLOCK$");
@@ -740,7 +740,7 @@ public class FileTools {
 		for(int index = 0; index < nodes.size(); index++) {
 			String node = nodes.get(index);
 
-			node = node.trim(); // XXX
+			node = node.trim(); // HACK
 
 			{
 				StringBuffer buff = new StringBuffer();

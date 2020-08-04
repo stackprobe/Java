@@ -169,7 +169,7 @@ public class DemoUploader implements HttService {
 				throw new Exception();
 			}
 
-			// FIXME This code is inadequate
+			// HACK This code is inadequate
 
 			String line = new String(Arrays.copyOf(body, index), StringTools.CHARSET_UTF8); // maybe Content-Disposition:
 
@@ -219,7 +219,7 @@ public class DemoUploader implements HttService {
 
 	private static int findPtn(byte[] data, byte[] ptn, int fromIndex) {
 
-		// FIXME This code is inefficient
+		// HACK This code is inefficient
 
 		for(int index = fromIndex; index + ptn.length <= data.length; index++) {
 			if(equals(data, index, ptn, 0, ptn.length)) {
